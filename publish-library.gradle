@@ -1,0 +1,77 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+def isAndroidLib = project.plugins.findPlugin("com.android.library")
+
+if (!isAndroidLib) {
+    task librarySourcesJar(type: Jar) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+
+    task javadocJar(type: Jar, dependsOn: dokkaHtml) {
+        archiveClassifier.set("javadoc")
+        from new File("${buildDir}/dokka/html")
+    }
+    artifacts {
+        archives librarySourcesJar
+        archives javadocJar
+    }
+}
+
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+                if (isAndroidLib) {
+                    from components.release
+                } else {
+                    from components.java
+                    artifact librarySourcesJar
+                    artifact javadocJar
+                }
+
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = PUBLISH_DESCRIPTION
+                    url = 'https://github.com/romychab/effects-hilt-plugin'
+                    licenses {
+                        license {
+                            name = 'Apache License 2.0'
+                            url = 'https://github.com/romychab/effects-hilt-plugin/blob/main/LICENSE'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'romychab'
+                            name = 'Roman Andrushchenko'
+                            email = 'rom.andrushchenko@gmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:github.com/romychab/effects-hilt-plugin.git'
+                        developerConnection = 'scm:git:ssh://github.com/romychab/effects-hilt-plugin.git'
+                        url = 'https://github.com/romychab/effects-hilt-plugin/tree/main'
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(
+        rootProject.ext["signing.keyId"],
+        rootProject.ext["signing.key"],
+        rootProject.ext["signing.password"],
+    )
+    sign publishing.publications
+}

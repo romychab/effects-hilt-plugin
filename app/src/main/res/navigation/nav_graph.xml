@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/catsListFragment">
+
+    <fragment
+        android:id="@+id/catsListFragment"
+        android:name="com.elveum.effects.example.presentation.list.CatsFragment"
+        android:label="fragment_cats_list"
+        tools:layout="@layout/fragment_cats" >
+        <action
+            android:id="@+id/action_to_cat_details"
+            app:destination="@id/catDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/catDetailsFragment"
+        android:name="com.elveum.effects.example.presentation.details.DetailsFragment"
+        android:label="fragment_cat_details"
+        tools:layout="@layout/fragment_details" >
+        <argument
+            android:name="catId"
+            app:argType="long" />
+    </fragment>
+</navigation>

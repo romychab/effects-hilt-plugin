@@ -1,0 +1,22 @@
+plugins {
+    id 'kotlin'
+    id 'org.jetbrains.dokka'
+}
+
+dependencies {
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project (':effects-annotations')
+
+    implementation 'com.squareup:javapoet:1.13.0'
+    implementation 'com.squareup:kotlinpoet:1.12.0'
+    implementation 'com.squareup:kotlinpoet-javapoet:1.12.0'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'com.elveum'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'effects-processor'
+    PUBLISH_DESCRIPTION = "Hilt extension (annotation processor) for easier implementation of effects in MVVM"
+}
+
+apply from: "${rootProject.projectDir}/publish-library.gradle"
