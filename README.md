@@ -1,8 +1,14 @@
 # Hilt plugin for easier implementation of side effects :fire:
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
+[![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
+![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
+![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
+![Android Studio](https://img.shields.io/badge/Android%20Studio-Giraffe-brightgreen.svg?style=flat)
+
 This plugin allows injecting side-effect interfaces to your `ViewModel`.
 
-For example, you can show toasts, display dialogs, do navigation stuff from view-model:
+For example, you can show toasts, display dialogs, do navigation stuff in view-model class:
 
 ```kotlin
 
@@ -28,8 +34,8 @@ interface Router {
 
 @SideEffect
 class RouterImpl(
-    // You can add to this constructor any dependency from
-    // ActivityComponent, ActivityRetainedComponent and SingletonComponent.
+    // You can add any dependency from ActivityComponent, ActivityRetainedComponent
+    // and SingletonComponent to this constructor.
     // And yep, it's safe to use activity here, there will not be memory leaks,
     // that's the magic of the plugin
     private val activity: FragmentActivity
@@ -39,8 +45,9 @@ class RouterImpl(
       // implement your navigation logic here
     }
 }
-
 ```
+
+Also you can check an example app in the `:app` module.
 
 ## Installation
 
@@ -58,7 +65,10 @@ class RouterImpl(
 
 4. Add the following dependencies:
 
-TBD
+```
+implementation "com.elveum:side-effects-core:0.0.1"
+kapt "com.elveum:side-effects-processor:0.0.1"
+```
 
 ## How to use
 
@@ -66,7 +76,7 @@ Let's imagine you want to:
 - control navigation in view-model
 - show an alert dialog and get the user choice in view-model
 
-This plugin allow you safely interacting with activity from the view-model.
+This plugins allow you safely interacting with activity from the view-model.
 
 1. Define one or more interfaces of side-effects:
 
