@@ -66,8 +66,8 @@ Also you can check an example app in the `:app` module.
 4. Add the following dependencies:
 
 ```
-implementation "com.elveum:side-effects-core:0.0.1"
-kapt "com.elveum:side-effects-processor:0.0.1"
+implementation "com.elveum:effects-core:0.0.1"
+kapt "com.elveum:effects-processor:0.0.1"
 ```
 
 ## How to use
@@ -76,7 +76,7 @@ Let's imagine you want to:
 - control navigation in view-model
 - show an alert dialog and get the user choice in view-model
 
-This plugins allow you safely interacting with activity from the view-model.
+This plugin allows you safely interacting with activity from the view-model.
 
 1. Define one or more interfaces of side-effects:
 
@@ -116,8 +116,8 @@ This plugins allow you safely interacting with activity from the view-model.
 
 3. Implement the interface. All you need is to annotate the implementation with `@SideEffect`.
    Also you can optionally add dependencies from the Hilt graph to the
-   constructor (supported components: @SingletonComponent, @ActivityRetainedComponent,
-   @ActivityComponent):
+   constructor (supported components: `@SingletonComponent`, `@ActivityRetainedComponent`,
+   `@ActivityComponent`):
 
    ```kotlin
    @SideEffect
