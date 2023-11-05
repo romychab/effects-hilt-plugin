@@ -48,7 +48,7 @@ dependencies {
 
 ext {
     PUBLISH_GROUP_ID = 'com.elveum'
-    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-core'
     PUBLISH_DESCRIPTION = "Hilt extension (core library) for easier implementation of effects in MVVM"
 }

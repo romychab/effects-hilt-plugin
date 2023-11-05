@@ -1,5 +1,7 @@
 # Hilt plugin for easier implementation of side effects :fire:
 
+Now compatible with KSP starting from version `0.0.2` (Hilt version `2.48.1`)
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
@@ -12,6 +14,12 @@ For example, you can show toasts, display dialogs, do navigation stuff in view-m
 
 ```kotlin
 
+// --- router interface
+
+interface Router {
+  fun launchItemDetails(item: Item)
+}
+
 // --- view-model
 
 @HiltViewModel
@@ -22,12 +30,6 @@ class MyViewModel @Inject constructor(
     fun onItemClicked(item: Item) {
         router.launchItemDetails(item)
     }
-}
-
-// --- router interface
-
-interface Router {
-  fun launchItemDetails(item: Item)
 }
 
 // --- router implementation
@@ -49,7 +51,29 @@ class RouterImpl(
 
 Also you can check an example app in the `:app` module.
 
-## Installation
+## Installation (KSP)
+
+1. Use the latest version of Android Studio (with embedded JDK 17)
+2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
+   Minimal version of Hilt should be `2.48.1`.
+3. Make sure `ksp` plugin is added to the `build.gradle`:
+
+   ```
+   plugins {
+       ...
+       id 'com.google.devtools.ksp'
+       ...
+   }
+   ```
+
+4. Add the following dependencies:
+
+```
+implementation "com.elveum:effects-core:0.0.2"
+ksp "com.elveum:effects-processor:0.0.2"
+```
+
+## Installation (KAPT)
 
 1. Use the latest version of Android Studio (with embedded JDK 17)
 2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
@@ -66,8 +90,8 @@ Also you can check an example app in the `:app` module.
 4. Add the following dependencies:
 
 ```
-implementation "com.elveum:effects-core:0.0.1"
-kapt "com.elveum:effects-processor:0.0.1"
+implementation "com.elveum:effects-core:0.0.2"
+kapt "com.elveum:effects-processor:0.0.2"
 ```
 
 ## How to use

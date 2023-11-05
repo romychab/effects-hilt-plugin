@@ -17,6 +17,8 @@ buildscript {
         container = "0.1"
         element_adapter = "0.6"
         leak_canary = "2.12"
+
+        effects_lib_version = "0.0.2"
     }
     repositories {
         google()
