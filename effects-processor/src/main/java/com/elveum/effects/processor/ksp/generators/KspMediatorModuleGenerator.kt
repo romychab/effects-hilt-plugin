@@ -23,7 +23,7 @@ class KspMediatorModuleGenerator {
             "${parsedElements.qualifier.pkg}::${parsedElements.qualifier.name}::$plainKey"
 
         val moduleName = "${generatedMediatorSpec.name}Module"
-        val builder = TypeSpec.classBuilder(moduleName)
+        val builder = TypeSpec.objectBuilder(moduleName)
             .addModifiers(KModifier.PUBLIC)
             .addAnnotation(KspNames.moduleAnnotation)
             .addAnnotation(AnnotationSpec.builder(KspNames.installInAnnotation)

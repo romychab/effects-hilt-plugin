@@ -25,7 +25,7 @@ public annotation class SideEffectsMediatorScope
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-internal class SideEffectsMediatorsModule {
+internal object SideEffectsMediatorsModule {
 
     @ActivityRetainedScoped
     @SideEffectsMediatorScope

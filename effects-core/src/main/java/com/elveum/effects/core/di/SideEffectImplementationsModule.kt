@@ -19,7 +19,7 @@ import dagger.multibindings.ElementsIntoSet
  */
 @Module
 @InstallIn(ActivityComponent::class)
-internal class SideEffectImplementationsModule {
+internal object SideEffectImplementationsModule {
 
     @Provides
     @ActivityScoped

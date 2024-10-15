@@ -22,7 +22,7 @@ class KspImplementationModuleGenerator {
         key: String
     ) {
         val moduleName = "${parsedElements.originName}Module"
-        val builder = TypeSpec.classBuilder(moduleName)
+        val builder = TypeSpec.objectBuilder(moduleName)
             .addModifiers(KModifier.PUBLIC)
             .addAnnotation(KspNames.moduleAnnotation)
             .addAnnotation(AnnotationSpec.builder(KspNames.installInAnnotation)
