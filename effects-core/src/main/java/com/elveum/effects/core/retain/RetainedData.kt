@@ -7,10 +7,10 @@ package com.elveum.effects.core.retain
  *
  * Note: but they will not survive upon process killing.
  */
-interface RetainedData {
+public interface RetainedData {
 
-    operator fun <T : Any> get(key: String): T?
+    public operator fun <T : Any> get(key: String): T?
 
-    operator fun <T : Any> set(key: String, value: T)
+    public operator fun <T : Any> set(key: String, value: T)
 
 }

@@ -1,6 +1,6 @@
 package com.elveum.effects.core.retain
 
-class DefaultRetainedData : RetainedData {
+internal class DefaultRetainedData : RetainedData {
 
     private val dataMap = mutableMapOf<String, Any>()
 

@@ -1,6 +1,6 @@
 package com.elveum.effects.core.retain
 
-class WrappedRetainedData(
+public class WrappedRetainedData(
     private val origin: RetainedData,
     private val keyPrefix: String
 ) : RetainedData {

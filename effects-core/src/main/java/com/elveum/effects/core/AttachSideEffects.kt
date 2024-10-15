@@ -38,7 +38,7 @@ import javax.inject.Inject
  * are re-executed again.
  */
 @ActivityScoped
-class AttachSideEffects @Inject constructor (
+public class AttachSideEffects @Inject internal constructor(
     private val mediatorsManager: SideEffectMediatorsManager,
     private val activity: FragmentActivity,
     private val implementations: Set<@JvmSuppressWildcards SideEffectImplementation>

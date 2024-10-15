@@ -14,7 +14,7 @@ import javax.inject.Inject
  * deactivates them when activity is stopped.
  */
 @ActivityRetainedScoped
-class SideEffectMediatorsManager @Inject constructor(
+internal class SideEffectMediatorsManager @Inject constructor(
     private val mediators: Map<String, @JvmSuppressWildcards SideEffectMediator<Any>>,
     @SideEffectsMediatorScope private val scope: CoroutineScope
 ) {

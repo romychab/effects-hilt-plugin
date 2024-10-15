@@ -7,6 +7,6 @@ package com.elveum.effects.core.actors
  * Side effect mediator acts on the activity view-model side.
  * The lifecycle of mediator is the same as lifecycle of activity view-models.
  */
-interface SideEffectMediator<T> {
-    var target: T?
+public interface SideEffectMediator<T> {
+    public var target: T?
 }

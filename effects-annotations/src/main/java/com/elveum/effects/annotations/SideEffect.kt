@@ -54,6 +54,6 @@ import kotlin.reflect.KClass
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
-annotation class SideEffect(
-    val target: KClass<*> = Any::class,
+public annotation class SideEffect(
+    public val target: KClass<*> = Any::class,
 )

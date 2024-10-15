@@ -7,4 +7,4 @@ import kotlinx.coroutines.CancellationException
  * and that's why suspend side-effect methods have to be temporarily
  * cancelled on the activity side.
  */
-class ResourceScopeCancelledException : CancellationException()
+internal class ResourceScopeCancelledException : CancellationException()

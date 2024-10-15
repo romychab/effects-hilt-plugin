@@ -4,9 +4,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.resume
 
-typealias UnitCommand<R> = (R) -> Unit
-typealias CoroutineCommand<R, T> = suspend (R) -> T
-typealias FlowCommand<R, T> = (R) -> Flow<T>
+public typealias UnitCommand<R> = (R) -> Unit
+public typealias CoroutineCommand<R, T> = suspend (R) -> T
+public typealias FlowCommand<R, T> = (R) -> Flow<T>
 
 /**
  * For internal usage.
@@ -14,11 +14,11 @@ typealias FlowCommand<R, T> = (R) -> Flow<T>
  * Used by side-effect mediators for proper delivering of side-effects
  * from view-models to implementations (to the activity).
  */
-class CommandProcessor<R>(
+public class CommandProcessor<R>(
     private val coroutineScope: CoroutineScope
 ) {
 
-    var resource: R?
+    public var resource: R?
         get() = resourceHolder?.resource
         set(value) {
             resourceHolder = if (value == null) {
@@ -57,13 +57,13 @@ class CommandProcessor<R>(
         }
     }
 
-    fun submit(command: UnitCommand<R>) {
+    public fun submit(command: UnitCommand<R>) {
         doSubmit {
             command(it.resource)
         }
     }
 
-    fun <T> submitFlow(command: FlowCommand<R, T>): Flow<T> {
+    public fun <T> submitFlow(command: FlowCommand<R, T>): Flow<T> {
         return callbackFlow {
             while (true) {
                 val holder = awaitResource()
@@ -86,7 +86,7 @@ class CommandProcessor<R>(
         }.conflate()
     }
 
-    suspend fun <T> submitCoroutine(command: CoroutineCommand<R, T>): T {
+    public suspend fun <T> submitCoroutine(command: CoroutineCommand<R, T>): T {
         while (true) {
             val holder = awaitResource()
             try {
@@ -116,7 +116,7 @@ class CommandProcessor<R>(
         unitCommands.add(command)
     }
 
-    class Holder<R>(
+    private class Holder<R>(
         val resource: R,
         val scope: CoroutineScope
     )

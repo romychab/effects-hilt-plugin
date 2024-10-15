@@ -21,11 +21,11 @@ import javax.inject.Qualifier
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class SideEffectsMediatorScope
+public annotation class SideEffectsMediatorScope
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class SideEffectsMediatorsModule {
+internal class SideEffectsMediatorsModule {
 
     @ActivityRetainedScoped
     @SideEffectsMediatorScope
