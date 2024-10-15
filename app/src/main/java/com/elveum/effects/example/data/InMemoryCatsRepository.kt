@@ -1,8 +1,8 @@
 package com.elveum.effects.example.data
 
+import com.elveum.container.Container
 import com.elveum.container.ListContainerFlow
 import com.elveum.container.subject.LazyFlowSubject
-import com.elveum.container.subject.newSimpleAsyncLoad
 import com.elveum.container.unwrapFirst
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
@@ -62,6 +62,6 @@ class InMemoryCatsRepository @Inject constructor() : CatsRepository {
     private fun indexOf(cat: Cat) = itemsList.indexOfFirst { it.id == cat.id }
 
     private fun notifyChanges() {
-        subject.newSimpleAsyncLoad(once = true, silently = true) { ArrayList(itemsList) }
+        subject.updateWith(Container.Success(itemsList.toList()))
     }
 }
