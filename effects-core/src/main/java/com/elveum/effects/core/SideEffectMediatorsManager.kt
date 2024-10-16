@@ -19,7 +19,11 @@ internal class SideEffectMediatorsManager @Inject constructor(
     @SideEffectsMediatorScope private val scope: CoroutineScope
 ) {
 
+    private var started = false
+
     fun onStart(implementations: Set<SideEffectImplementation>) {
+        if (started) return
+        started = true
         implementations.forEach { impl ->
             val mediator = mediators[impl.target]
             mediator?.target = impl.instance
@@ -27,6 +31,8 @@ internal class SideEffectMediatorsManager @Inject constructor(
     }
 
     fun onStop() {
+        if (!started) return
+        started = false
         mediators.values.forEach { mediator ->
             mediator.target = null
         }

@@ -64,7 +64,7 @@ public class CommandProcessor<R>(
     }
 
     public fun <T> submitFlow(command: FlowCommand<R, T>): Flow<T> {
-        return callbackFlow {
+        return channelFlow {
             while (true) {
                 val holder = awaitResource()
                 val job = holder.scope.launch {
@@ -75,15 +75,20 @@ public class CommandProcessor<R>(
                 }
                 try {
                     job.join()
-                    break
-                } catch (e: ResourceScopeCancelledException) {
-                    continue
-                } catch (e: Exception) {
-                    cancel("Flow has been failed with error", e)
-                    break
+                    if (job.isCancelled) {
+                        // resource released -> wait for the next resource
+                        continue
+                    } else {
+                        // flow finished -> exit
+                        break
+                    }
+                } catch (e: CancellationException) {
+                    // view-model scope cancelled -> make sure resource job is cancelled too:
+                    job.cancel()
+                    throw e
                 }
             }
-        }.conflate()
+        }
     }
 
     public suspend fun <T> submitCoroutine(command: CoroutineCommand<R, T>): T {
