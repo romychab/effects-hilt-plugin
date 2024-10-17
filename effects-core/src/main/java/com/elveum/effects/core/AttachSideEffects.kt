@@ -1,6 +1,6 @@
 package com.elveum.effects.core
 
-import androidx.fragment.app.FragmentActivity
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.elveum.effects.core.actors.SideEffectImplementation
@@ -40,7 +40,7 @@ import javax.inject.Inject
 @ActivityScoped
 public class AttachSideEffects @Inject internal constructor(
     private val mediatorsManager: SideEffectMediatorsManager,
-    private val activity: FragmentActivity,
+    private val activity: ComponentActivity,
     private val implementations: Set<@JvmSuppressWildcards SideEffectImplementation>
 ) {
 
