@@ -50,7 +50,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.elveum'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-core'
-    PUBLISH_DESCRIPTION = "Hilt extension (core library) for easier implementation of effects in MVVM"
+    PUBLISH_DESCRIPTION = "Hilt plugin (core library) for easier implementation of effects in MVVM"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"
