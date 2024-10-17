@@ -6,7 +6,7 @@ Now compatible with KSP starting from version `0.0.2` (Hilt version `2.48.1`)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
-![Android Studio](https://img.shields.io/badge/Android%20Studio-Giraffe-brightgreen.svg?style=flat)
+![Android Studio](https://img.shields.io/badge/Android%20Studio-Ladybug-brightgreen.svg?style=flat)
 
 This plugin allows injecting side-effect interfaces to your `ViewModel`.
 
@@ -47,6 +47,15 @@ class RouterImpl(
       // implement your navigation logic here
     }
 }
+
+// --- MainActivity
+
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
+    // enable effects for this activity:
+    @Inject lateinit var attachSideEffects: AttachSideEffects
+}
+
 ```
 
 Also you can check an example app in the `:app` module.
@@ -69,8 +78,8 @@ Also you can check an example app in the `:app` module.
 4. Add the following dependencies:
 
 ```
-implementation "com.elveum:effects-core:0.0.2"
-ksp "com.elveum:effects-processor:0.0.2"
+implementation "com.elveum:effects-core:0.0.3"
+ksp "com.elveum:effects-processor:0.0.3"
 ```
 
 ## Installation (KAPT)
