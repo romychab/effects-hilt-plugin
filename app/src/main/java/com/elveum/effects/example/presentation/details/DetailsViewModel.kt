@@ -1,10 +1,12 @@
 package com.elveum.effects.example.presentation.details
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.elveum.container.Container
-import com.elveum.effects.example.domain.Cat
+import androidx.navigation.toRoute
+import com.elveum.container.getOrNull
 import com.elveum.effects.example.domain.CatsRepository
+import com.elveum.effects.example.presentation.CatDetailsRoute
 import com.elveum.effects.example.presentation.base.BaseViewModel
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,20 +20,20 @@ class DetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel() {
 
-    private val catId = DetailsFragmentArgs
-        .fromSavedStateHandle(savedStateHandle)
-        .catId
+    private val catDetailsRoute = savedStateHandle.toRoute<CatDetailsRoute>()
 
-    val catLiveData = liveData<Container<Cat>>(Container.Pending)
-
-    init {
-        viewModelScope.launch {
-            catLiveData.updateWith(Container.Success(catsRepository.getById(catId)))
-        }
-    }
+    val catLiveData = catsRepository.getById(catDetailsRoute.catId).asLiveData()
 
     fun goBack() {
         router.goBack()
+    }
+
+    fun toggleLike() {
+        viewModelScope.launch {
+            catLiveData.value?.getOrNull()?.let { cat ->
+                catsRepository.toggleLike(cat)
+            }
+        }
     }
 
 }

@@ -1,9 +1,10 @@
 package com.elveum.effects.example.data
 
 import com.elveum.container.Container
+import com.elveum.container.ContainerFlow
 import com.elveum.container.ListContainerFlow
+import com.elveum.container.containerMap
 import com.elveum.container.subject.LazyFlowSubject
-import com.elveum.container.unwrapFirst
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
 import com.github.javafaker.Faker
@@ -11,6 +12,17 @@ import kotlinx.coroutines.delay
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private val PHOTOS = listOf(
+    "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=640",
+    "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=640",
+    "https://images.unsplash.com/photo-1500259571355-332da5cb07aa?w=640",
+    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=640",
+    "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=640",
+    "https://images.unsplash.com/photo-1571566882372-1598d88abd90?w=640",
+    "https://images.unsplash.com/photo-1518288774672-b94e808873ff?w=640",
+    "https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?w=640",
+)
 
 @Singleton
 class InMemoryCatsRepository @Inject constructor() : CatsRepository {
@@ -24,7 +36,7 @@ class InMemoryCatsRepository @Inject constructor() : CatsRepository {
             id = id,
             name = faker.cat().name(),
             details = faker.lorem().paragraph(4),
-            image = "https://source.unsplash.com/random?cat&iddqd=${random.nextInt()}",
+            image = PHOTOS[it % PHOTOS.size],
             isLiked = false,
         )
     }
@@ -55,8 +67,11 @@ class InMemoryCatsRepository @Inject constructor() : CatsRepository {
         }
     }
 
-    override suspend fun getById(id: Long): Cat {
-        return getCats().unwrapFirst().first { it.id == id }
+    override fun getById(id: Long): ContainerFlow<Cat> {
+        return getCats()
+            .containerMap { list ->
+                list.first { it.id == id }
+            }
     }
 
     private fun indexOf(cat: Cat) = itemsList.indexOfFirst { it.id == cat.id }

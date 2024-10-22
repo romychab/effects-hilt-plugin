@@ -1,7 +1,7 @@
 package com.elveum.effects.example.presentation.list
 
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.elveum.container.ListContainer
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
@@ -11,7 +11,6 @@ import com.elveum.effects.example.presentation.base.effects.dialogs.Dialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
 import com.elveum.effects.example.presentation.base.resources.Resources
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,11 +23,7 @@ class CatsViewModel @Inject constructor(
     private val resources: Resources,
 ) : BaseViewModel() {
 
-    val catsLiveData = liveData<ListContainer<Cat>>()
-
-    init {
-        listen()
-    }
+    val catsLiveData = catsRepository.getCats().asLiveData()
 
     fun toggleLike(cat: Cat) {
         viewModelScope.launch {
@@ -47,14 +42,8 @@ class CatsViewModel @Inject constructor(
     }
 
     fun launchDetails(cat: Cat) {
-        router.launchDetails(cat)
-    }
-
-    private fun listen() {
         viewModelScope.launch {
-            catsRepository.getCats().collectLatest {
-                catsLiveData.updateWith(it)
-            }
+            router.launchDetails(cat)
         }
     }
 
