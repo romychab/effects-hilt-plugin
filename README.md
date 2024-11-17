@@ -1,6 +1,6 @@
-# Hilt plugin for easier implementation of side effects :fire:
+# Hilt plugin for easier implementation of one-time events (a.k.a. side effects) :fire:
 
-Now compatible with KSP starting from version `0.0.2` (Hilt version `2.48.1`)
+Now compatible with KSP and Jetpack Compose starting from version `0.0.4`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
@@ -8,59 +8,11 @@ Now compatible with KSP starting from version `0.0.2` (Hilt version `2.48.1`)
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-Ladybug-brightgreen.svg?style=flat)
 
-This plugin allows injecting side-effect interfaces to your `ViewModel`.
+This plugin simplifies working with one-time events. It allows injecting side-effect interfaces
+to your `ViewModel`. For example, you can show toasts, display dialogs, do navigation stuff in view-model class
+without memory leaks.
 
-For example, you can show toasts, display dialogs, do navigation stuff in view-model class:
-
-```kotlin
-
-// --- router interface
-
-interface Router {
-  fun launchItemDetails(item: Item)
-}
-
-// --- view-model
-
-@HiltViewModel
-class MyViewModel @Inject constructor(
-    val router: Router,
-) {
-
-    fun onItemClicked(item: Item) {
-        router.launchItemDetails(item)
-    }
-}
-
-// --- router implementation
-
-@SideEffect
-class RouterImpl(
-    // You can add any dependency from ActivityComponent, ActivityRetainedComponent
-    // and SingletonComponent to this constructor.
-    // And yep, it's safe to use activity here, there will not be memory leaks,
-    // that's the magic of the plugin
-    private val activity: FragmentActivity
-) : Router {
-
-    override fun launchItemDetails(item: Item) {
-      // implement your navigation logic here
-    }
-}
-
-// --- MainActivity
-
-@AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    // enable effects for this activity:
-    @Inject lateinit var attachSideEffects: AttachSideEffects
-}
-
-```
-
-Also you can check an example app in the `:app` module.
-
-## Installation (KSP)
+## Installation
 
 1. Use the latest version of Android Studio (with embedded JDK 17)
 2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
@@ -78,44 +30,29 @@ Also you can check an example app in the `:app` module.
 4. Add the following dependencies:
 
 ```
-implementation "com.elveum:effects-core:0.0.3"
-ksp "com.elveum:effects-processor:0.0.3"
-```
-
-## Installation (KAPT)
-
-1. Use the latest version of Android Studio (with embedded JDK 17)
-2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
-3. Make sure `kapt` plugin is added to the `build.gradle`:
-
-   ```
-   plugins {
-       ...
-       id 'kotlin-kapt'
-       ...
-   }
-   ```
-
-4. Add the following dependencies:
-
-```
-implementation "com.elveum:effects-core:0.0.2"
-kapt "com.elveum:effects-processor:0.0.2"
+// annotation processor (required):
+ksp "com.elveum:effects-processor:0.0.4"
+// for projects with Jetpack Compose:
+implementation "com.elveum:effects-compose:0.0.4"
+// for projects without Jetpack Compose:
+implementation "com.elveum:effects-core:0.0.4"
 ```
 
 ## How to use
 
-Let's imagine you want to:
-- control navigation in view-model
-- show an alert dialog and get the user choice in view-model
+The main idea of this plugin is to simplify one-time events by extracting them to a separate
+interface that can be injected to the view-model constructor.
 
-This plugin allows you safely interacting with activity from the view-model.
+Let's imagine you want to:
+- trigger navigation logic from view-model
+- show an alert dialog and get the user choice in view-model
+- show toasts, snackbars, etc.
 
 1. Define one or more interfaces of side-effects:
 
    ```kotlin
-   interface UiActions {
-       // simple effect (one-shot event)
+   interface UiEffects {
+       // simple effect (one-time event)
        fun launchCatDetails(cat: Cat)
 
        // effect which can return a result data
@@ -132,11 +69,11 @@ This plugin allows you safely interacting with activity from the view-model.
    @HiltViewModel
    class CatsListViewModel @Inject constructor(
        // inject your interface here:
-       val uiActions: UiActions
+       val uiEffects: UiEffects
    ): ViewModel() {
 
        fun onCatChosen(cat: Cat) = viewModelScope.launch {
-           val confirmed = uiActions.showAskDialog(
+           val confirmed = uiEffects.showAskDialog(
                message = "Are you sure you want to open details screen?"
            )
            if (confirmed) {
@@ -154,7 +91,7 @@ This plugin allows you safely interacting with activity from the view-model.
 
    ```kotlin
    @SideEffect
-   class DefaultUiActions(
+   class UiEffectsImpl(
        // optional arg #1 - activity itself
        private val activity: FragmentActivity,
        // optional arg #2 - container for retained data which
@@ -162,7 +99,7 @@ This plugin allows you safely interacting with activity from the view-model.
        private val retainedData: RetainedData,
        // other args from Hilt graph
        private val somethingElse: SomethingElse,
-   ) : UiActions {
+   ) : UiEffects {
 
        override fun launchCatDetails(cat: Cat) {
            // use activity reference for doing navigation (via fragment manager,
@@ -199,10 +136,64 @@ This plugin allows you safely interacting with activity from the view-model.
    ```kotlin
    @AndroidEntryPoint
    class MainActivity: AppCompatActivity() {
+
+       // only for old non-Jetpack Compose projects:
        @Inject
        lateinit var attachSideEffects: AttachSideEffects
+
+       override fun onCreate(savedInstanceState: Bundle?) {
+           super.onCreate()
+           setContent {
+               // only for Jetpack Compose projects:
+               EffectsApp {
+                   // call your main composable function here
+               }
+           }
+       }
    }
    ```
+
+Any side-effect implementation can be accessed from the `@Composable` functions
+by using `getEffect<T>()` call:
+
+```kotlin
+interface Router {
+  fun navigate(route: String)
+}
+
+@SideEffect
+class RouterImpl : Router {
+  private var navController: NavController? = null
+
+  override fun navigate(route: String) {
+    navController.navigate(route)
+  }
+
+  fun setNavController(navController: NavController) {
+    this.navController = navController
+  }
+}
+
+@Composable
+fun MyApp() {
+  val navController = rememberNavController()
+  // use getEffect() for retrieving side-effect implementation class:
+  val routerImpl = getEffect<RouterImpl>()
+  SideEffect {
+    // initialize router
+    routerImpl.setNavController(navController)
+  }
+
+  NavHost(
+    navController = navController,
+    startDestination = "main",
+  ) {
+    // ...
+  }
+}
+```
+
+Also you can check an example app in the `:app` module.
 
 That's it!
 

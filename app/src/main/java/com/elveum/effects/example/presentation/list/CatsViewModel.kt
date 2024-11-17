@@ -1,11 +1,11 @@
 package com.elveum.effects.example.presentation.list
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
-import com.elveum.effects.example.presentation.base.BaseViewModel
 import com.elveum.effects.example.presentation.base.effects.dialogs.AlertDialogConfig
 import com.elveum.effects.example.presentation.base.effects.dialogs.Dialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
@@ -21,7 +21,7 @@ class CatsViewModel @Inject constructor(
     private val dialogs: Dialogs,
     private val router: Router,
     private val resources: Resources,
-) : BaseViewModel() {
+) : ViewModel() {
 
     val catsLiveData = catsRepository.getCats().asLiveData()
 
@@ -42,9 +42,7 @@ class CatsViewModel @Inject constructor(
     }
 
     fun launchDetails(cat: Cat) {
-        viewModelScope.launch {
-            router.launchDetails(cat)
-        }
+        router.launchDetails(cat)
     }
 
     private fun buildDeleteDialog(): AlertDialogConfig = AlertDialogConfig(

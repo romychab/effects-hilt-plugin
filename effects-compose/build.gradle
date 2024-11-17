@@ -4,19 +4,19 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.compose'
     id 'com.google.devtools.ksp'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.dokka'
 }
 
 android {
-    namespace 'com.elveum.effects.compose'
     compileSdk target_sdk
-
+    namespace "com.elveum.effects.compose"
     defaultConfig {
         minSdk min_sdk
+        targetSdk target_sdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -25,6 +25,12 @@ android {
     }
     buildFeatures {
         compose true
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
@@ -41,3 +47,12 @@ dependencies {
 
     api project(":effects-core")
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'com.elveum'
+    PUBLISH_VERSION = effects_lib_version
+    PUBLISH_ARTIFACT_ID = 'effects-compose'
+    PUBLISH_DESCRIPTION = "Hilt plugin (Jetpack Compose library) for easier implementation of effects in MVVM / Jetpack Compose"
+}
+
+apply from: "${rootProject.projectDir}/publish-library.gradle"
