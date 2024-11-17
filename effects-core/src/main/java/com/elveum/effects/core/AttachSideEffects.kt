@@ -39,9 +39,8 @@ import javax.inject.Inject
  */
 @ActivityScoped
 public class AttachSideEffects @Inject internal constructor(
-    private val mediatorsManager: SideEffectMediatorsManager,
-    private val activity: ComponentActivity,
-    private val implementations: Set<@JvmSuppressWildcards SideEffectImplementation>
+    private val effectsLifecycleController: EffectsLifecycleController,
+    activity: ComponentActivity,
 ) {
 
     init {
@@ -50,23 +49,19 @@ public class AttachSideEffects @Inject internal constructor(
 
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
-                mediatorsManager.onStart(implementations)
+                effectsLifecycleController.startEffects()
             }
 
             override fun onStop(owner: LifecycleOwner) {
                 super.onStop(owner)
-                mediatorsManager.onStop()
+                effectsLifecycleController.stopEffects()
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                if (!activity.isChangingConfigurations) {
-                    mediatorsManager.destroy()
-                }
+                effectsLifecycleController.destroyEffects()
             }
-
         })
-
     }
 
 }
