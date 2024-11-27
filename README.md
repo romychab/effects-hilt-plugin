@@ -1,6 +1,6 @@
 # Hilt plugin for easier implementation of one-time events (a.k.a. side effects) :fire:
 
-Now compatible with KSP and Jetpack Compose starting from version `0.0.4`.
+Now compatible with KSP and Jetpack Compose starting from version `0.0.5`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
@@ -31,11 +31,11 @@ without memory leaks.
 
 ```
 // annotation processor (required):
-ksp "com.elveum:effects-processor:0.0.4"
+ksp "com.elveum:effects-processor:0.0.5"
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:0.0.4"
+implementation "com.elveum:effects-compose:0.0.5"
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:0.0.4"
+implementation "com.elveum:effects-core:0.0.5"
 ```
 
 ## How to use
@@ -77,7 +77,7 @@ Let's imagine you want to:
                message = "Are you sure you want to open details screen?"
            )
            if (confirmed) {
-               uiActions.launchCatDetails(cat)
+               uiEffects.launchCatDetails(cat)
            }
        }
 

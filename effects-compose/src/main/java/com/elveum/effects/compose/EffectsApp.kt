@@ -1,11 +1,12 @@
 package com.elveum.effects.compose
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
  * Top level function which automatically initializes all side effects for your app.
@@ -58,21 +59,23 @@ private fun ObserveLifecycleEvents(
     onDestroy: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val observer = remember {
-        LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> onStart()
-                Lifecycle.Event.ON_STOP -> onStop()
-                Lifecycle.Event.ON_DESTROY -> onDestroy()
-                else -> {}
+    LaunchedEffect(lifecycleOwner) {
+        // Using LaunchedEffect instead of DisposableEffect because
+        // LaunchedEffect starts later than DisposableEffect due to usage
+        // of coroutines. As a result, effects will be delivered after
+        // initialization of subsequent composable functions.
+        try {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                onStart()
+                suspendCancellableCoroutine { continuation ->
+                    continuation.invokeOnCancellation {
+                        onStop()
+                    }
+                }
             }
-        }
-    }
-    DisposableEffect(lifecycleOwner) {
-        val lifecycle = lifecycleOwner.lifecycle
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
+        } catch (e: CancellationException) {
+            onDestroy()
+            throw e
         }
     }
 }

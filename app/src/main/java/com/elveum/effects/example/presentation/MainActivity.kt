@@ -3,8 +3,12 @@ package com.elveum.effects.example.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,14 +27,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             EffectsApp {
-                CatsApp()
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    CatsApp(modifier = Modifier.padding(innerPadding))
+                }
             }
         }
     }
 }
 
 @Composable
-fun CatsApp() {
+fun CatsApp(modifier: Modifier = Modifier) {
     val composeRouter = getEffect<ComposeRouter>()
     val navController = rememberNavController()
     SideEffect {
@@ -39,6 +45,7 @@ fun CatsApp() {
     NavHost(
         navController = navController,
         startDestination = CatsRoute,
+        modifier = modifier.fillMaxSize(),
     ) {
         composable<CatsRoute> { CatsScreen() }
         composable<CatDetailsRoute> { CatDetailsScreen() }
