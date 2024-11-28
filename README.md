@@ -2,7 +2,7 @@
 
 Now compatible with KSP and Jetpack Compose starting from version `0.0.6`.
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
+[![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
