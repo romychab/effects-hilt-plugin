@@ -15,12 +15,15 @@ import dagger.hilt.android.EntryPointAccessors
 
 /**
  * Get an effect implementation (instance of class annotated with [SideEffect] annotation).
+ *
+ * This function can be called only within [EffectsApp].
+ *
  * @throws IllegalStateException if the is no such effect class
  */
 @ReadOnlyComposable
 @Composable
 public inline fun <reified T : Any> getEffect(): T {
-    return getEffectsEntryPoint().getEffectsStore().get()
+    return LocalEffectsStore.current.get()
 }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)

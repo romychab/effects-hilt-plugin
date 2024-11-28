@@ -1,6 +1,7 @@
 package com.elveum.effects.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -37,19 +38,25 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 public fun EffectsApp(
     content: @Composable () -> Unit,
 ) {
-    val effectsLifecycleController = getEffectsLifecycleController()
-    ObserveLifecycleEvents(
-        onStart = {
-            effectsLifecycleController.startEffects()
-        },
-        onStop = {
-            effectsLifecycleController.stopEffects()
-        },
-        onDestroy = {
-            effectsLifecycleController.destroyEffects()
-        },
-    )
-    content()
+    val effectsEntryPoint = getEffectsEntryPoint()
+    val effectsStore = effectsEntryPoint.getEffectsStore()
+    CompositionLocalProvider(
+        LocalEffectsStore provides effectsStore
+    ) {
+        val effectsLifecycleController = getEffectsLifecycleController()
+        ObserveLifecycleEvents(
+            onStart = {
+                effectsLifecycleController.startEffects()
+            },
+            onStop = {
+                effectsLifecycleController.stopEffects()
+            },
+            onDestroy = {
+                effectsLifecycleController.destroyEffects()
+            },
+        )
+        content()
+    }
 }
 
 @Composable

@@ -1,6 +1,6 @@
 # Hilt plugin for easier implementation of one-time events (a.k.a. side effects) :fire:
 
-Now compatible with KSP and Jetpack Compose starting from version `0.0.5`.
+Now compatible with KSP and Jetpack Compose starting from version `0.0.6`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://elveum.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
@@ -14,7 +14,14 @@ without memory leaks.
 
 ## Installation
 
-1. Use the latest version of Android Studio (with embedded JDK 17)
+1. Use the latest version of Android Studio (with embedded JDK 17). Use Java 17 in your project:
+
+   ```
+   kotlin {
+       jvmToolchain(17)
+   }
+   ```
+
 2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
    Minimal version of Hilt should be `2.48.1`.
 3. Make sure `ksp` plugin is added to the `build.gradle`:
@@ -31,11 +38,11 @@ without memory leaks.
 
 ```
 // annotation processor (required):
-ksp "com.elveum:effects-processor:0.0.5"
+ksp "com.elveum:effects-processor:0.0.6"
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:0.0.5"
+implementation "com.elveum:effects-compose:0.0.6"
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:0.0.5"
+implementation "com.elveum:effects-core:0.0.6"
 ```
 
 ## How to use
