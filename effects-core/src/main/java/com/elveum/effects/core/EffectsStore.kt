@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 public interface EffectsStore {
 
     /**
-     * Get side effect implementation by class.
+     * Get side effect implementation (annotated with [SideEffect]) by KClass.
      *
      * Usage example:
      *
@@ -20,14 +20,17 @@ public interface EffectsStore {
      * @SideEffect
      * class RouterImpl : Router { ... }
      *
-     * val routerImpl = effectsStore.get(RouterImpl::class)
+     * // get by implementation KClass
+     * val routerImpl: RouterImpl = effectsStore.get(RouterImpl::class)
+     * // get by interface KClass (can be casted to RouterImpl)
+     * val router: Router = effectsStore.get(Router::class)
      * ```
      */
     public fun <T : Any> get(clazz: KClass<T>): T
 }
 
 /**
- * Get side effect implementation.
+ * Get side effect implementation (annotated with [SideEffect]).
  *
  * Usage example:
  *
@@ -37,7 +40,10 @@ public interface EffectsStore {
  * @SideEffect
  * class RouterImpl : Router { ... }
  *
- * val routerImpl = effectsStore.get<RouterImpl>()
+ * // get by implementation class name
+ * val routerImpl: RouterImpl = effectsStore.get<RouterImpl>()
+ * // get by interface class name (can be casted to RouterImpl)
+ * val router: Router = effectsStore.get<Router>()
  * ```
  */
 public inline fun <reified T : Any> EffectsStore.get(): T {

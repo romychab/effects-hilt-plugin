@@ -164,10 +164,12 @@ Any side-effect implementation can be accessed from the `@Composable` functions
 by using `getEffect<T>()` call:
 
 ```kotlin
+// effect interface:
 interface Router {
   fun navigate(route: String)
 }
 
+// effect implementation:
 @SideEffect
 class RouterImpl : Router {
   private var navController: NavController? = null
@@ -181,10 +183,11 @@ class RouterImpl : Router {
   }
 }
 
+// composable function which initializes router:
 @Composable
 fun MyApp() {
   val navController = rememberNavController()
-  // use getEffect() for retrieving side-effect implementation class:
+  // use getEffect() for retrieving implementation class:
   val routerImpl = getEffect<RouterImpl>()
   SideEffect {
     // initialize router
@@ -197,6 +200,21 @@ fun MyApp() {
   ) {
     // ...
   }
+}
+
+// activity with top-level composition
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            // wrap MyApp() into EffectsApp { ... } to allow 
+            // calling getEffect<T>() function:
+            EffectsApp {
+                MyApp()
+            }
+        }
+    }
 }
 ```
 
