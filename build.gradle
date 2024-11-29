@@ -19,7 +19,7 @@ buildscript {
         leak_canary = "2.12"
         compose_bom = "2024.10.00"
 
-        effects_lib_version = "0.0.6"
+        effects_lib_version = "0.0.7"
     }
     repositories {
         google()

@@ -1,6 +1,6 @@
 # Hilt plugin for easier implementation of one-time events (a.k.a. side effects) :fire:
 
-Now compatible with KSP and Jetpack Compose starting from version `0.0.6`.
+Now compatible with KSP and Jetpack Compose starting from version `0.0.7`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
 [![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
@@ -38,11 +38,11 @@ without memory leaks.
 
 ```
 // annotation processor (required):
-ksp "com.elveum:effects-processor:0.0.6"
+ksp "com.elveum:effects-processor:0.0.7"
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:0.0.6"
+implementation "com.elveum:effects-compose:0.0.7"
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:0.0.6"
+implementation "com.elveum:effects-core:0.0.7"
 ```
 
 ## How to use
