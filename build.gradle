@@ -14,12 +14,12 @@ buildscript {
         constraint_layout_version = "2.1.4"
         activity_ktx_version = "1.9.3"
         coroutines_core = "1.6.4"
-        container = "0.4"
+        container = "0.5"
         element_adapter = "0.6"
         leak_canary = "2.12"
         compose_bom = "2024.10.00"
 
-        effects_lib_version = "0.0.7"
+        effects_lib_version = "0.0.8"
     }
     repositories {
         google()

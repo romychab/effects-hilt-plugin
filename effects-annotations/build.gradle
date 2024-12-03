@@ -1,9 +1,17 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'kotlin'
     id 'org.jetbrains.dokka'
 }
-
+java {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
 kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+    }
     jvmToolchain(17)
     explicitApi()
 }

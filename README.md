@@ -14,35 +14,19 @@ without memory leaks.
 
 ## Installation
 
-1. Use the latest version of Android Studio (with embedded JDK 17). Use Java 17 in your project:
-
-   ```
-   kotlin {
-       jvmToolchain(17)
-   }
-   ```
-
+1. Use the latest version of Android Studio.
 2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project.
    Minimal version of Hilt should be `2.48.1`.
-3. Make sure `ksp` plugin is added to the `build.gradle`:
-
-   ```
-   plugins {
-       ...
-       id 'com.google.devtools.ksp'
-       ...
-   }
-   ```
-
+3. Make sure [KSP](https://kotlinlang.org/docs/ksp-quickstart.html#add-a-processor) plugin is added to your project.
 4. Add the following dependencies:
 
 ```
 // annotation processor (required):
-ksp "com.elveum:effects-processor:0.0.7"
+ksp "com.elveum:effects-processor:0.0.8"
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:0.0.7"
+implementation "com.elveum:effects-compose:0.0.8"
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:0.0.7"
+implementation "com.elveum:effects-core:0.0.8"
 ```
 
 ## How to use
