@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Side Effects App</string>
+    <string name="app_name">Mvi Effects App</string>
 
     <string name="delete_cat_title">Delete</string>
     <string name="delete_cat_message">Are you sure you want to delete the cat?</string>

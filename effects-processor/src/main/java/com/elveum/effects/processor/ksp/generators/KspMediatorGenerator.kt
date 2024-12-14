@@ -31,7 +31,7 @@ class KspMediatorGenerator(
 
     fun generateMediator(annotatedClass: KSClassDeclaration): Result {
         if (annotatedClass.typeParameters.isNotEmpty()) {
-            throw KspElementException("Class annotated with @SideEffect should not have type parameters", annotatedClass)
+            throw KspElementException("Class annotated with @MviEffect should not have type parameters", annotatedClass)
         }
         val parsedElements = parseInterface(annotatedClass)
         val mediatorClassName = ClassName(parsedElements.pkg, parsedElements.suggestedMediatorName)
@@ -40,7 +40,7 @@ class KspMediatorGenerator(
         with(mediatorClassBuilder) {
             addModifiers(KModifier.PUBLIC)
             addSuperinterface(interfaceTypeName)
-            addSuperinterface(KNames.sideEffectMediator(interfaceTypeName))
+            addSuperinterface(KNames.mviEffectMediator(interfaceTypeName))
             generateFields(interfaceTypeName)
             generateConstructor()
             implementInterfaceMethods(interfaceTypeName, parsedElements)
@@ -61,7 +61,7 @@ class KspMediatorGenerator(
 
     private fun parseInterface(annotatedClass: KSClassDeclaration): KspParsedElements {
         if (annotatedClass.modifiers.contains(Modifier.ABSTRACT)) {
-            throw KspElementException("Class annotated with @SideEffect should not be an abstract class", annotatedClass)
+            throw KspElementException("Class annotated with @MviEffect should not be an abstract class", annotatedClass)
         }
         val allInterfaces = annotatedClass.superTypes
             .map { it.resolve().declaration }
@@ -104,7 +104,7 @@ class KspMediatorGenerator(
         allInterfaces: List<KSClassDeclaration>,
     ): KSClassDeclaration {
         if (allInterfaces.isEmpty()) {
-            throw KspElementException("Class annotated with @SideEffect doesn't implement any interface", annotatedClass)
+            throw KspElementException("Class annotated with @MviEffect doesn't implement any interface", annotatedClass)
         }
 
         return if (allInterfaces.size == 1) {
@@ -123,24 +123,26 @@ class KspMediatorGenerator(
         annotatedClass: KSClassDeclaration,
         interfaces: List<KSClassDeclaration>,
     ): KSClassDeclaration {
-        val sideEffectAnnotation = annotatedClass.annotations.first {
-            it.shortName.getShortName() == KspNames.sideEffectShortAnnotationName
+        val mviEffectAnnotation = annotatedClass.annotations.first {
+            val shortName = it.shortName.getShortName()
+            shortName == KspNames.deprecatedShortAnnotationName
+                    || shortName == KspNames.mviEffectShortAnnotationName
         }
-        val targetArg = sideEffectAnnotation.arguments.firstOrNull()
+        val targetArg = mviEffectAnnotation.arguments.firstOrNull()
             ?: throwTargetException(annotatedClass)
         val targetValue = targetArg.value as KSType
 
         val targetInterface = interfaces.firstOrNull {
             it.qualifiedName?.asString() == targetValue.declaration.qualifiedName?.asString()
-        } ?: throw KspElementException("@SideEffect target argument must " +
+        } ?: throw KspElementException("@MviEffect target argument must " +
                 "point to an interface which is implemented by your class", annotatedClass)
 
         return targetInterface
     }
 
     private fun throwTargetException(annotatedClass: KSClassDeclaration): Nothing {
-        throw KspElementException("Your class annotated with @SideEffect implements " +
-                "more than 1 interface. Please specify @SideEffect(target=...) parameter.", annotatedClass)
+        throw KspElementException("Your class annotated with @MviEffect implements " +
+                "more than 1 interface. Please specify @MviEffect(target=...) parameter.", annotatedClass)
     }
 
     private fun TypeSpec.Builder.generateFields(interfaceTypeName: TypeName) {

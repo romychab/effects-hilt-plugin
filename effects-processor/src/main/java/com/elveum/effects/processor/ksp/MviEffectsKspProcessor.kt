@@ -10,15 +10,15 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 
-class SideEffectsKspProcessor(
+class MviEffectsKspProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
 ) : SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
-            val annotatedClasses = resolver
-                .getSymbolsWithAnnotation(KspNames.sideEffectAnnotationName)
-                .filterIsInstance<KSClassDeclaration>()
+            val deprecatedAnnotatedClasses = findAnnotatedClasses(resolver, KspNames.deprecatedAnnotationName)
+            val newAnnotatedClasses = findAnnotatedClasses(resolver, KspNames.mviEffectAnnotationName)
+            val annotatedClasses = deprecatedAnnotatedClasses + newAnnotatedClasses
 
             val kspMediatorGenerator = KspMediatorGenerator(codeGenerator)
             val kspMediatorModuleGenerator = KspMediatorModuleGenerator()
@@ -34,6 +34,12 @@ class SideEffectsKspProcessor(
             logger.error(e.message ?: "Error", e.element)
         }
         return emptyList()
+    }
+
+    private fun findAnnotatedClasses(resolver: Resolver, annotationName: String): Sequence<KSClassDeclaration> {
+        return resolver
+            .getSymbolsWithAnnotation(annotationName)
+            .filterIsInstance<KSClassDeclaration>()
     }
 
 }

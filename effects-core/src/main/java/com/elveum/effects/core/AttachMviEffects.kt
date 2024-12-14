@@ -3,43 +3,42 @@ package com.elveum.effects.core
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.elveum.effects.core.actors.SideEffectImplementation
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
 /**
- * Inject this class into your activity to make side-effects available for
+ * Inject this class into your activity to make MVI-effects available for
  * the activity and its fragments.
  *
  * ```
  * @AndroidEntryPoint
  * class MyActivity : AppCompatActivity() {
  *     @Inject
- *     lateinit var sideEffects: AttachSideEffects
+ *     lateinit var mviEffects: AttachMviEffects
  * }
  * ```
  *
- * Lifecycle of all side-effect interfaces which are injected to your view-models
+ * Lifecycle of all MVI-effect interfaces which are injected to your view-models
  * (both for activities and fragments) are tied to the Hilt `ActivityRetainedComponent`.
  * So they survive upon configuration changes. If you use fragments, then their view-models
- * receive the same instance of the side-effect interface within the activity. So
+ * receive the same instance of the MVI-effect interface within the activity. So
  * actually the following rules work here:
- * - 1 activity = 1 side-effect interface instance for all fragments
- * - side-effect interface lifecycle = activity view-model lifecycle
+ * - 1 activity = 1 MVI-effect interface instance for all fragments
+ * - MVI-effect interface lifecycle = activity view-model lifecycle
  *
- * Lifecycle of all side-effect implementations are tied to the Hilt `ActivityComponent`.
- * So side-effect implementations are created every time when activity is recreated. They
+ * Lifecycle of all MVI-effect implementations are tied to the Hilt `ActivityComponent`.
+ * So MVI-effect implementations are created every time when activity is recreated. They
  * do not survive upon configuration changes.
  *
- * Moreover, all suspend methods of the side-effect implementation are executed in
+ * Moreover, all suspend methods of the MVI-effect implementation are executed in
  * the custom coroutine scope which automatically cancels suspend methods being
  * executed when the activity is going to be stopped. Afterwards, when
  * the activity restarts, all cancelled non-finished suspend methods
  * are re-executed again.
  */
 @ActivityScoped
-public class AttachSideEffects @Inject internal constructor(
-    private val effectsLifecycleController: EffectsLifecycleController,
+public class AttachMviEffects @Inject internal constructor(
+    private val mviEffectsLifecycleController: MviEffectsLifecycleController,
     activity: ComponentActivity,
 ) {
 
@@ -49,19 +48,25 @@ public class AttachSideEffects @Inject internal constructor(
 
             override fun onStart(owner: LifecycleOwner) {
                 super.onStart(owner)
-                effectsLifecycleController.startEffects()
+                mviEffectsLifecycleController.startEffects()
             }
 
             override fun onStop(owner: LifecycleOwner) {
                 super.onStop(owner)
-                effectsLifecycleController.stopEffects()
+                mviEffectsLifecycleController.stopEffects()
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                effectsLifecycleController.destroyEffects()
+                mviEffectsLifecycleController.destroyEffects()
             }
         })
     }
 
 }
+
+@Deprecated(
+    message = "Use AttachMviEffects instead.",
+    replaceWith = ReplaceWith("AttachMviEffects"),
+)
+public typealias AttachSideEffects = AttachMviEffects

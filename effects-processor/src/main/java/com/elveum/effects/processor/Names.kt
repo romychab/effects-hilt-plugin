@@ -29,10 +29,10 @@ object Names {
     val activityRetainedScope: ClassName = ClassName.get(hiltScopePackage, "ActivityRetainedScoped")
     val activityScope: ClassName = ClassName.get(hiltScopePackage, "ActivityScoped")
     val intoSet: ClassName = ClassName.get(daggerMultiBindingPackage, "IntoSet")
-    val sideEffectsScope: ClassName = ClassName.get(coreDiPackage, "SideEffectsMediatorScope")
+    val mviEffectsScope: ClassName = ClassName.get(coreDiPackage, "MviEffectsMediatorScope")
     val coroutineScope: ClassName = ClassName.get(coroutinesXPackage, "CoroutineScope")
-    val sidePair: ClassName = ClassName.get(actorsPackage, "SidePair")
-    val sideImplementation: ClassName = ClassName.get(actorsPackage, "SideEffectImplementation")
+    val mviPair: ClassName = ClassName.get(actorsPackage, "MviPair")
+    val mviImplementation: ClassName = ClassName.get(actorsPackage, "MviEffectImplementation")
     val flow: ClassName = ClassName.get(flowPackage, "Flow")
     val retainedData = ClassName.get("${corePackage}.retain", "RetainedData")
     val wrappedRetainedData = ClassName.get("${corePackage}.retain", "WrappedRetainedData")
@@ -43,10 +43,10 @@ object Names {
         )
         return ParameterizedTypeName.get(rawType, parametrizedType)
     }
-    fun sideEffectMediator(parametrizedType: TypeName): ParameterizedTypeName {
+    fun mviEffectMediator(parametrizedType: TypeName): ParameterizedTypeName {
         val rawType = ClassName.get(
             actorsPackage,
-            "SideEffectMediator"
+            "MviEffectMediator"
         )
         return ParameterizedTypeName.get(rawType, parametrizedType)
     }

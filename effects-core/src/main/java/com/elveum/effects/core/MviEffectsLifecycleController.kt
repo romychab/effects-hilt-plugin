@@ -5,7 +5,7 @@ package com.elveum.effects.core
  *
  * Usually you don't need to use this class directly.
  */
-public interface EffectsLifecycleController {
+public interface MviEffectsLifecycleController {
     /**
      * Start effects. All effects called from view-models will be delivered
      * to activity after this call.

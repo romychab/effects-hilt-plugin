@@ -40,7 +40,7 @@ kotlin {
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3"
     implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
-    implementation "androidx.compose.runtime:runtime-livedata:1.7.5"
+    implementation "androidx.compose.runtime:runtime-livedata:1.7.6"
 
     implementation platform("androidx.compose:compose-bom:$compose_bom")
     implementation "androidx.compose.ui:ui"

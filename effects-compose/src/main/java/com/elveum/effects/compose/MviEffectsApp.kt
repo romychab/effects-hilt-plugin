@@ -10,8 +10,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /**
- * Top level function which automatically initializes all side effects for your app.
- * Just wrap your top-level Composable function into EffectsApp to make it works.
+ * Top level function which automatically initializes all MVI-effects for your app.
+ *
+ * Just wrap your top-level Composable function into MviEffectsApp to make it work.
  *
  * For example:
  *
@@ -21,7 +22,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  *   override fun onCreate(savedInstanceState: Bundle?) {
  *     super.onCreate(savedInstanceState)
  *     setContent {
- *       EffectsApp {
+ *       MviEffectsApp {
  *         MyApp()
  *       }
  *     }
@@ -35,15 +36,15 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  * ```
  */
 @Composable
-public fun EffectsApp(
+public fun MviEffectsApp(
     content: @Composable () -> Unit,
 ) {
-    val effectsEntryPoint = getEffectsEntryPoint()
-    val effectsStore = effectsEntryPoint.getEffectsStore()
+    val effectsEntryPoint = getMviEffectsEntryPoint()
+    val effectsStore = effectsEntryPoint.getMviEffectsStore()
     CompositionLocalProvider(
-        LocalEffectsStore provides effectsStore
+        LocalMviEffectsStore provides effectsStore
     ) {
-        val effectsLifecycleController = getEffectsLifecycleController()
+        val effectsLifecycleController = getMviEffectsLifecycleController()
         ObserveLifecycleEvents(
             onStart = {
                 effectsLifecycleController.startEffects()
@@ -57,6 +58,17 @@ public fun EffectsApp(
         )
         content()
     }
+}
+
+@Deprecated(
+    message = "Use MviEffectsApp instead.",
+    replaceWith = ReplaceWith("MviEffectsApp"),
+)
+@Composable
+public fun EffectsApp(
+    content: @Composable () -> Unit,
+) {
+    MviEffectsApp(content)
 }
 
 @Composable

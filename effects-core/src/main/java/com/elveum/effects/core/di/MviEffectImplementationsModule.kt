@@ -1,7 +1,7 @@
 package com.elveum.effects.core.di
 
-import com.elveum.effects.annotations.SideEffect
-import com.elveum.effects.core.actors.SideEffectImplementation
+import com.elveum.effects.annotations.MviEffect
+import com.elveum.effects.core.actors.MviEffectImplementation
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,19 +12,19 @@ import dagger.multibindings.ElementsIntoSet
 /**
  * For internal usage.
  *
- * This module provides an empty stub set of all side-effect implementations.
- * The library generates modules for each class annotated with [SideEffect] and
+ * This module provides an empty stub set of all MVI-effect implementations.
+ * The library generates modules for each class annotated with [MviEffect] and
  * those generated modules add implementations into the set provided by
  * [provideStubImplementationsSet] method.
  */
 @Module
 @InstallIn(ActivityComponent::class)
-internal object SideEffectImplementationsModule {
+internal object MviEffectImplementationsModule {
 
     @Provides
     @ActivityScoped
     @ElementsIntoSet
-    fun provideStubImplementationsSet(): Set<@JvmSuppressWildcards SideEffectImplementation> {
+    fun provideStubImplementationsSet(): Set<@JvmSuppressWildcards MviEffectImplementation> {
         return emptySet()
     }
 

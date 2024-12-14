@@ -1,23 +1,23 @@
 package com.elveum.effects.core
 
-import com.elveum.effects.annotations.SideEffect
+import com.elveum.effects.annotations.MviEffect
 import kotlin.reflect.KClass
 
 /**
- * This store allows getting side effect implementations (classes annotated
- * with [SideEffect]) by [KClass].
+ * This store allows getting MVI-effect implementations (classes annotated
+ * with [MviEffect]) by [KClass].
  */
-public interface EffectsStore {
+public interface MviEffectsStore {
 
     /**
-     * Get side effect implementation (annotated with [SideEffect]) by KClass.
+     * Get MVI-effect implementation (annotated with [MviEffect]) by KClass.
      *
      * Usage example:
      *
      * ```kotlin
      * interface Router { ... }
      *
-     * @SideEffect
+     * @MviEffect
      * class RouterImpl : Router { ... }
      *
      * // get by implementation KClass
@@ -30,14 +30,14 @@ public interface EffectsStore {
 }
 
 /**
- * Get side effect implementation (annotated with [SideEffect]).
+ * Get MVI-effect implementation (annotated with [MviEffect]).
  *
  * Usage example:
  *
  * ```kotlin
  * interface Router { ... }
  *
- * @SideEffect
+ * @MviEffect
  * class RouterImpl : Router { ... }
  *
  * // get by implementation class name
@@ -46,6 +46,6 @@ public interface EffectsStore {
  * val router: Router = effectsStore.get<Router>()
  * ```
  */
-public inline fun <reified T : Any> EffectsStore.get(): T {
+public inline fun <reified T : Any> MviEffectsStore.get(): T {
     return get(T::class)
 }

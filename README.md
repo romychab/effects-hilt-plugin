@@ -1,4 +1,4 @@
-# Hilt plugin for easier implementation of one-time events (a.k.a. side effects) :fire:
+# Hilt plugin for easier implementation of one-time events (a.k.a. MVI side effects) :fire:
 
 Now compatible with KSP and Jetpack Compose starting from version `0.0.7`.
 
@@ -8,9 +8,8 @@ Now compatible with KSP and Jetpack Compose starting from version `0.0.7`.
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-Ladybug-brightgreen.svg?style=flat)
 
-This plugin simplifies working with one-time events. It allows injecting side-effect interfaces
-to your `ViewModel`. For example, you can show toasts, display dialogs, do navigation stuff in view-model class
-without memory leaks.
+This plugin simplifies working with MVI side effects (one-time events). For example, you can show toasts, display dialogs, do navigation stuff in view-model
+without memory leaks by injecting a simple interface to the view-model constructor.
 
 ## Installation
 
@@ -22,11 +21,11 @@ without memory leaks.
 
 ```
 // annotation processor (required):
-ksp "com.elveum:effects-processor:0.0.8"
+ksp "com.elveum:effects-processor:0.0.9"
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:0.0.8"
+implementation "com.elveum:effects-compose:0.0.9"
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:0.0.8"
+implementation "com.elveum:effects-core:0.0.9"
 ```
 
 ## How to use
@@ -39,7 +38,7 @@ Let's imagine you want to:
 - show an alert dialog and get the user choice in view-model
 - show toasts, snackbars, etc.
 
-1. Define one or more interfaces of side-effects:
+1. Define one or more interfaces of MVI-effects:
 
    ```kotlin
    interface UiEffects {
@@ -75,13 +74,13 @@ Let's imagine you want to:
    }
    ```
 
-3. Implement the interface. All you need is to annotate the implementation with `@SideEffect`.
+3. Implement the interface. All you need is to annotate the implementation with `@MviEffect`.
    Also you can optionally add dependencies from the Hilt graph to the
    constructor (supported components: `@SingletonComponent`, `@ActivityRetainedComponent`,
    `@ActivityComponent`):
 
    ```kotlin
-   @SideEffect
+   @MviEffect
    class UiEffectsImpl(
        // optional arg #1 - activity itself
        private val activity: FragmentActivity,
@@ -121,7 +120,7 @@ Let's imagine you want to:
    }
    ```
 
-4. Enable side-effects for the activity. If you use a single-activity
+4. Enable MVI-effects for the activity. If you use a single-activity
    approach then you need to do this only once in the main activity.
 
    ```kotlin
@@ -130,7 +129,7 @@ Let's imagine you want to:
 
        // only for old non-Jetpack Compose projects:
        @Inject
-       lateinit var attachSideEffects: AttachSideEffects
+       lateinit var attachMviEffects: AttachMviEffects
 
        override fun onCreate(savedInstanceState: Bundle?) {
            super.onCreate()
@@ -144,8 +143,8 @@ Let's imagine you want to:
    }
    ```
 
-Any side-effect implementation can be accessed from the `@Composable` functions
-by using `getEffect<T>()` call:
+Any MVI-effect implementation can be accessed from the `@Composable` functions
+by using `getMviEffect<T>()` call:
 
 ```kotlin
 // effect interface:
@@ -154,7 +153,7 @@ interface Router {
 }
 
 // effect implementation:
-@SideEffect
+@MviEffect
 class RouterImpl : Router {
   private var navController: NavController? = null
 
@@ -171,8 +170,8 @@ class RouterImpl : Router {
 @Composable
 fun MyApp() {
   val navController = rememberNavController()
-  // use getEffect() for retrieving implementation class:
-  val routerImpl = getEffect<RouterImpl>()
+  // use getMviEffect() for retrieving implementation class:
+  val routerImpl = getMviEffect<RouterImpl>()
   SideEffect {
     // initialize router
     routerImpl.setNavController(navController)
@@ -249,5 +248,5 @@ This plugin is intended for kotlin projects which already use [Hilt](https://dev
   }
   ```
 
-- Side-effects are tied to the Activity lifecycle, not to the Fragment lifecycle. Be
-  aware of this when using suspend functions / flows in your side-effect interfaces.
+- MVI-effects are tied to the Activity lifecycle, not to the Fragment lifecycle. Be
+  aware of this when using suspend functions / flows in your MVI-effect interfaces.

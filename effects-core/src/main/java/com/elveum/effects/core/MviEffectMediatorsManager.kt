@@ -1,8 +1,8 @@
 package com.elveum.effects.core
 
-import com.elveum.effects.core.actors.SideEffectImplementation
-import com.elveum.effects.core.actors.SideEffectMediator
-import com.elveum.effects.core.di.SideEffectsMediatorScope
+import com.elveum.effects.core.actors.MviEffectImplementation
+import com.elveum.effects.core.actors.MviEffectMediator
+import com.elveum.effects.core.di.MviEffectsMediatorScope
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -14,14 +14,14 @@ import javax.inject.Inject
  * deactivates them when activity is stopped.
  */
 @ActivityRetainedScoped
-internal class SideEffectMediatorsManager @Inject constructor(
-    private val mediators: Map<String, @JvmSuppressWildcards SideEffectMediator<Any>>,
-    @SideEffectsMediatorScope private val scope: CoroutineScope
+internal class MviEffectMediatorsManager @Inject constructor(
+    private val mediators: Map<String, @JvmSuppressWildcards MviEffectMediator<Any>>,
+    @MviEffectsMediatorScope private val scope: CoroutineScope
 ) {
 
     private var started = false
 
-    fun onStart(implementations: Set<SideEffectImplementation>) {
+    fun onStart(implementations: Set<MviEffectImplementation>) {
         if (started) return
         started = true
         implementations.forEach { impl ->

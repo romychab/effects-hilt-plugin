@@ -18,10 +18,10 @@ object KNames {
     val qualifier = ClassName("javax.inject", "Qualifier")
     val rawFlow = ClassName(flowPackage, "Flow")
     val any = ClassName("kotlin", "Any")
-    fun sideEffectMediator(parametrizedType: TypeName): ParameterizedTypeName {
+    fun mviEffectMediator(parametrizedType: TypeName): ParameterizedTypeName {
         val rawType = ClassName(
             actorsPackage,
-            "SideEffectMediator"
+            "MviEffectMediator"
         )
         return rawType.parameterizedBy(parametrizedType)
     }

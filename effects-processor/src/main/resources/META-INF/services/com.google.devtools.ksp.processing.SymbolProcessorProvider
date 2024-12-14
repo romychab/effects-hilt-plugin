@@ -1,1 +1,1 @@
-com.elveum.effects.processor.ksp.SideEffectsKspProcessorProvider
+com.elveum.effects.processor.ksp.MviEffectsKspProcessorProvider

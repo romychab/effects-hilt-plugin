@@ -11,7 +11,7 @@ public typealias FlowCommand<R, T> = (R) -> Flow<T>
 /**
  * For internal usage.
  *
- * Used by side-effect mediators for proper delivering of side-effects
+ * Used by MVI-effect mediators for proper delivering of MVI-effects
  * from view-models to implementations (to the activity).
  */
 public class CommandProcessor<R>(

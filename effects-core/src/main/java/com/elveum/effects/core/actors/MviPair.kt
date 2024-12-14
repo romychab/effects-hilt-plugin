@@ -5,7 +5,7 @@ package com.elveum.effects.core.actors
  *
  * Holds information about mediator instance.
  */
-public class SidePair(
+public class MviPair(
     internal val interfaceName: String,
-    internal val mediator: SideEffectMediator<Any>
+    internal val mediator: MviEffectMediator<Any>
 )

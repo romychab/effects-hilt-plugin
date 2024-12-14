@@ -10,9 +10,10 @@ import javax.lang.model.element.TypeElement
 
 @KotlinPoetJavaPoetPreview
 @SupportedAnnotationTypes(value = [
-    "com.elveum.effects.annotations.SideEffect"
+    "com.elveum.effects.annotations.SideEffect",
+    "com.elveum.effects.annotations.MviEffect",
 ])
-class SideEffectsProcessor : BaseProcessor() {
+class MviEffectsProcessor : BaseProcessor() {
 
     private val mediatorGenerator: KotlinMediatorGenerator by lazy {
         KotlinMediatorGenerator(types, elements, filer)

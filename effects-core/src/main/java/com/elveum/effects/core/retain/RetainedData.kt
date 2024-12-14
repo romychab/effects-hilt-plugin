@@ -1,11 +1,11 @@
 package com.elveum.effects.core.retain
 
 /**
- * Inject this interface to your side-effect implementation.
+ * Inject this interface to your MVI-effect implementation.
  * Any values saved to this [RetainedData] will survive after screen
  * rotation.
  *
- * Note: but they will not survive upon process killing.
+ * Note: they will not survive upon process killing.
  */
 public interface RetainedData {
 

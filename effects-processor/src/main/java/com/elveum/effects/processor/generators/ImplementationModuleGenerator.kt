@@ -12,7 +12,7 @@ import javax.lang.model.util.Elements
 
 /**
  * This generator creates a Dagger/Hilt module which provides your implementation
- * (class annotated by `SideEffect`) to the Hilt `ActivityComponent` making it
+ * (class annotated by `MviEffect`) to the Hilt `ActivityComponent` making it
  * accessible from activities and fragments.
  */
 @KotlinPoetJavaPoetPreview
@@ -33,7 +33,7 @@ class ImplementationModuleGenerator(
                 .addMember("value", "{\$T.class}", Names.activityComponentName)
                 .build())
             .generateImplementationProvider(parsedElements)
-            .generateSideImplementation(key, parsedElements)
+            .generateMviEffectImplementation(key, parsedElements)
             .generateOtherInterfacesProviders(parsedElements)
 
         val result = builder.build()
@@ -119,19 +119,19 @@ class ImplementationModuleGenerator(
 
     }
 
-    private fun TypeSpec.Builder.generateSideImplementation(
+    private fun TypeSpec.Builder.generateMviEffectImplementation(
         key: String,
         parsedElements: ParsedElements
     ): TypeSpec.Builder {
-        val methodBuilder = MethodSpec.methodBuilder("provide${parsedElements.originName}SideEffectImpl")
+        val methodBuilder = MethodSpec.methodBuilder("provide${parsedElements.originName}MviEffectImpl")
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Names.providesAnnotation)
             .addAnnotation(Names.activityScope)
             .addAnnotation(Names.intoSet)
-            .returns(Names.sideImplementation)
+            .returns(Names.mviImplementation)
             .addCode(
                 "return new \$T(instance, \"$key\");",
-                Names.sideImplementation
+                Names.mviImplementation
             )
         methodBuilder.addParameter(createParameterSpec(parsedElements))
         addMethod(methodBuilder.build())

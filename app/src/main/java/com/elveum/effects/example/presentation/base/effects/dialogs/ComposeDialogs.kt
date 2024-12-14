@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.elveum.effects.annotations.SideEffect
+import com.elveum.effects.annotations.MviEffect
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-@SideEffect
+@MviEffect
 class ComposeDialogs(
     @ActivityContext private val context: Context,
 ) : Dialogs {

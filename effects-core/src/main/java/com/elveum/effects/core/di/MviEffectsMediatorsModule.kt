@@ -1,7 +1,7 @@
 package com.elveum.effects.core.di
 
-import com.elveum.effects.core.actors.SidePair
-import com.elveum.effects.core.actors.SideEffectMediator
+import com.elveum.effects.core.actors.MviPair
+import com.elveum.effects.core.actors.MviEffectMediator
 import com.elveum.effects.core.retain.DefaultRetainedData
 import com.elveum.effects.core.retain.RetainedData
 import dagger.Module
@@ -21,14 +21,14 @@ import javax.inject.Qualifier
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-public annotation class SideEffectsMediatorScope
+public annotation class MviEffectsMediatorScope
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-internal object SideEffectsMediatorsModule {
+internal object MviEffectsMediatorsModule {
 
     @ActivityRetainedScoped
-    @SideEffectsMediatorScope
+    @MviEffectsMediatorScope
     @Provides
     fun provideScope(): CoroutineScope {
         return MainScope()
@@ -37,16 +37,16 @@ internal object SideEffectsMediatorsModule {
     @Provides
     @ElementsIntoSet
     @ActivityRetainedScoped
-    fun provideStubMediatorsSet(): Set<@JvmSuppressWildcards SidePair> {
+    fun provideStubMediatorsSet(): Set<@JvmSuppressWildcards MviPair> {
         return emptySet()
     }
 
     @Provides
     @ActivityRetainedScoped
     fun provideStubMediatorsMap(
-        set: Set<@JvmSuppressWildcards SidePair>
-    ): Map<String, @JvmSuppressWildcards SideEffectMediator<Any>> {
-        val map = LinkedHashMap<String, SideEffectMediator<Any>>()
+        set: Set<@JvmSuppressWildcards MviPair>
+    ): Map<String, @JvmSuppressWildcards MviEffectMediator<Any>> {
+        val map = LinkedHashMap<String, MviEffectMediator<Any>>()
         set.forEach {
             map[it.interfaceName] = it.mediator
         }

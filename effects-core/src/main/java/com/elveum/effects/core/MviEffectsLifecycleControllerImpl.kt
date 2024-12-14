@@ -1,16 +1,16 @@
 package com.elveum.effects.core
 
 import androidx.activity.ComponentActivity
-import com.elveum.effects.core.actors.SideEffectImplementation
+import com.elveum.effects.core.actors.MviEffectImplementation
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
 @ActivityScoped
-internal class EffectsLifecycleControllerImpl @Inject constructor(
-    private val mediatorsManager: SideEffectMediatorsManager,
+internal class MviEffectsLifecycleControllerImpl @Inject constructor(
+    private val mediatorsManager: MviEffectMediatorsManager,
     private val activity: ComponentActivity,
-    private val implementations: Set<@JvmSuppressWildcards SideEffectImplementation>
-) : EffectsLifecycleController {
+    private val implementations: Set<@JvmSuppressWildcards MviEffectImplementation>
+) : MviEffectsLifecycleController {
 
     override fun startEffects() {
         mediatorsManager.onStart(implementations)

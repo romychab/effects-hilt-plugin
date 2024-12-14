@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.elveum.effects.compose.EffectsApp
-import com.elveum.effects.compose.getEffect
+import com.elveum.effects.compose.MviEffectsApp
+import com.elveum.effects.compose.getMviEffect
 import com.elveum.effects.example.presentation.base.effects.dialogs.ComposeDialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.ComposeRouter
 import com.elveum.effects.example.presentation.details.CatDetailsScreen
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EffectsApp {
+            MviEffectsApp {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     CatsApp(modifier = Modifier.padding(innerPadding))
                 }
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CatsApp(modifier: Modifier = Modifier) {
-    val composeRouter = getEffect<ComposeRouter>()
+    val composeRouter = getMviEffect<ComposeRouter>()
     val navController = rememberNavController()
     SideEffect {
         composeRouter.setNavController(navController)
@@ -50,5 +50,5 @@ fun CatsApp(modifier: Modifier = Modifier) {
         composable<CatsRoute> { CatsScreen() }
         composable<CatDetailsRoute> { CatDetailsScreen() }
     }
-    getEffect<ComposeDialogs>().Dialog()
+    getMviEffect<ComposeDialogs>().Dialog()
 }

@@ -9,7 +9,7 @@ import javax.lang.model.element.Modifier
 
 /**
  * This generator creates a Hilt/Dagger module which provides an implementation
- * of the side-effect interface to the Hilt `ActivityScopedComponent` making it
+ * of the MVI-effect interface to the Hilt `ActivityScopedComponent` making it
  * accessible from view-models, activities and fragments.
  *
  * Output module name: `GeneratedMediator{ImplementationClassName}Module`.
@@ -37,7 +37,7 @@ class MediatorModuleGenerator(
                 .addMember("value", "\"unchecked\"")
                 .build())
             .generateProvider(kotlinTypeSpec, parsedElements)
-            .generateSidePair(kotlinTypeSpec, parsedElements, key)
+            .generateMviPair(kotlinTypeSpec, parsedElements, key)
 
         val result = builder.build()
         JavaFile.builder(parsedElements.pkg, result)
@@ -52,7 +52,7 @@ class MediatorModuleGenerator(
     ): TypeSpec.Builder {
         val methodBuilder = MethodSpec.methodBuilder("provide${kotlinTypeSpec.name}")
             .addParameter(ParameterSpec.builder(Names.coroutineScope, "scope")
-                .addAnnotation(Names.sideEffectsScope)
+                .addAnnotation(Names.mviEffectsScope)
                 .build()
             )
             .addAnnotation(Names.providesAnnotation)
@@ -66,19 +66,19 @@ class MediatorModuleGenerator(
         return this
     }
 
-    private fun TypeSpec.Builder.generateSidePair(
+    private fun TypeSpec.Builder.generateMviPair(
         kotlinTypeSpec: com.squareup.kotlinpoet.TypeSpec,
         parsedElements: ParsedElements,
         key: String
     ): TypeSpec.Builder {
-        val methodBuilder = MethodSpec.methodBuilder("provide${kotlinTypeSpec.name}SidePair")
+        val methodBuilder = MethodSpec.methodBuilder("provide${kotlinTypeSpec.name}MviPair")
             .addAnnotation(Names.providesAnnotation)
             .addAnnotation(Names.activityRetainedScope)
             .addAnnotation(Names.intoSet)
-            .returns(Names.sidePair)
+            .returns(Names.mviPair)
             .addCode(
                 "return new \$T(\"$key\", (\$T) mediator);",
-                Names.sidePair, Names.sideEffectMediator(ClassName.OBJECT)
+                Names.mviPair, Names.mviEffectMediator(ClassName.OBJECT)
             )
         val parameterType = ClassName.get(parsedElements.directInterface)
         val parameterName = "mediator"

@@ -1,5 +1,6 @@
 package com.elveum.effects.processor.generators
 
+import com.elveum.effects.annotations.MviEffect
 import com.elveum.effects.annotations.SideEffect
 import com.elveum.effects.processor.*
 import com.squareup.javapoet.ParameterizedTypeName
@@ -18,7 +19,7 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
 /**
- * This generator creates an intermediate implementation (mediator) of the side-effect
+ * This generator creates an intermediate implementation (mediator) of the MVI-effect
  * interface which is injected to the view-model constructor.
  *
  * Output name of the generated class: `GeneratedMediator{ImplementationClassName}`.
@@ -38,7 +39,7 @@ class KotlinMediatorGenerator(
         with(mediatorClassBuilder) {
             addModifiers(KModifier.PUBLIC)
             addSuperinterface(interfaceTypeName)
-            addSuperinterface(KNames.sideEffectMediator(interfaceTypeName))
+            addSuperinterface(KNames.mviEffectMediator(interfaceTypeName))
             generateFields(interfaceTypeName)
             generateConstructor()
             implementInterfaceMethods(interfaceTypeName, parsedElements)
@@ -199,7 +200,7 @@ class KotlinMediatorGenerator(
 
     private fun parseInterface(element: TypeElement): ParsedElements {
         if (element.modifiers.contains(Modifier.ABSTRACT))
-            throw ElementException("Class annotated with @SideEffect should not be an abstract class", element)
+            throw ElementException("Class annotated with @MviEffect should not be an abstract class", element)
 
         val targetInterface = findTargetInterface(element)
         val otherInterfaces = element.interfaces
@@ -207,7 +208,7 @@ class KotlinMediatorGenerator(
             .filter { it.simpleName.toString() != targetInterface.simpleName.toString() }
 
         if (otherInterfaces.any { it.typeParameters.isNotEmpty() }) {
-            throw ElementException("Class annotated with @SideEffect should not " +
+            throw ElementException("Class annotated with @MviEffect should not " +
                     "implement interfaces with generic type parameters", element)
         }
 
@@ -243,7 +244,7 @@ class KotlinMediatorGenerator(
 
     private fun findTargetInterface(element: TypeElement): TypeElement {
         if (element.interfaces.isEmpty())
-            throw ElementException("Class annotated with @SideEffect doesn't implement any interface", element)
+            throw ElementException("Class annotated with @MviEffect doesn't implement any interface", element)
         val targetInterface: TypeElement
         if (element.interfaces.size == 1) {
             targetInterface = types.asElement(element.interfaces[0]) as TypeElement
@@ -260,10 +261,9 @@ class KotlinMediatorGenerator(
         val annotationMirror = element.annotationMirrors.firstOrNull {
             val annotationElement = it.annotationType.asElement()
             if (annotationElement !is TypeElement) return@firstOrNull false
-            if (annotationElement.qualifiedName.toString() != SideEffect::class.java.name)
-                return@firstOrNull false
-            true
-        } ?: throw ElementException("Can't find @SideEffect annotation", element)
+            return@firstOrNull annotationElement.qualifiedName.toString() == SideEffect::class.java.name
+                    || annotationElement.qualifiedName.toString() == MviEffect::class.java.name
+        } ?: throw ElementException("Can't find @MviEffect annotation", element)
 
         val args = annotationMirror.elementValues
         if (args.isEmpty()) throwTargetException(element)
@@ -274,8 +274,8 @@ class KotlinMediatorGenerator(
     }
 
     private fun throwTargetException(element: TypeElement): Nothing {
-        throw ElementException("Your class annotated with @SideEffect implements " +
-                "more than 1 interface. Please specify @SideEffect(target=...) parameter.", element)
+        throw ElementException("Your class annotated with @MviEffect implements " +
+                "more than 1 interface. Please specify @MviEffect(target=...) parameter.", element)
     }
 
     private fun isCoroutine(executableElement: ExecutableElement): Boolean {

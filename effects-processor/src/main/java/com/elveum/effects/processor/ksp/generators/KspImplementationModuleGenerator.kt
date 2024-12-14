@@ -29,7 +29,7 @@ class KspImplementationModuleGenerator {
                     .addMember("%T::class", KspNames.activityComponentName)
                     .build())
             .generateImplementationProvider(parsedElements)
-            .generateSideImplementation(key, parsedElements)
+            .generateMviEffectImplementation(key, parsedElements)
             .generateOtherInterfacesProviders(parsedElements)
 
         writer.write(
@@ -90,19 +90,19 @@ class KspImplementationModuleGenerator {
         return this
     }
 
-    private fun TypeSpec.Builder.generateSideImplementation(
+    private fun TypeSpec.Builder.generateMviEffectImplementation(
         key: String,
         parsedElements: KspParsedElements,
     ): TypeSpec.Builder {
-        val methodBuilder = FunSpec.builder("provide${parsedElements.originName}SideEffectImpl")
+        val methodBuilder = FunSpec.builder("provide${parsedElements.originName}MviEffectImpl")
             .addModifiers(KModifier.PUBLIC)
             .addAnnotation(KspNames.providesAnnotation)
             .addAnnotation(KspNames.activityScope)
             .addAnnotation(KspNames.intoSet)
-            .returns(KspNames.sideImplementation)
+            .returns(KspNames.mviImplementation)
             .addCode(
                 "return %T(instance, \"$key\");",
-                KspNames.sideImplementation
+                KspNames.mviImplementation
             )
         methodBuilder.addParameter(createParameterSpec(parsedElements))
         addFunction(methodBuilder.build())

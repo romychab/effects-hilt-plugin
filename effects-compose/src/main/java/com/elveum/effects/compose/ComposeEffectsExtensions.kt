@@ -7,39 +7,49 @@ import androidx.annotation.RestrictTo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
-import com.elveum.effects.annotations.SideEffect
-import com.elveum.effects.core.EffectsLifecycleController
-import com.elveum.effects.core.di.EffectsEntryPoint
+import com.elveum.effects.annotations.MviEffect
+import com.elveum.effects.core.MviEffectsLifecycleController
+import com.elveum.effects.core.di.MviEffectsEntryPoint
 import com.elveum.effects.core.get
 import dagger.hilt.android.EntryPointAccessors
 
 /**
- * Get an effect implementation (instance of class annotated with [SideEffect] annotation).
+ * Get an effect implementation (instance of class annotated with [MviEffect] annotation).
  *
- * This function can be called only within [EffectsApp].
+ * This function can be called only within [MviEffectsApp].
  *
  * @throws IllegalStateException if the is no such effect class
  */
 @ReadOnlyComposable
 @Composable
+public inline fun <reified T : Any> getMviEffect(): T {
+    return LocalMviEffectsStore.current.get()
+}
+
+@Deprecated(
+    message = "Use getMviEffect instead.",
+    replaceWith = ReplaceWith("getMviEffect")
+)
+@ReadOnlyComposable
+@Composable
 public inline fun <reified T : Any> getEffect(): T {
-    return LocalEffectsStore.current.get()
+    return getMviEffect()
 }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @ReadOnlyComposable
 @Composable
-public fun getEffectsLifecycleController(): EffectsLifecycleController {
-    return getEffectsEntryPoint().getEffectsLifecycleController()
+public fun getMviEffectsLifecycleController(): MviEffectsLifecycleController {
+    return getMviEffectsEntryPoint().getMviEffectsLifecycleController()
 }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @ReadOnlyComposable
 @Composable
-public fun getEffectsEntryPoint(): EffectsEntryPoint {
+public fun getMviEffectsEntryPoint(): MviEffectsEntryPoint {
     val context = LocalContext.current
     val activity = context.getHostActivity()
-    return EntryPointAccessors.fromActivity(activity, EffectsEntryPoint::class.java)
+    return EntryPointAccessors.fromActivity(activity, MviEffectsEntryPoint::class.java)
 }
 
 /**

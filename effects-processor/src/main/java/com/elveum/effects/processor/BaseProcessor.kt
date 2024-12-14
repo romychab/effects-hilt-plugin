@@ -1,5 +1,6 @@
 package com.elveum.effects.processor
 
+import com.elveum.effects.annotations.MviEffect
 import com.elveum.effects.annotations.SideEffect
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Filer
@@ -27,10 +28,11 @@ abstract class BaseProcessor : AbstractProcessor() {
 
     override fun process(p0: MutableSet<out TypeElement>, environment: RoundEnvironment): Boolean {
         try {
-            environment.getElementsAnnotatedWith(SideEffect::class.java)
-                .forEach {
-                    generateFor(it as TypeElement)
-                }
+            val deprecatedElements = environment.getElementsAnnotatedWith(SideEffect::class.java)
+            val mviEffectElements = environment.getElementsAnnotatedWith(MviEffect::class.java)
+            (deprecatedElements + mviEffectElements).forEach {
+                generateFor(it as TypeElement)
+            }
         } catch (e: ElementException) {
             raiseError(e.message ?: "", e.element)
         } catch (e: Exception) {

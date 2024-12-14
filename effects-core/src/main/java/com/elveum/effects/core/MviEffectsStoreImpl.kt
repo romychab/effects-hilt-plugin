@@ -1,17 +1,17 @@
 package com.elveum.effects.core
 
-import com.elveum.effects.core.actors.SideEffectImplementation
+import com.elveum.effects.core.actors.MviEffectImplementation
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
 @ActivityScoped
-internal class EffectsStoreImpl @Inject constructor(
-    private val implementations: Set<@JvmSuppressWildcards SideEffectImplementation>
-) : EffectsStore {
+internal class MviEffectsStoreImpl @Inject constructor(
+    private val implementations: Set<@JvmSuppressWildcards MviEffectImplementation>
+) : MviEffectsStore {
 
     private val implementationsMap by lazy(LazyThreadSafetyMode.NONE) {
-        mutableMapOf<KClass<*>, SideEffectImplementation>().apply {
+        mutableMapOf<KClass<*>, MviEffectImplementation>().apply {
             implementations.forEach { implementation ->
                 put(implementation.instance::class, implementation)
                 findInterfaceClass(implementation.target)?.let {
@@ -23,7 +23,7 @@ internal class EffectsStoreImpl @Inject constructor(
 
     override fun <T : Any> get(clazz: KClass<T>): T {
         return implementationsMap[clazz]?.instance as? T
-            ?: throw IllegalStateException("Can't find SideEffect class")
+            ?: throw IllegalStateException("Can't find MviEffect class")
     }
 
     private fun findInterfaceClass(target: String): KClass<*>? {

@@ -36,7 +36,7 @@ class KspMediatorModuleGenerator {
                 .addMember("\"UNCHECKED_CAST\"")
                 .build())
             .generateProvider(generatedMediatorSpec, parsedElements)
-            .generateSidePair(generatedMediatorSpec, parsedElements, key)
+            .generateMviPair(generatedMediatorSpec, parsedElements, key)
 
         result.writer.write(
             name = moduleName,
@@ -52,7 +52,7 @@ class KspMediatorModuleGenerator {
     ): TypeSpec.Builder {
         val methodBuilder = FunSpec.builder("provide${generatedMediatorSpec.name}")
             .addParameter(ParameterSpec.builder("scope", KspNames.coroutineScope)
-                .addAnnotation(KspNames.sideEffectsScope)
+                .addAnnotation(KspNames.mviEffectsScope)
                 .build()
             )
             .addAnnotation(KspNames.providesAnnotation)
@@ -67,19 +67,19 @@ class KspMediatorModuleGenerator {
     }
 
 
-    private fun TypeSpec.Builder.generateSidePair(
+    private fun TypeSpec.Builder.generateMviPair(
         kotlinTypeSpec: TypeSpec,
         parsedElements: KspParsedElements,
         key: String
     ): TypeSpec.Builder {
-        val methodBuilder = FunSpec.builder("provide${kotlinTypeSpec.name}SidePair")
+        val methodBuilder = FunSpec.builder("provide${kotlinTypeSpec.name}MviPair")
             .addAnnotation(KspNames.providesAnnotation)
             .addAnnotation(KspNames.activityRetainedScope)
             .addAnnotation(KspNames.intoSet)
-            .returns(KspNames.sidePair)
+            .returns(KspNames.mviPair)
             .addCode(
                 "return %T(\"$key\", mediator as %T);",
-                KspNames.sidePair, KspNames.sideEffectMediator(ANY)
+                KspNames.mviPair, KspNames.mviEffectMediator(ANY)
             )
         val parameterType = parsedElements.directInterface.toClassName()
         val parameterName = "mediator"
