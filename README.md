@@ -8,8 +8,10 @@ Now compatible with KSP and Jetpack Compose starting from version `0.0.7`.
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-Ladybug-brightgreen.svg?style=flat)
 
-This plugin simplifies working with MVI side effects (one-time events). For example, you can show toasts, display dialogs, do navigation stuff in view-model
-without memory leaks by injecting a simple interface to the view-model constructor.
+This plugin eliminates the usage of `Channel`, `SharedFlow`, or event properties in states.
+As a result, you can work with MVI side effects (one-time events) more easily. For example,
+you can show toasts, display dialogs, execute navigation commands in a view-model
+without memory leaks. All you need to do is simply inject an interface to the view-model constructor.
 
 ## Installation
 
@@ -30,12 +32,12 @@ implementation "com.elveum:effects-core:0.0.9"
 
 ## How to use
 
-The main idea of this plugin is to simplify one-time events by extracting them to a separate
-interface that can be injected to the view-model constructor.
+The main idea of this plugin is to simplify one-time events by moving them to a separate
+interface. No more SharedFlows, Channels, additional properties in states representing events, etc.
 
 Let's imagine you want to:
-- trigger navigation logic from view-model
-- show an alert dialog and get the user choice in view-model
+- execute navigation commands
+- show an alert dialog and get the user choice
 - show toasts, snackbars, etc.
 
 1. Define one or more interfaces of MVI-effects:
@@ -62,12 +64,14 @@ Let's imagine you want to:
        val uiEffects: UiEffects
    ): ViewModel() {
 
-       fun onCatChosen(cat: Cat) = viewModelScope.launch {
-           val confirmed = uiEffects.showAskDialog(
-               message = "Are you sure you want to open details screen?"
-           )
-           if (confirmed) {
-               uiEffects.launchCatDetails(cat)
+       fun onCatChosen(cat: Cat) {
+           viewModelScope.launch {
+               val confirmed = uiEffects.showAskDialog(
+                   message = "Are you sure you want to open details screen?"
+               )
+               if (confirmed) {
+                   uiEffects.launchCatDetails(cat)
+               }
            }
        }
 
@@ -80,7 +84,7 @@ Let's imagine you want to:
    `@ActivityComponent`):
 
    ```kotlin
-   @MviEffect
+   @MviEffect // <-- do not forget this annotation
    class UiEffectsImpl(
        // optional arg #1 - activity itself
        private val activity: FragmentActivity,
@@ -135,7 +139,7 @@ Let's imagine you want to:
            super.onCreate()
            setContent {
                // only for Jetpack Compose projects:
-               EffectsApp {
+               MviEffectsApp {
                    // call your main composable function here
                }
            }
@@ -191,9 +195,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // wrap MyApp() into EffectsApp { ... } to allow 
-            // calling getEffect<T>() function:
-            EffectsApp {
+            // wrap MyApp() into MviEffectsApp { ... } to allow
+            // calling getMviEffect<T>() function:
+            MviEffectsApp {
                 MyApp()
             }
         }
@@ -207,7 +211,7 @@ That's it!
 
 ## Prerequisites
 
-This plugin is intended for kotlin projects which already use [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) dependency injection framework.
+This plugin is designed for Android projects which already use [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) dependency injection framework.
 
 ## Limitations
 
@@ -231,7 +235,7 @@ This plugin is intended for kotlin projects which already use [Hilt](https://dev
   }
   ```
 
-- Generic types are supported only for interface methods but not for the entire interface type.
+- Generic types are supported only for methods but not for the entire interface type.
   For example, you can write:
 
   ```kotlin
