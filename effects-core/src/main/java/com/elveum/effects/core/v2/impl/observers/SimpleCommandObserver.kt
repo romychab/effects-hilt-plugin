@@ -1,7 +1,7 @@
 package com.elveum.effects.core.v2.impl.observers
 
 import android.util.Log
-import com.elveum.effects.core.v2.ObservableResourcesStore.ResourceObserver
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 
 internal class SimpleCommandObserver<Resource>(
     private val command: (Resource) -> Unit,

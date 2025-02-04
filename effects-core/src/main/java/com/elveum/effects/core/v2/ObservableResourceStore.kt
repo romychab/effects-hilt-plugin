@@ -1,6 +1,6 @@
 package com.elveum.effects.core.v2
 
-public interface ObservableResourcesStore<Resource> {
+public interface ObservableResourceStore<Resource> {
 
     public val currentAttachedResources: Iterable<Resource>
     public fun attachResource(resource: Resource)

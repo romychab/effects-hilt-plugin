@@ -1,6 +1,6 @@
 package com.elveum.effects.core.v2.impl
 
-import com.elveum.effects.core.v2.ObservableResourcesStore.ResourceObserver
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -12,9 +12,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class ObservableResourcesStoreTest {
+class ObservableResourceStoreTest {
 
-    private lateinit var store: ObservableResourcesStoreImpl<String>
+    private lateinit var store: ObservableResourceStoreImpl<String>
 
     @MockK(relaxed = true)
     private lateinit var observer: ResourceObserver<String>
@@ -22,7 +22,7 @@ class ObservableResourcesStoreTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        store = ObservableResourcesStoreImpl()
+        store = ObservableResourceStoreImpl()
     }
 
     @Test

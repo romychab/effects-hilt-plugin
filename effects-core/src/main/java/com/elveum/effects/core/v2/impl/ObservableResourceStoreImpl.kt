@@ -1,9 +1,9 @@
 package com.elveum.effects.core.v2.impl
 
-import com.elveum.effects.core.v2.ObservableResourcesStore
-import com.elveum.effects.core.v2.ObservableResourcesStore.ResourceObserver
+import com.elveum.effects.core.v2.ObservableResourceStore
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 
-public class ObservableResourcesStoreImpl<Resource> : ObservableResourcesStore<Resource> {
+public class ObservableResourceStoreImpl<Resource> : ObservableResourceStore<Resource> {
 
     private val resources = LinkedHashSet<Resource>()
     private val observers = LinkedHashSet<ResourceObserver<Resource>>()

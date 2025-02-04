@@ -1,10 +1,10 @@
 package com.elveum.effects.core.v2.impl.observers
 
-import com.elveum.effects.core.v2.ObservableResourcesStore
-import com.elveum.effects.core.v2.ObservableResourcesStore.ResourceObserver
+import com.elveum.effects.core.v2.ObservableResourceStore
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 
 internal class OneTimeResourceObserver<Resource>(
-    private val store: ObservableResourcesStore<Resource>,
+    private val store: ObservableResourceStore<Resource>,
     private val origin: ResourceObserver<Resource>,
 ) : ResourceObserver<Resource> by origin {
 

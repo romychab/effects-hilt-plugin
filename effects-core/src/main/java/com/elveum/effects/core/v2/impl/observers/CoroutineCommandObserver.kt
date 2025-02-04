@@ -1,6 +1,6 @@
 package com.elveum.effects.core.v2.impl.observers
 
-import com.elveum.effects.core.v2.ObservableResourcesStore.ResourceObserver
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope

@@ -1,11 +1,11 @@
 package com.elveum.effects.core.v2.impl
 
 import com.elveum.effects.core.v2.EffectController
-import com.elveum.effects.core.v2.ObservableResourcesStore
+import com.elveum.effects.core.v2.ObservableResourceStore
 
 
 public class EffectControllerImpl<EffectImplementation>(
-    private val observableResourcesStore: ObservableResourcesStore<EffectImplementation>
+    private val observableResourceStore: ObservableResourceStore<EffectImplementation>
 ) : EffectController<EffectImplementation> {
 
     private var currentEffectImplementation: EffectImplementation? = null
@@ -14,11 +14,11 @@ public class EffectControllerImpl<EffectImplementation>(
         if (currentEffectImplementation != null) return
 
         currentEffectImplementation = effectImplementation
-        observableResourcesStore.attachResource(effectImplementation)
+        observableResourceStore.attachResource(effectImplementation)
     }
 
     override fun stop() {
-        currentEffectImplementation?.let(observableResourcesStore::detachResource)
+        currentEffectImplementation?.let(observableResourceStore::detachResource)
         currentEffectImplementation = null
     }
 

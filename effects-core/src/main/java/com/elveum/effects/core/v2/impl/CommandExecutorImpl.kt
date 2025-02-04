@@ -1,22 +1,27 @@
 package com.elveum.effects.core.v2.impl
 
 import com.elveum.effects.core.v2.CommandExecutor
-import com.elveum.effects.core.v2.ObservableResourcesStore
+import com.elveum.effects.core.v2.ObservableResourceStore
 import com.elveum.effects.core.v2.impl.observers.CoroutineCommandObserver
+import com.elveum.effects.core.v2.impl.observers.FlowCommandObserver
 import com.elveum.effects.core.v2.impl.observers.OneTimeResourceObserver
 import com.elveum.effects.core.v2.impl.observers.SimpleCommandObserver
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 
 public class CommandExecutorImpl<Resource>(
-    private val resourcesStore: ObservableResourcesStore<Resource>,
+    private val resourceStore: ObservableResourceStore<Resource>,
 ) : CommandExecutor<Resource> {
 
     override fun execute(command: (Resource) -> Unit) {
         val observer = SimpleCommandObserver(command)
-        val oneTimeObserver = OneTimeResourceObserver(resourcesStore, observer)
-        resourcesStore.addObserver(oneTimeObserver)
+        val oneTimeObserver = OneTimeResourceObserver(resourceStore, observer)
+        resourceStore.addObserver(oneTimeObserver)
     }
 
     override suspend fun <T> executeCoroutine(command: suspend (Resource) -> T): T {
@@ -27,19 +32,31 @@ public class CommandExecutorImpl<Resource>(
                 scope = scope,
                 completableDeferred = completableDeferred,
                 command = command,
-                currentActiveResourcesProvider = { resourcesStore.currentAttachedResources }
+                currentActiveResourcesProvider = { resourceStore.currentAttachedResources }
             )
             try {
-                resourcesStore.addObserver(observer)
+                resourceStore.addObserver(observer)
                 completableDeferred.await()
             } finally {
-                resourcesStore.removeObserver(observer)
+                resourceStore.removeObserver(observer)
             }
         }
     }
 
     override fun <T> executeFlow(command: (Resource) -> Flow<T>): Flow<T> {
-        TODO("Not yet implemented")
+        return channelFlow {
+            val scope: CoroutineScope = this
+            val channel: SendChannel<T> = this
+            val flowCommandObserver = FlowCommandObserver(
+                scope = scope,
+                channel = channel,
+                command = command,
+            )
+            resourceStore.addObserver(flowCommandObserver)
+            awaitClose {
+                resourceStore.removeObserver(flowCommandObserver)
+            }
+        }
     }
 
 }
