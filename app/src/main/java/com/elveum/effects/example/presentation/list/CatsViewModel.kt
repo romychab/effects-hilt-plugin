@@ -18,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CatsViewModel @Inject constructor(
     private val catsRepository: CatsRepository,
-    private val dialogs: Dialogs,
     private val router: Router,
+    private val dialogs: Dialogs,
     private val resources: Resources,
 ) : ViewModel() {
 

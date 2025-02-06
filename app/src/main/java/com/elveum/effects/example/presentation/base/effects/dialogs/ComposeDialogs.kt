@@ -9,13 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.elveum.effects.annotations.CustomEffect
 import com.elveum.effects.annotations.MviEffect
+import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-@MviEffect
+@CustomEffect(
+    target = Dialogs::class,
+    installIn = ActivityRetainedComponent::class
+)
 class ComposeDialogs(
     @ActivityContext private val context: Context,
 ) : Dialogs {
