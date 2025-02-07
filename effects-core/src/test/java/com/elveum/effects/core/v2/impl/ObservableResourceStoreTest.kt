@@ -58,8 +58,8 @@ class ObservableResourceStoreTest {
         store.addObserver(observer)
 
         verifyOrder {
-            observer.onResourceAttached("Resource1")
             observer.onResourceAttached("Resource2")
+            observer.onResourceAttached("Resource1")
         }
     }
 
@@ -117,10 +117,10 @@ class ObservableResourceStoreTest {
         store.addObserver(observer)
 
         verify(exactly = 1) {
-            observer.onResourceAttached("Resource1")
+            observer.onResourceAttached("Resource2")
         }
         verify(exactly = 0) {
-            observer.onResourceAttached("Resource2")
+            observer.onResourceAttached("Resource1")
         }
     }
 

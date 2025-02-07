@@ -67,10 +67,10 @@ class CommandExecutorIntegrationTest {
         commandExecutor.execute(simpleCommand)
 
         verify(exactly = 1) {
-            simpleCommand("Resource1")
+            simpleCommand("Resource2")
         }
         verify(exactly = 0) {
-            simpleCommand("Resource2")
+            simpleCommand("Resource1")
         }
     }
 
@@ -222,7 +222,7 @@ class CommandExecutorIntegrationTest {
     }
 
     @Test
-    fun `executeCoroutine with multiple resources should execute command only on first resource`() = runTest {
+    fun `executeCoroutine with multiple resources should execute command only on last resource`() = runTest {
         resources.attachResource("Resource1")
         resources.attachResource("Resource2")
         resources.attachResource("Resource3")
@@ -230,10 +230,10 @@ class CommandExecutorIntegrationTest {
         val state = executeCoroutineInBackground(coroutineCommand)
         advanceTimeBy(coroutineCommandTimeout + 1)
 
-        assertEquals(expectedCoroutineResult("Resource1"), state.result)
+        assertEquals(expectedCoroutineResult("Resource3"), state.result)
         coVerify(exactly = 0) {
+            coroutineCommand.invoke("Resource1")
             coroutineCommand.invoke("Resource2")
-            coroutineCommand.invoke("Resource3")
         }
     }
 

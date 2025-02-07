@@ -41,7 +41,7 @@ internal class CoroutineCommandObserver<Resource, T>(
         job = null
         currentActiveResourcesProvider
             .getCurrentActiveResources()
-            .lastOrNull()
+            .firstOrNull()
             ?.let(::onResourceAttached)
     }
 

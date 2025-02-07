@@ -9,7 +9,7 @@ public class ObservableResourceStoreImpl<Resource> : ObservableResourceStore<Res
     private val observers = LinkedHashSet<ResourceObserver<Resource>>()
 
     override val currentAttachedResources: Iterable<Resource>
-        get() = resources.toList()
+        get() = resources.reversed()
 
     private val currentObservers: List<ResourceObserver<Resource>>
         get() = observers.toList()
