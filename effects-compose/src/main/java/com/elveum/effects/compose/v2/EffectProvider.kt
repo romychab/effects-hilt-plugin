@@ -1,22 +1,21 @@
 package com.elveum.effects.compose.v2
 
-import android.content.Context
-import android.content.ContextWrapper
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.elveum.effects.compose.v2.impl.ComposeEffectNodeImpl
+import com.elveum.effects.compose.v2.impl.ComposeLifecycleObserver
+
+public val LocalComposeEffectNode: ProvidableCompositionLocal<ComposeEffectNode?> =
+    staticCompositionLocalOf { null }
 
 @Composable
 public inline fun <reified T: Any> getEffect(): T {
-    return LocalEffectProvider.current.getEffect(T::class)
+    return LocalComposeEffectNode.current?.getEffect(T::class)
+        ?: throw IllegalStateException("getEffect() can be called only within EffectProvider { ... }")
 }
 
 @Composable
@@ -24,58 +23,21 @@ public fun EffectProvider(
     vararg effects: Any,
     content: @Composable () -> Unit,
 ) {
-    val context = LocalContext.current
-    val activity = context.getHostActivity()
-    val composeEffectProvider = remember {
-        ComposeEffectProviderImpl(effects.toList(), activity)
+    val activity = LocalContext.current.getHostActivity()
+    val currentComposeEffectNode = LocalComposeEffectNode.current
+    val effectList = effects.toList()
+    val newComposeEffectNode = remember(effectList) {
+        currentComposeEffectNode?.attachNode(effectList)
+            ?: ComposeEffectNodeImpl(effectList, activity)
     }
     CompositionLocalProvider(
-        LocalEffectProvider provides composeEffectProvider
+        LocalComposeEffectNode provides newComposeEffectNode,
     ) {
-        ObserveLifecycleEvents(
-            onStart = composeEffectProvider::start,
-            onStop = composeEffectProvider::stop,
+        ComposeLifecycleObserver(
+            onStart = newComposeEffectNode::start,
+            onStop = newComposeEffectNode::stop,
         )
         content()
     }
 }
 
-/**
- * Get [ComponentActivity] instance from the context.
- * @throws IllegalStateException if there is no [ComponentActivity] within the context
- */
-public fun Context?.getHostActivity(): ComponentActivity {
-    return when(this) {
-        is ComponentActivity -> this
-        is ContextWrapper -> baseContext.getHostActivity()
-        else -> throw IllegalStateException("Can't find ComponentActivity")
-    }
-}
-
-@Composable
-private fun ObserveLifecycleEvents(
-    onStart: () -> Unit,
-    onStop: () -> Unit,
-    onDestroy: () -> Unit = {},
-) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        // Using LaunchedEffect instead of DisposableEffect because
-        // LaunchedEffect starts later than DisposableEffect due to usage
-        // of coroutines. As a result, effects will be delivered after
-        // initialization of subsequent composable functions.
-        try {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                onStart()
-                suspendCancellableCoroutine { continuation ->
-                    continuation.invokeOnCancellation {
-                        onStop()
-                    }
-                }
-            }
-        } catch (e: CancellationException) {
-            onDestroy()
-            throw e
-        }
-    }
-}
