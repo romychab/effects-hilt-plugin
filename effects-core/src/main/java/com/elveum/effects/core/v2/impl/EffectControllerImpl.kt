@@ -3,23 +3,22 @@ package com.elveum.effects.core.v2.impl
 import com.elveum.effects.core.v2.EffectController
 import com.elveum.effects.core.v2.ObservableResourceStore
 
-
 public class EffectControllerImpl<EffectImplementation>(
     private val observableResourceStore: ObservableResourceStore<EffectImplementation>
 ) : EffectController<EffectImplementation> {
 
-    private var currentEffectImplementation: EffectImplementation? = null
+    override var effectImplementation: EffectImplementation? = null
 
     override fun start(effectImplementation: EffectImplementation) {
-        if (currentEffectImplementation != null) return
+        if (this.effectImplementation != null) return
 
-        currentEffectImplementation = effectImplementation
+        this.effectImplementation = effectImplementation
         observableResourceStore.attachResource(effectImplementation)
     }
 
     override fun stop() {
-        currentEffectImplementation?.let(observableResourceStore::detachResource)
-        currentEffectImplementation = null
+        effectImplementation?.let(observableResourceStore::detachResource)
+        effectImplementation = null
     }
 
 }

@@ -8,6 +8,8 @@ public class BoundEffectControllerImpl<EffectImplementation>(
     override val effectImplementation: EffectImplementation,
 ) : BoundEffectController<EffectImplementation> {
 
+    override val isStarted: Boolean by controller::isStarted
+
     override fun start() {
         controller.start(effectImplementation)
     }
