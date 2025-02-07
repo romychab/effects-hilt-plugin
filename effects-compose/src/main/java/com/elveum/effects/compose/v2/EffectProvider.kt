@@ -3,14 +3,14 @@ package com.elveum.effects.compose.v2
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import com.elveum.effects.compose.v2.impl.ComposeEffectNodeImpl
 import com.elveum.effects.compose.v2.impl.ComposeLifecycleObserver
 
 public val LocalComposeEffectNode: ProvidableCompositionLocal<ComposeEffectNode?> =
-    staticCompositionLocalOf { null }
+    compositionLocalOf { null }
 
 @Composable
 public inline fun <reified T: Any> getEffect(): T {
