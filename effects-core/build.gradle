@@ -52,8 +52,8 @@ dependencies {
     ksp "com.google.dagger:hilt-compiler:$hilt_version"
     api project(':effects-annotations')
 
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "io.mockk:mockk:1.13.16"
+    testImplementation "junit:junit:$junit"
+    testImplementation "io.mockk:mockk:$mockk"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_core"
     testImplementation "com.uandcode:flowtest:0.1.0"
 }
