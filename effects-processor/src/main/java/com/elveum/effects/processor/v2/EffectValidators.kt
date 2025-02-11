@@ -3,9 +3,11 @@ package com.elveum.effects.processor.v2
 import com.elveum.effects.processor.v2.data.EffectInfo
 import com.google.devtools.ksp.isAbstract
 import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.Modifier
 
 fun validateEffects(effects: Sequence<EffectInfo>) {
-    return effects.forEach(EffectInfo::validateEffect)
+    effects.forEach(EffectInfo::validateEffect)
+    effects.validateEachEffectHasSingleImplementation()
 }
 
 private fun EffectInfo.validateEffect() {
@@ -14,29 +16,40 @@ private fun EffectInfo.validateEffect() {
     validateNoGenerics()
 }
 
+private fun Sequence<EffectInfo>.validateEachEffectHasSingleImplementation() {
+    val groupedEffects = groupBy { it.targetInterface }
+    groupedEffects.entries.forEach { (interfaceDeclaration, effects) ->
+        if (effects.size > 1) {
+            throw MultipleEffectImplementationsException(
+                targetInterface = interfaceDeclaration,
+                allImplementations = effects.map { it.effectClassDeclaration },
+            )
+        }
+    }
+}
+
 private fun EffectInfo.validateSymbolIsClassOrObject() {
     val classKind = effectClassDeclaration.classKind
-    if (classKind != ClassKind.CLASS && classKind != ClassKind.OBJECT) {
-        throw EffectKspException(
-            "Symbol annotated with @${effectAnnotation.simpleName} should be a Class or Object",
-            effectClassDeclaration,
-        )
+    val modifiers = effectClassDeclaration.modifiers
+    if (modifiers.contains(Modifier.SEALED)) {
+        throw InvalidClassTypeException(effectAnnotation, effectClassDeclaration)
+    }
+    if (classKind != ClassKind.CLASS
+        && classKind != ClassKind.OBJECT) {
+        throw InvalidClassTypeException(effectAnnotation, effectClassDeclaration)
     }
 }
 
 private fun EffectInfo.validateSymbolIsNotAbstract() {
     if (effectClassDeclaration.isAbstract()) {
-        throw EffectKspException(
-            "Class annotated with @${effectAnnotation.simpleName} should not be abstract",
-            effectClassDeclaration,
-        )
+        throw ClassIsAbstractException(effectAnnotation, effectClassDeclaration)
     }
 }
 
 private fun EffectInfo.validateNoGenerics() {
     if (effectClassDeclaration.typeParameters.isNotEmpty()) {
-        throw EffectKspException(
-            "Class annotated with @${effectAnnotation.simpleName} should not have type parameters" ,
+        throw ClassWithTypeParametersException(
+            effectAnnotation,
             effectClassDeclaration.typeParameters.first(),
         )
     }

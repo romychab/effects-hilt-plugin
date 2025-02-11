@@ -1,48 +1,34 @@
 package com.elveum.effects.processor.v2.parser
 
-import com.elveum.effects.processor.v2.EffectKspException
+import com.elveum.effects.processor.v2.ClassDoesNotImplementInterfaceException
+import com.elveum.effects.processor.v2.InvalidTargetInterfaceException
 import com.elveum.effects.processor.v2.data.Const
 import com.elveum.effects.processor.v2.data.EffectInfo
-import com.google.devtools.ksp.symbol.ClassKind
+import com.elveum.effects.processor.v2.extensions.KSClassDeclarationWrapper
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.squareup.kotlinpoet.ksp.toClassName
 
-internal fun EffectInfo.findTargetInterfaceClassDeclaration(): KSClassDeclaration {
-    val superTypes = effectClassDeclaration.superTypes
-        .map { typeReference ->
-            typeReference.resolve().declaration
-        }
-        .filterIsInstance<KSClassDeclaration>()
-        .filter { classDeclaration ->
-            classDeclaration.classKind == ClassKind.INTERFACE
-        }
-        .toList()
+internal fun EffectInfo.findTargetInterfaceClassDeclaration(): KSClassDeclarationWrapper {
+    val interfaces = effectClassDeclaration.interfaces
 
-    if (superTypes.isEmpty()) {
-        throw EffectKspException(
-            "Class annotated with @${effectAnnotation.simpleName} should implement at least 1 interface",
+    if (interfaces.isEmpty()) {
+        throw ClassDoesNotImplementInterfaceException(
+            effectAnnotation,
             effectClassDeclaration,
         )
     }
 
-    return superTypes.singleOrNull() ?: findTargetInterfaceInAnnotation(superTypes)
+    return interfaces.singleOrNull()
+        ?.let(::KSClassDeclarationWrapper)
+        ?: findTargetInterfaceInAnnotation(interfaces)
 }
 
 private fun EffectInfo.findTargetInterfaceInAnnotation(
     allowedInterfaces: List<KSClassDeclaration>,
-): KSClassDeclaration {
+): KSClassDeclarationWrapper {
     val targetInterface = effectAnnotation.getClassDeclaration(Const.TargetArgument)
     return if (allowedInterfaces.contains(targetInterface)) {
-        targetInterface
+        KSClassDeclarationWrapper(targetInterface)
     } else {
-        throwInvalidTargetValueException(allowedInterfaces)
+        throw InvalidTargetInterfaceException(allowedInterfaces, effectAnnotation, effectClassDeclaration)
     }
-}
-
-private fun EffectInfo.throwInvalidTargetValueException(allowedInterfaces: List<KSClassDeclaration>): Nothing {
-    throw EffectKspException(
-        "@${effectAnnotation.simpleName}(target = ...) parameter can be set only to these values: " +
-                allowedInterfaces.joinToString(", ") { "${it.toClassName().simpleName}::class" } ,
-        effectClassDeclaration,
-    )
 }

@@ -8,7 +8,7 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
-class KSAnnotationWrapper(
+data class KSAnnotationWrapper(
     private val annotation: KSAnnotation,
 ) : KSAnnotation by annotation {
 
