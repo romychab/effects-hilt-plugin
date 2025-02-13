@@ -2,12 +2,13 @@
 
 package com.elveum.effects.processor
 
+import com.elveum.effects.processor.base.AbstractKspTest
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class CustomEffectKspTest : AbstractKspTest() {
+class CustomEffectKspValidationTest : AbstractKspTest("custom-effect/validation") {
 
     @Test
     fun abstractClass_fails() {
@@ -58,6 +59,14 @@ class CustomEffectKspTest : AbstractKspTest() {
     }
 
     @Test
+    fun interfaceWithTypeParameters_fails() {
+        val result = compileSourceFile("TestInterfaceWithTypeParameters.kt")
+
+        assertEquals(ExitCode.COMPILATION_ERROR, result.exitCode)
+        result.assertErrorLogged("TestInterfaceWithTypeParameters.kt:6: Class annotated with @CustomEffect should not have a target interface 'BaseInterface' with type parameters")
+    }
+
+    @Test
     fun classWithInvalidTargetInterface_fails() {
         val result = compileSourceFile("TestClassWithInvalidTargetInterface.kt")
 
@@ -79,6 +88,22 @@ class CustomEffectKspTest : AbstractKspTest() {
 
         assertEquals(ExitCode.COMPILATION_ERROR, result.exitCode)
         result.assertErrorLogged("TestMultipleEffectImplementations.kt:3: Target interface 'EffectInterface' should have only one implementation. Current implementations: EffectImplementation1, EffectImplementation2")
+    }
+
+    @Test
+    fun nonTopLevelClass_fails() {
+        val result = compileSourceFile("TestNonTopLevelClass.kt")
+
+        assertEquals(ExitCode.COMPILATION_ERROR, result.exitCode)
+        result.assertErrorLogged("TestNonTopLevelClass.kt:8: Class annotated with @CustomEffect should be a top-level class")
+    }
+
+    @Test
+    fun nonTopLevelInterface_fails() {
+        val result = compileSourceFile("TestNonTopLevelInterface.kt")
+
+        assertEquals(ExitCode.COMPILATION_ERROR, result.exitCode)
+        result.assertErrorLogged("TestNonTopLevelInterface.kt:11: Class annotated with @CustomEffect should not implement nested interface")
     }
 
 }
