@@ -3,6 +3,7 @@ package com.elveum.effects.processor.v2
 import com.elveum.effects.processor.v2.extensions.KSAnnotationWrapper
 import com.elveum.effects.processor.v2.extensions.KSClassDeclarationWrapper
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSNode
 import com.squareup.kotlinpoet.ksp.toClassName
 
@@ -44,6 +45,31 @@ class ClassWithTypeParametersException(
     node,
 )
 
+class InterfaceWithTypeParametersException(
+    effectAnnotation: KSAnnotationWrapper,
+    targetInterfaceName: String,
+    node: KSNode,
+) : EffectKspException(
+    message = "Class annotated with @${effectAnnotation.simpleName} should not have a target interface '$targetInterfaceName' with type parameters",
+    node,
+)
+
+class NestedClassException(
+    effectAnnotation: KSAnnotationWrapper,
+    node: KSNode,
+) : EffectKspException(
+    message = "Class annotated with @${effectAnnotation.simpleName} should be a top-level class",
+    node,
+)
+
+class NestedInterfaceException(
+    effectAnnotation: KSAnnotationWrapper,
+    node: KSNode,
+) : EffectKspException(
+    message = "Class annotated with @${effectAnnotation.simpleName} should not implement nested interface",
+    node,
+)
+
 class InvalidTargetInterfaceException(
     allowedInterfaces: List<KSClassDeclaration>,
     effectAnnotation: KSAnnotationWrapper,
@@ -68,6 +94,13 @@ class TargetInterfaceIsNotSpecifiedException(
     message = "${effectAnnotation.printableName}(target = ...) parameter should be specified if your class " +
             "implements more than 1 interface",
     effectAnnotation,
+)
+
+class UnitCommandWithReturnTypeException(
+    function: KSFunctionDeclaration,
+) : EffectKspException(
+    "Non-suspend methods can't have a return type",
+    function,
 )
 
 /**

@@ -13,7 +13,10 @@ fun validateEffects(effects: Sequence<EffectInfo>) {
 private fun EffectInfo.validateEffect() {
     validateSymbolIsClassOrObject()
     validateSymbolIsNotAbstract()
-    validateNoGenerics()
+    validateClassDoesNotHaveTypeParameters()
+    validateInterfaceDoesNotHaveTypeParameters()
+    validateClassIsNotNested()
+    validateInterfaceIsNotNested()
 }
 
 private fun Sequence<EffectInfo>.validateEachEffectHasSingleImplementation() {
@@ -25,6 +28,34 @@ private fun Sequence<EffectInfo>.validateEachEffectHasSingleImplementation() {
                 allImplementations = effects.map { it.effectClassDeclaration },
             )
         }
+    }
+}
+
+private fun EffectInfo.validateInterfaceDoesNotHaveTypeParameters() {
+    if (targetInterface.typeParameters.isNotEmpty()) {
+        throw InterfaceWithTypeParametersException(
+            effectAnnotation,
+            targetInterfaceName,
+            effectClassDeclaration,
+        )
+    }
+}
+
+private fun EffectInfo.validateClassIsNotNested() {
+    if (effectClassDeclaration.parentDeclaration != null) {
+        throw NestedClassException(
+            effectAnnotation,
+            effectClassDeclaration,
+        )
+    }
+}
+
+private fun EffectInfo.validateInterfaceIsNotNested() {
+    if (targetInterface.parentDeclaration != null) {
+        throw NestedInterfaceException(
+            effectAnnotation,
+            effectClassDeclaration,
+        )
     }
 }
 
@@ -46,7 +77,7 @@ private fun EffectInfo.validateSymbolIsNotAbstract() {
     }
 }
 
-private fun EffectInfo.validateNoGenerics() {
+private fun EffectInfo.validateClassDoesNotHaveTypeParameters() {
     if (effectClassDeclaration.typeParameters.isNotEmpty()) {
         throw ClassWithTypeParametersException(
             effectAnnotation,

@@ -20,10 +20,10 @@ class EffectSymbolProcessor(
         try {
             val effects = parseEffects(resolver)
             validateEffects(effects)
-            val mediatorGenerator = EffectMediatorGenerator(codeGenerator, logger)
             val writer = KspClassV2Writer(codeGenerator)
+            val mediatorGenerator = EffectMediatorGenerator(logger, writer)
             effects.forEach { effectInfo ->
-                mediatorGenerator.generate(effectInfo, writer)
+                mediatorGenerator.generate(effectInfo)
             }
         } catch (e: EffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)

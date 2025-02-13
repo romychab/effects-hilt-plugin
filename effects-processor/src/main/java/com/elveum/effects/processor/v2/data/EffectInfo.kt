@@ -7,12 +7,15 @@ import com.elveum.effects.processor.v2.extensions.firstInstanceOf
 import com.elveum.effects.processor.v2.parser.findTargetInterfaceClassDeclaration
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.squareup.kotlinpoet.ksp.toClassName
 
 class EffectInfo(
     originEffectClassDeclaration: KSClassDeclaration
 ) {
 
     val effectClassDeclaration: KSClassDeclarationWrapper = KSClassDeclarationWrapper(originEffectClassDeclaration)
+
+    val effectClassName = effectClassDeclaration.toClassName()
 
     val pkg: String get() = effectClassDeclaration.packageName.asString()
     val effectAnnotation: KSAnnotationWrapper by lazy { findCustomAnnotation() }
