@@ -51,9 +51,6 @@ fun implementInterfaceMethod(
         .addTypeVariables(
             function.typeParameters.map { it.toTypeVariableName(typeParameterResolver) }
         )
-        .apply {
-            function.typeParameters
-        }
 }
 
 private fun KSValueParameter.toParameterSpec(
