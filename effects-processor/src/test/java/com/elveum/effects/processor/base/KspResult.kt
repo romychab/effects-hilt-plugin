@@ -5,6 +5,7 @@ package com.elveum.effects.processor.base
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.kspSourcesDir
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
+import org.junit.Assert.assertTrue
 import java.io.File
 
 class KspResult(
@@ -30,6 +31,10 @@ class KspResult(
 
     fun getGeneratedFile(name: String): KspFileContent {
         return kspGeneratedFiles.first { it.fileName == name }
+    }
+
+    fun assertErrorLogged(log: String) {
+        assertTrue(messages.contains(log))
     }
 
 }

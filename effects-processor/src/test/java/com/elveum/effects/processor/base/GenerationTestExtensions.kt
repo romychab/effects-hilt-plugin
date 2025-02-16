@@ -1,0 +1,59 @@
+@file:OptIn(ExperimentalCompilerApi::class)
+
+package com.elveum.effects.processor.base
+
+import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
+import org.junit.Assert.assertEquals
+
+fun AbstractKspTest.runGenerationTest(
+    block: GenerationTestScope.() -> Unit,
+) {
+    GenerationTestScopeImpl(this).apply(block)
+}
+
+interface GenerationTestScope {
+
+    fun compileResourceSubPackage(
+        packageName: String,
+        inputName: String = "Input.kt",
+    )
+
+    fun assertGeneratedFile(
+        fileName: String,
+        expectedOutputFileName: String = "Output.kt",
+    )
+
+    fun assertCompilationFails(
+        expectedMessage: String = "",
+    )
+}
+
+private class GenerationTestScopeImpl(
+    private val abstractKspTest: AbstractKspTest,
+) : GenerationTestScope {
+
+    private lateinit var packageName: String
+    private lateinit var result: KspResult
+
+    override fun compileResourceSubPackage(
+        packageName: String,
+        inputName: String,
+    ) {
+        this.packageName = packageName
+        this.result = abstractKspTest.compileSourceFile("$packageName/$inputName")
+    }
+
+    override fun assertGeneratedFile(
+        fileName: String,
+        expectedOutputFileName: String,
+    ) {
+        val generatedMediator = result.getGeneratedFile(fileName)
+        generatedMediator.assertContent("$packageName/$expectedOutputFileName")
+    }
+
+    override fun assertCompilationFails(expectedMessage: String) {
+        assertEquals(ExitCode.COMPILATION_ERROR, this.result.exitCode)
+        this.result.assertErrorLogged(expectedMessage)
+    }
+}

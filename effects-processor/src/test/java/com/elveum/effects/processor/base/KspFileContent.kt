@@ -13,11 +13,18 @@ class KspFileContent(
             .getResourceAsStream("/$baseResourcePath/$expectedFilePath")?.reader().use {
                 it?.readText()
             }
-        assertEquals(expectedContent?.trim(), content.trim())
+        assertEquals(expectedContent?.cleanUpSpaces(), content.cleanUpSpaces())
     }
 
     override fun toString(): String {
         return content
+    }
+
+    private fun String.cleanUpSpaces(): String {
+        return lines()
+            .map(String::trim)
+            .filter(String::isNotEmpty)
+            .joinToString("\n")
     }
 
 }

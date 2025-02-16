@@ -7,17 +7,12 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
-import org.junit.Assert.assertTrue
 
 abstract class AbstractKspTest(
     private val baseResourcePath: String,
 ) {
 
-    protected fun KspResult.assertErrorLogged(log: String) {
-        assertTrue(messages.contains(log))
-    }
-
-    protected fun compileSourceFile(filePath: String): KspResult {
+    fun compileSourceFile(filePath: String): KspResult {
         val sourceFile = loadSourceFile(filePath)
 
         val compilation = KotlinCompilation().apply {
