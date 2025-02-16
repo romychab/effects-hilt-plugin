@@ -1,7 +1,8 @@
 package com.elveum.effects.processor.v2
 
+import com.elveum.effects.processor.v2.generators.EffectHiltModuleGenerator
 import com.elveum.effects.processor.v2.generators.EffectMediatorGenerator
-import com.elveum.effects.processor.v2.generators.KspClassV2Writer
+import com.elveum.effects.processor.v2.generators.base.KspClassV2Writer
 import com.elveum.effects.processor.v2.parser.parseEffects
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
@@ -21,9 +22,11 @@ class EffectSymbolProcessor(
             val effects = parseEffects(resolver)
             validateEffects(effects)
             val writer = KspClassV2Writer(codeGenerator)
-            val mediatorGenerator = EffectMediatorGenerator(logger, writer)
+            val mediatorGenerator = EffectMediatorGenerator(writer)
+            val hiltModuleGenerator = EffectHiltModuleGenerator(writer)
             effects.forEach { effectInfo ->
-                mediatorGenerator.generate(effectInfo)
+                val mediatorResult = mediatorGenerator.generate(effectInfo)
+                hiltModuleGenerator.generate(effectInfo, mediatorResult)
             }
         } catch (e: EffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)

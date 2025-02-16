@@ -4,6 +4,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
@@ -31,7 +32,11 @@ data class KSAnnotationWrapper(
     }
 
     inline fun <reified T> isInstanceOf(): Boolean {
-        return resolvedAnnotationType.toTypeName() == T::class.asTypeName()
+        return isInstanceOf(T::class.asTypeName())
+    }
+
+    fun isInstanceOf(typeName: TypeName): Boolean {
+        return resolvedAnnotationType.toTypeName() == typeName
     }
 
 }

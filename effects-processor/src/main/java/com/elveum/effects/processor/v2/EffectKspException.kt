@@ -103,12 +103,37 @@ class UnitCommandWithReturnTypeException(
     function,
 )
 
+class InvalidHiltComponentException(
+    effectAnnotation: KSAnnotationWrapper,
+) : EffectKspException(
+    "Invalid Hilt Component is specified in ${effectAnnotation.printableName}(installIn = ...). " +
+            "Example of valid Hilt components: SingletonComponent::class, ActivityRetainedComponent::class, ActivityComponent::class, etc...",
+    effectAnnotation,
+)
+
 /**
  * This exception can't be thrown in real scenarios
  */
 class InvalidTargetArgumentException(
     effectAnnotation: KSAnnotationWrapper,
 ) : EffectKspException(
-    message = "${effectAnnotation.printableName}(target = ...) has invalid target parameter value",
+    message = "${effectAnnotation.printableName}(target = ...) has invalid target parameter value.",
     effectAnnotation,
 )
+
+/**
+ * This exception can't be thrown in real scenarios
+ */
+class InvalidInstallInArgumentException(
+    effectAnnotation: KSAnnotationWrapper,
+) : EffectKspException(
+    message = "${effectAnnotation.printableName}(installIn = ...) has invalid parameter value.",
+    effectAnnotation,
+)
+
+/**
+ * Internal exception in the plugin logic.
+ */
+class InternalEffectKspException(
+    message: String,
+) : Exception(message)

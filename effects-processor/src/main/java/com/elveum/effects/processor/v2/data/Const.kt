@@ -13,8 +13,15 @@ object Const {
 
     val CustomEffectAnnotationName: ClassName = CustomEffect::class.asClassName()
     val FlowClassName = ClassName("kotlinx.coroutines.flow", "Flow")
+    val DefineComponentName = ClassName("dagger.hilt", "DefineComponent")
+
+    val ActivityRetainedComponentName = ClassName("dagger.hilt.android.components", "ActivityRetainedComponent")
+    val ActivityRetainedScope = ClassName("dagger.hilt.android.scopes", "ActivityRetainedScoped")
+    val JavaxScopeAnnotationName = ClassName("javax.inject", "Scope")
+    val JakartaScopeAnnotationName = ClassName("jakarta.inject", "Scope")
 
     const val TargetArgument: String = "target"
+    const val InstallInArgument: String = "installIn"
 
     fun commandExecutorName(
         className: ClassName,

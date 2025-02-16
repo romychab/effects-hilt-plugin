@@ -10,6 +10,10 @@ data class KSClassDeclarationWrapper(
     val interfaces: List<KSClassDeclaration> by lazy { findAllInterfaces() }
     val simpleNameText: String get() = simpleName.asString()
 
+    val wrappedAnnotations: Sequence<KSAnnotationWrapper> by lazy {
+        annotations.map(::KSAnnotationWrapper)
+    }
+
     private fun findAllInterfaces(): List<KSClassDeclaration> {
         return superTypes
             .map { typeReference ->

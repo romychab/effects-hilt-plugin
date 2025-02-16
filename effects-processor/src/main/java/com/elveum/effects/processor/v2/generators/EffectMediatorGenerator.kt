@@ -3,26 +3,23 @@ package com.elveum.effects.processor.v2.generators
 import com.elveum.effects.processor.v2.UnitCommandWithReturnTypeException
 import com.elveum.effects.processor.v2.data.Const
 import com.elveum.effects.processor.v2.data.EffectInfo
-import com.elveum.effects.processor.v2.extensions.KSClassDeclarationWrapper
-import com.elveum.effects.processor.v2.extensions.implementInterfaceMethod
+import com.elveum.effects.processor.v2.extensions.KSFunctionDeclarationWrapper
+import com.elveum.effects.processor.v2.extensions.implementInterface
 import com.elveum.effects.processor.v2.extensions.primaryConstructorWithProperties
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.elveum.effects.processor.v2.generators.base.KspClassV2Writer
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 
 class EffectMediatorGenerator(
-    private val logger: KSPLogger,
     private val writer: KspClassV2Writer,
 ) {
 
@@ -32,7 +29,7 @@ class EffectMediatorGenerator(
 
         val typeSpecBuilder = TypeSpec.classBuilder(mediatorClassName)
             .addConstructor(effectInfo)
-            .implementTargetInterface(effectInfo.targetInterface)
+            .implementInterface(effectInfo.targetInterface, ::implementMethod)
 
         writer.write(
             typeSpec = typeSpecBuilder.build(),
@@ -53,56 +50,49 @@ class EffectMediatorGenerator(
         )
     }
 
-    private fun TypeSpec.Builder.implementTargetInterface(
-        targetInterface: KSClassDeclarationWrapper,
-    ): TypeSpec.Builder {
-        return addSuperinterface(targetInterface.toClassName())
-            .apply {
-                targetInterface.getAllFunctions()
-                    .filter { it.isAbstract }
-                    .forEach { function ->
-                        implementMethod(function)
-                    }
-            }
-    }
-
-    private fun TypeSpec.Builder.implementMethod(
-        function: KSFunctionDeclaration,
-    ) {
-        val typeParameterResolver = function.typeParameters.toTypeParameterResolver()
-        val funSpecBuilder = implementInterfaceMethod(function, typeParameterResolver)
-        val params = funSpecBuilder.parameters.joinToString(", ") {
+    private fun implementMethod(
+        function: KSFunctionDeclarationWrapper,
+    ): CodeBlock {
+        val params = function.paramSpecs.joinToString(", ") {
             if (it.modifiers.contains(KModifier.VARARG)) {
                 "*${it.name}"
             } else {
                 it.name
             }
         }
-        val code = "it.${function.simpleName.asString()}($params)"
-        when (getCommandType(typeParameterResolver, function)) {
+        val code = "it.${function.simpleNameString}($params)"
+        return when (getCommandType(function)) {
             CommandType.UnitCommand -> {
-                funSpecBuilder.addCode("$COMMAND_EXECUTOR_PROPERTY.execute { $code }")
+                CodeBlock.of("$COMMAND_EXECUTOR_PROPERTY.execute { $code }")
             }
             CommandType.CoroutineCommand -> {
-                funSpecBuilder.addCode("return $COMMAND_EXECUTOR_PROPERTY.executeCoroutine { $code }")
+                CodeBlock.of("return $COMMAND_EXECUTOR_PROPERTY.executeCoroutine { $code }")
             }
             CommandType.FlowCommand -> {
-                funSpecBuilder.addCode("return $COMMAND_EXECUTOR_PROPERTY.executeFlow { $code }")
+                CodeBlock.of("return $COMMAND_EXECUTOR_PROPERTY.executeFlow { $code }")
             }
         }
-        addFunction(funSpecBuilder.build())
     }
 
-    private fun getCommandType(
-        typeParameterResolver: TypeParameterResolver,
-        function: KSFunctionDeclaration,
-    ): CommandType {
+    private fun getCommandType(function: KSFunctionDeclarationWrapper): CommandType {
         return when {
-            function.modifiers.contains(Modifier.SUSPEND) -> CommandType.CoroutineCommand
-            function.returnType?.isKotlinFlow(typeParameterResolver) == true -> CommandType.FlowCommand
-            function.returnType?.isUnit(typeParameterResolver) == true -> CommandType.UnitCommand
+            function.isCoroutineCommand() -> CommandType.CoroutineCommand
+            function.isFlowCommand() -> CommandType.FlowCommand
+            function.isUnitCommand() -> CommandType.UnitCommand
             else -> throw UnitCommandWithReturnTypeException(function)
         }
+    }
+
+    private fun KSFunctionDeclarationWrapper.isUnitCommand(): Boolean {
+        return returnType?.isUnit(typeParameterResolver) == true
+    }
+
+    private fun KSFunctionDeclarationWrapper.isCoroutineCommand(): Boolean {
+        return modifiers.contains(Modifier.SUSPEND)
+    }
+
+    private fun KSFunctionDeclarationWrapper.isFlowCommand(): Boolean {
+        return returnType?.isKotlinFlow(typeParameterResolver) == true
     }
 
     private fun KSTypeReference.isKotlinFlow(

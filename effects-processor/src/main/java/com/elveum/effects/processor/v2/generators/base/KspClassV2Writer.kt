@@ -1,4 +1,4 @@
-package com.elveum.effects.processor.v2.generators
+package com.elveum.effects.processor.v2.generators.base
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -22,4 +22,16 @@ class KspClassV2Writer(
             dependencies = dependencies,
         )
     }
+
+    fun write(templateBasedClassContent: TemplateBasedClassContent) = with(templateBasedClassContent) {
+        val outputStream = codeGenerator.createNewFile(
+            dependencies = dependencies,
+            packageName = pkg,
+            fileName = className,
+        )
+        outputStream.writer().use {
+            it.write(content)
+        }
+    }
+
 }
