@@ -6,7 +6,10 @@ public class TestInterfaceMediator(
     private val commandExecutor: CommandExecutor<TestClass>,
 ) : TestInterface {
 
-    public override suspend fun <K, T : Callable<K>> coroutineEvent(arg1: String, arg2: T): T =
-        commandExecutor.executeCoroutine { it.coroutineEvent(arg1, arg2) }
+    public override suspend fun <K, T : Callable<K>> coroutineEvent(arg1: String, arg2: T): T {
+        return commandExecutor.executeCoroutine {
+            it.coroutineEvent(arg1, arg2)
+        }
+    }
 
 }

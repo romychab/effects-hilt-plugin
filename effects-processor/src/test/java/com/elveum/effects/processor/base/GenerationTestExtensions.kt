@@ -14,6 +14,8 @@ fun AbstractKspTest.runGenerationTest(
 
 interface GenerationTestScope {
 
+    val result: KspResult
+
     fun compileResourceSubPackage(
         packageName: String,
         inputName: String = "Input.kt",
@@ -34,7 +36,7 @@ private class GenerationTestScopeImpl(
 ) : GenerationTestScope {
 
     private lateinit var packageName: String
-    private lateinit var result: KspResult
+    override lateinit var result: KspResult
 
     override fun compileResourceSubPackage(
         packageName: String,
@@ -49,6 +51,7 @@ private class GenerationTestScopeImpl(
         expectedOutputFileName: String,
     ) {
         val generatedMediator = result.getGeneratedFile(fileName)
+        assertEquals(ExitCode.OK, this.result.exitCode)
         generatedMediator.assertContent("$packageName/$expectedOutputFileName")
     }
 

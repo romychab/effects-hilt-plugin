@@ -7,7 +7,9 @@ public class TestInterfaceMediator(
 ) : TestInterface {
 
     public override fun oneTimeEvent(arg1: String, arg2: Int) {
-        commandExecutor.execute { it.oneTimeEvent(arg1, arg2) }
+        commandExecutor.execute {
+            it.oneTimeEvent(arg1, arg2)
+        }
     }
 
 }

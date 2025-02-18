@@ -6,6 +6,8 @@ public class TestInterfaceMediator(
     private val commandExecutor: CommandExecutor<TestClass>,
 ) : TestInterface {
     public override fun <K, T : Callable<K>> oneTimeEvent(arg1: String, arg2: T) {
-        commandExecutor.execute { it.oneTimeEvent(arg1, arg2) }
+        commandExecutor.execute {
+            it.oneTimeEvent(arg1, arg2)
+        }
     }
 }

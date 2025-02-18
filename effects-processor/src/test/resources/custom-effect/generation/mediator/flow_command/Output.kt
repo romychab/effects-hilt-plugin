@@ -8,7 +8,10 @@ public class TestInterfaceMediator(
     private val commandExecutor: CommandExecutor<TestClass>,
 ) : TestInterface {
 
-    public override fun flowEvent(arg1: String, arg2: Int): Flow<Number> = commandExecutor.executeFlow
-        { it.flowEvent(arg1, arg2) }
+    public override fun flowEvent(arg1: String, arg2: Int): Flow<Number> {
+        return commandExecutor.executeFlow {
+            it.flowEvent(arg1, arg2)
+        }
+    }
 
 }

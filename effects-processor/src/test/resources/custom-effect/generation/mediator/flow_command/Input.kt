@@ -7,7 +7,7 @@ interface TestInterface {
 
 @CustomEffect
 class TestClass : TestInterface {
-    override suspend fun flowEvent(arg1: String, arg2: Int): Flow<Number> {
+    override fun flowEvent(arg1: String, arg2: Int): Flow<Number> {
         return TODO()
     }
 }
