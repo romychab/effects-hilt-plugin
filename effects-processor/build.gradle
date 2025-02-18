@@ -21,6 +21,7 @@ dependencies {
     testImplementation "junit:junit:$junit"
     testImplementation "io.mockk:mockk:$mockk"
     testImplementation "com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0"
+    testImplementation "javax.inject:javax.inject:1"
 }
 
 ext {

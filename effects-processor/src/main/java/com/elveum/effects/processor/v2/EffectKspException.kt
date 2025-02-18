@@ -121,13 +121,11 @@ class InvalidTargetArgumentException(
     effectAnnotation,
 )
 
-/**
- * This exception can't be thrown in real scenarios
- */
 class InvalidInstallInArgumentException(
     effectAnnotation: KSAnnotationWrapper,
 ) : EffectKspException(
-    message = "${effectAnnotation.printableName}(installIn = ...) has invalid parameter value.",
+    message = "Invalid installIn parameter value in ${effectAnnotation.printableName}(installIn = ...) annotation. " +
+            "Valid values are: @SingletonComponent, @ActivityRetainedComponent, @ActivityComponent and @FragmentComponent.",
     effectAnnotation,
 )
 

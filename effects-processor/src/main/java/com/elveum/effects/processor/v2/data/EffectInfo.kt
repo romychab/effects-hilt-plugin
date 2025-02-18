@@ -33,26 +33,22 @@ class EffectInfo(
     val hiltComponent: ClassName by lazy { hiltComponentDeclaration.toClassName() }
     val hiltScope: ClassName by lazy { hiltComponentDeclaration.findHiltScope(effectAnnotation) }
 
-    private fun findCustomAnnotation(): KSAnnotationWrapper {
-        return effectClassDeclaration.wrappedAnnotations
-            .firstInstanceOf<CustomEffect>()
-    }
+    private fun findCustomAnnotation() = effectClassDeclaration.wrappedAnnotations
+        .firstInstanceOf<CustomEffect>()
 
     private fun findHiltComponentClassDeclaration(): HiltComponentClassDeclaration {
         val classDeclaration = effectAnnotation.getClassDeclaration(Const.InstallInArgument)
         val wrappedClassDeclaration = KSClassDeclarationWrapper(classDeclaration)
+        return when {
+            wrappedClassDeclaration.toClassName() == ANY -> HiltComponentClassDeclaration.Default
+            wrappedClassDeclaration.isHiltComponent() -> HiltComponentClassDeclaration.Declaration(wrappedClassDeclaration)
+            else -> throw InvalidInstallInArgumentException(effectAnnotation)
+        }
+    }
 
-        val isHiltComponent = wrappedClassDeclaration.wrappedAnnotations.any {
+    private fun KSClassDeclarationWrapper.isHiltComponent(): Boolean {
+        return wrappedAnnotations.any {
             it.isInstanceOf(Const.DefineComponentName)
-        }
-        if (!isHiltComponent) {
-            throw InvalidInstallInArgumentException(effectAnnotation)
-        }
-
-        return if (wrappedClassDeclaration.toClassName() == ANY) {
-            return HiltComponentClassDeclaration.Default
-        } else {
-            HiltComponentClassDeclaration.Declaration(wrappedClassDeclaration)
         }
     }
 

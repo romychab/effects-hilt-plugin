@@ -18,11 +18,11 @@ import %HILT_COMPONENT%
 import %HILT_SCOPE%
 
 @Module
-@InstallIn(%HILT_COMPONENT%::class)
+@InstallIn(%HILT_COMPONENT_NAME%::class)
 object %TARGET_INTERFACE_NAME%Module {
 
     @Provides
-    @%HILT_SCOPE%
+    @%HILT_SCOPE_NAME%
     fun provideStore(): ObservableResourceStore<%EFFECT_IMPL_NAME%> {
         return ObservableResourceStoreImpl()
     }

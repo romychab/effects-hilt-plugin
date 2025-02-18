@@ -60,18 +60,22 @@ class EffectMediatorGenerator(
                 it.name
             }
         }
-        val code = "it.${function.simpleNameString}($params)"
-        return when (getCommandType(function)) {
-            CommandType.UnitCommand -> {
-                CodeBlock.of("$COMMAND_EXECUTOR_PROPERTY.execute { $code }")
-            }
-            CommandType.CoroutineCommand -> {
-                CodeBlock.of("return $COMMAND_EXECUTOR_PROPERTY.executeCoroutine { $code }")
-            }
-            CommandType.FlowCommand -> {
-                CodeBlock.of("return $COMMAND_EXECUTOR_PROPERTY.executeFlow { $code }")
-            }
+        val lambdaCode = "it.${function.simpleNameString}($params)"
+        val commandType = getCommandType(function)
+        return generateCommandMethod(commandType, lambdaCode)
+    }
+
+    private fun generateCommandMethod(
+        commandType: CommandType,
+        lambdaCode: String,
+    ): CodeBlock {
+        val commandExecutorMethodName = commandType.commandExecutorMethodName
+        val returnStatement = if (commandType == CommandType.UnitCommand) {
+            ""
+        } else {
+            "return "
         }
+        return CodeBlock.of("« $returnStatement$COMMAND_EXECUTOR_PROPERTY.$commandExecutorMethodName {\n$lambdaCode\n» }") //
     }
 
     private fun getCommandType(function: KSFunctionDeclarationWrapper): CommandType {
@@ -108,10 +112,12 @@ class EffectMediatorGenerator(
         return toTypeName(typeParameterResolver) == UNIT
     }
 
-    enum class CommandType {
-        UnitCommand,
-        CoroutineCommand,
-        FlowCommand,
+    enum class CommandType(
+        val commandExecutorMethodName: String
+    ) {
+        UnitCommand("execute"),
+        CoroutineCommand("executeCoroutine"),
+        FlowCommand("executeFlow");
     }
 
     class Result(
