@@ -50,8 +50,10 @@ dependencies {
     implementation "androidx.navigation:navigation-compose"
     debugImplementation "androidx.compose.ui:ui-tooling"
 
-    implementation "com.elveum:effects-compose:$effects_lib_version"
-    ksp "com.elveum:effects-processor:$effects_lib_version"
+    //implementation "com.elveum:effects-compose:$effects_lib_version"
+    //ksp "com.elveum:effects-processor:$effects_lib_version"
+    implementation project(":effects-compose")
+    ksp project(":effects-processor")
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     ksp "com.google.dagger:hilt-compiler:$hilt_version"

@@ -8,6 +8,8 @@ import androidx.navigation.toRoute
 import com.elveum.container.getOrNull
 import com.elveum.effects.example.domain.CatsRepository
 import com.elveum.effects.example.presentation.CatDetailsRoute
+import com.elveum.effects.example.presentation.base.effects.actions.UiActions
+import com.elveum.effects.example.presentation.base.effects.actions.handleActions
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class DetailsViewModel @Inject constructor(
     private val catsRepository: CatsRepository,
     private val router: Router,
+    uiActions: UiActions,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -24,16 +27,25 @@ class DetailsViewModel @Inject constructor(
 
     val catLiveData = catsRepository.getById(catDetailsRoute.catId).asLiveData()
 
-    fun goBack() {
-        router.goBack()
+    init {
+        uiActions.handleActions<DetailsAction>(viewModelScope) { action ->
+            when (action) {
+                DetailsAction.GoBack -> goBack()
+                DetailsAction.ToggleLike -> toggleLike()
+            }
+        }
     }
 
-    fun toggleLike() {
+    private fun toggleLike() {
         viewModelScope.launch {
             catLiveData.value?.getOrNull()?.let { cat ->
                 catsRepository.toggleLike(cat)
             }
         }
+    }
+
+    private fun goBack() {
+        router.goBack()
     }
 
 }

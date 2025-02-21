@@ -28,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.elveum.container.Container
+import com.elveum.effects.compose.v2.getEffect
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
+import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.components.ContainerView
 import com.elveum.effects.example.presentation.components.LikedIcon
 
@@ -37,14 +39,14 @@ import com.elveum.effects.example.presentation.components.LikedIcon
 fun CatDetailsScreen() {
     val viewModel = hiltViewModel<DetailsViewModel>()
     val catContainer by viewModel.catLiveData.observeAsState(Container.Pending)
+    val uiActions = getEffect<ComposeUiActions>()
     ContainerView(
         modifier = Modifier.fillMaxSize(),
         container = catContainer
     ) { cat ->
         CatDetailsContent(
             cat = cat,
-            onBackButtonPressed = viewModel::goBack,
-            onLikePressed = viewModel::toggleLike,
+            onAction = uiActions::submitAction,
         )
     }
 }
@@ -52,8 +54,7 @@ fun CatDetailsScreen() {
 @Composable
 fun CatDetailsContent(
     cat: Cat,
-    onBackButtonPressed: () -> Unit,
-    onLikePressed: () -> Unit,
+    onAction: (DetailsAction) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -72,7 +73,7 @@ fun CatDetailsContent(
             )
             LikedIcon(
                 isLiked = cat.isLiked,
-                onToggle = onLikePressed,
+                onToggle = { onAction(DetailsAction.ToggleLike) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .background(Color.White, CircleShape)
@@ -98,7 +99,7 @@ fun CatDetailsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = onBackButtonPressed) {
+        Button(onClick = { onAction(DetailsAction.GoBack) }) {
             Text(stringResource(R.string.go_back))
         }
     }

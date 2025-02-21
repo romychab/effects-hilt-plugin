@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
+import com.elveum.effects.example.presentation.base.effects.actions.UiActions
+import com.elveum.effects.example.presentation.base.effects.actions.handleActions
 import com.elveum.effects.example.presentation.base.effects.dialogs.AlertDialogConfig
 import com.elveum.effects.example.presentation.base.effects.dialogs.Dialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
@@ -14,24 +16,34 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class CatsViewModel @Inject constructor(
     private val catsRepository: CatsRepository,
     private val router: Router,
     private val dialogs: Dialogs,
     private val resources: Resources,
+    uiActions: UiActions,
 ) : ViewModel() {
 
     val catsLiveData = catsRepository.getCats().asLiveData()
 
-    fun toggleLike(cat: Cat) {
+    init {
+        uiActions.handleActions<CatsAction>(viewModelScope) { action ->
+            when (action) {
+                is CatsAction.Delete -> delete(action.cat)
+                is CatsAction.LaunchDetails -> launchDetails(action.cat)
+                is CatsAction.ToggleLike -> toggleLike(action.cat)
+            }
+        }
+    }
+
+    private fun toggleLike(cat: Cat) {
         viewModelScope.launch {
             catsRepository.toggleLike(cat)
         }
     }
 
-    fun delete(cat: Cat) {
+    private fun delete(cat: Cat) {
         viewModelScope.launch {
             val confirmed = dialogs.showAlertDialog(buildDeleteDialog())
             if (confirmed) {
@@ -41,7 +53,7 @@ class CatsViewModel @Inject constructor(
         }
     }
 
-    fun launchDetails(cat: Cat) {
+    private fun launchDetails(cat: Cat) {
         router.launchDetails(cat)
     }
 
