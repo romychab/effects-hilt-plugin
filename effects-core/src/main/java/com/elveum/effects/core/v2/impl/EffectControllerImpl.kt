@@ -4,7 +4,7 @@ import com.elveum.effects.core.v2.EffectController
 import com.elveum.effects.core.v2.ObservableResourceStore
 
 public class EffectControllerImpl<EffectImplementation>(
-    private val observableResourceStore: ObservableResourceStore<EffectImplementation>
+    private val observableResourceStore: ObservableResourceStore<in EffectImplementation>
 ) : EffectController<EffectImplementation> {
 
     override var effectImplementation: EffectImplementation? = null

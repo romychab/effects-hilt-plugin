@@ -4,7 +4,7 @@ import com.elveum.effects.core.v2.EffectCleaner
 import com.elveum.effects.core.v2.ObservableResourceStore
 
 public class EffectCleanerImpl<Effect>(
-    private val observableResourceStore: ObservableResourceStore<Effect>
+    private val observableResourceStore: ObservableResourceStore<*>,
 ) : EffectCleaner<Effect> {
 
     override fun cleanUp() {
