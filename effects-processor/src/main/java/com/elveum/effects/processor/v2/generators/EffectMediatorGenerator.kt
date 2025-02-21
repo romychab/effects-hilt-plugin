@@ -1,8 +1,8 @@
 package com.elveum.effects.processor.v2.generators
 
-import com.elveum.effects.processor.v2.UnitCommandWithReturnTypeException
 import com.elveum.effects.processor.v2.data.Const
-import com.elveum.effects.processor.v2.data.EffectInfo
+import com.elveum.effects.processor.v2.data.EffectMetadata
+import com.elveum.effects.processor.v2.exceptions.UnitCommandWithReturnTypeException
 import com.elveum.effects.processor.v2.extensions.KSFunctionDeclarationWrapper
 import com.elveum.effects.processor.v2.extensions.implementInterface
 import com.elveum.effects.processor.v2.extensions.primaryConstructorWithProperties
@@ -17,24 +17,28 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 
 class EffectMediatorGenerator(
     private val writer: KspClassV2Writer,
 ) {
 
-    fun generate(effectInfo: EffectInfo): Result {
-        val mediatorName = "${effectInfo.targetInterfaceName}Mediator"
-        val mediatorClassName = ClassName(effectInfo.pkg, mediatorName)
+    fun generate(effectMetadata: EffectMetadata): Result {
+        val interfaceDeclaration = effectMetadata.targetInterfaceDeclaration
+        val interfaceClassName = interfaceDeclaration.toClassName()
+        val interfaceName = interfaceClassName.simpleName
+        val mediatorName = "__${interfaceName}Mediator"
+        val mediatorClassName = ClassName(interfaceClassName.packageName, mediatorName)
 
         val typeSpecBuilder = TypeSpec.classBuilder(mediatorClassName)
-            .addConstructor(effectInfo)
-            .implementInterface(effectInfo.targetInterface, ::implementMethod)
+            .addConstructor(interfaceClassName)
+            .implementInterface(interfaceDeclaration, ::implementMethod)
 
         writer.write(
             typeSpec = typeSpecBuilder.build(),
             pkg = mediatorClassName.packageName,
-            dependencies = effectInfo.dependencies,
+            dependencies = effectMetadata.dependencies,
         )
 
         return Result(
@@ -42,10 +46,10 @@ class EffectMediatorGenerator(
         )
     }
 
-    private fun TypeSpec.Builder.addConstructor(effectInfo: EffectInfo): TypeSpec.Builder {
+    private fun TypeSpec.Builder.addConstructor(interfaceClassName: ClassName): TypeSpec.Builder {
         return primaryConstructorWithProperties(
             FunSpec.constructorBuilder()
-                .addParameter(COMMAND_EXECUTOR_PROPERTY, Const.commandExecutorName(effectInfo.effectClassName))
+                .addParameter(COMMAND_EXECUTOR_PROPERTY, Const.commandExecutorName(interfaceClassName))
                 .build()
         )
     }
@@ -125,6 +129,6 @@ class EffectMediatorGenerator(
     )
 
     companion object {
-        val COMMAND_EXECUTOR_PROPERTY = "commandExecutor"
+        private const val COMMAND_EXECUTOR_PROPERTY = "commandExecutor"
     }
 }

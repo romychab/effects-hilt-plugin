@@ -1,5 +1,6 @@
 package com.elveum.effects.processor.v2.extensions
 
+import com.elveum.effects.processor.v2.exceptions.InvalidTargetArgumentException
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
@@ -31,12 +32,25 @@ data class KSAnnotationWrapper(
         }
     }
 
+    fun getString(argumentName: String): String {
+        val argument = arguments.first { it.name?.asString() == argumentName }
+        return argument.value.toString()
+    }
+
     inline fun <reified T> isInstanceOf(): Boolean {
         return isInstanceOf(T::class.asTypeName())
     }
 
     fun isInstanceOf(typeName: TypeName): Boolean {
         return resolvedAnnotationType.toTypeName() == typeName
+    }
+
+    private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclaration {
+        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argumentValue = argument.value as? KSType
+            ?: throw InvalidTargetArgumentException(this)
+        return argumentValue.declaration as? KSClassDeclaration
+            ?: throw InvalidTargetArgumentException(this)
     }
 
 }

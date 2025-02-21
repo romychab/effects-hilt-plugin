@@ -1,16 +1,14 @@
 package com.elveum.effects.example.presentation.base.effects.navigation
 
 import androidx.activity.ComponentActivity
+import androidx.compose.runtime.Stable
 import androidx.navigation.NavHostController
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.presentation.CatDetailsRoute
-import dagger.hilt.android.components.ActivityRetainedComponent
 
-@CustomEffect(
-    target = Router::class,
-    installIn = ActivityRetainedComponent::class
-)
+@HiltEffect
+@Stable
 class ComposeRouter(
     private val activity: ComponentActivity,
     val navController: NavHostController,

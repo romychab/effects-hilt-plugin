@@ -1,8 +1,8 @@
 package com.elveum.effects.processor.v2.extensions
 
-import com.elveum.effects.processor.v2.InvalidHiltComponentException
 import com.elveum.effects.processor.v2.data.Const
 import com.elveum.effects.processor.v2.data.takeIfInstance
+import com.elveum.effects.processor.v2.exceptions.InvalidHiltComponentException
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName

@@ -6,21 +6,18 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.elveum.effects.annotations.CustomEffect
-import com.elveum.effects.annotations.MviEffect
-import dagger.hilt.android.components.ActivityRetainedComponent
+import com.elveum.effects.annotations.HiltEffect
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-@CustomEffect(
-    target = Dialogs::class,
-    installIn = ActivityRetainedComponent::class
-)
+@HiltEffect
+@Stable
 class ComposeDialogs(
     @ActivityContext private val context: Context,
 ) : Dialogs {
@@ -79,4 +76,5 @@ class ComposeDialogs(
         val config: AlertDialogConfig,
         val continuation: Continuation<Boolean>,
     )
+
 }

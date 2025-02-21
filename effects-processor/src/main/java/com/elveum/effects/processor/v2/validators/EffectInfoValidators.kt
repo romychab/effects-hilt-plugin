@@ -1,13 +1,18 @@
-package com.elveum.effects.processor.v2
+package com.elveum.effects.processor.v2.validators
 
 import com.elveum.effects.processor.v2.data.EffectInfo
+import com.elveum.effects.processor.v2.exceptions.ClassIsAbstractException
+import com.elveum.effects.processor.v2.exceptions.ClassWithTypeParametersException
+import com.elveum.effects.processor.v2.exceptions.InterfaceWithTypeParametersException
+import com.elveum.effects.processor.v2.exceptions.InvalidClassTypeException
+import com.elveum.effects.processor.v2.exceptions.NestedClassException
+import com.elveum.effects.processor.v2.exceptions.NestedInterfaceException
 import com.google.devtools.ksp.isAbstract
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.Modifier
 
 fun validateEffects(effects: Sequence<EffectInfo>) {
     effects.forEach(EffectInfo::validateEffect)
-    effects.validateEachEffectHasSingleImplementation()
 }
 
 private fun EffectInfo.validateEffect() {
@@ -17,18 +22,6 @@ private fun EffectInfo.validateEffect() {
     validateInterfaceDoesNotHaveTypeParameters()
     validateClassIsNotNested()
     validateInterfaceIsNotNested()
-}
-
-private fun Sequence<EffectInfo>.validateEachEffectHasSingleImplementation() {
-    val groupedEffects = groupBy { it.targetInterface }
-    groupedEffects.entries.forEach { (interfaceDeclaration, effects) ->
-        if (effects.size > 1) {
-            throw MultipleEffectImplementationsException(
-                targetInterface = interfaceDeclaration,
-                allImplementations = effects.map { it.effectClassDeclaration },
-            )
-        }
-    }
 }
 
 private fun EffectInfo.validateInterfaceDoesNotHaveTypeParameters() {

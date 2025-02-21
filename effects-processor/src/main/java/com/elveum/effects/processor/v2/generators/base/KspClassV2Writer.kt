@@ -11,8 +11,7 @@ class KspClassV2Writer(
 ) {
 
     fun write(typeSpec: TypeSpec, dependencies: Dependencies, pkg: String) {
-        val className = typeSpec.name
-        checkNotNull(className)
+        val className = checkNotNull(typeSpec.name)
         val file = FileSpec.builder(pkg, className)
             .addType(typeSpec)
             .build()
@@ -30,7 +29,7 @@ class KspClassV2Writer(
             fileName = className,
         )
         outputStream.writer().use {
-            it.write(content)
+            it.write(templateBasedClassContent.buildContent())
         }
     }
 
