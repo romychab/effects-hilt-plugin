@@ -1,4 +1,4 @@
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 
 
 class TopLevelClass {
@@ -7,7 +7,7 @@ class TopLevelClass {
 
 }
 
-@CustomEffect
+@HiltEffect
 class TestClass : TopLevelClass.Interface {
 
 }

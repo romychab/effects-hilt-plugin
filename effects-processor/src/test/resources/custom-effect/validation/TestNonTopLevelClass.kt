@@ -1,10 +1,10 @@
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 
 interface Interface
 
 class TopLevelClass {
 
-    @CustomEffect
+    @HiltEffect
     class NestedClass : Interface {
 
     }

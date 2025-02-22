@@ -3,8 +3,8 @@ import kotlin.Int
 import kotlin.Number
 import kotlin.String
 
-public class TestInterfaceMediator(
-    private val commandExecutor: CommandExecutor<TestClass>,
+public class __TestInterfaceMediator(
+    private val commandExecutor: CommandExecutor<TestInterface>,
 ) : TestInterface {
     public override suspend fun coroutineEvent(arg1: String, arg2: Int): Number {
         return commandExecutor.executeCoroutine {

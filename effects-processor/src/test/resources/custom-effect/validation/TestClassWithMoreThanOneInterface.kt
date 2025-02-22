@@ -1,7 +1,7 @@
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 
 interface Interface1
 interface Interface2
 
-@CustomEffect
+@HiltEffect
 class TestClassWithMoreThanOneInterface : Interface1, Interface2

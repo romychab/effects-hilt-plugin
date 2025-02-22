@@ -18,23 +18,33 @@ class KspResult(
 
     val kspGeneratedFiles: List<KspFileContent> by lazy {
         val dir = File(compilation.kspSourcesDir, "kotlin")
-        dir.listFiles()
-            ?.mapNotNull { file ->
+        dir.listGeneratedFiles()
+            .map { file ->
                 KspFileContent(
                     baseResourcePath = baseResourcePath,
                     fileName = file.name,
                     content = file.readText(),
                 )
             }
-            ?: emptyList()
     }
 
     fun getGeneratedFile(name: String): KspFileContent {
-        return kspGeneratedFiles.first { it.fileName == name }
+        return kspGeneratedFiles.firstOrNull { it.fileName == name }
+            ?: throw IllegalArgumentException("Can't find a file: $name")
     }
 
     fun assertErrorLogged(log: String) {
         assertTrue(messages.contains(log))
+    }
+
+    private fun File.listGeneratedFiles(): List<File> {
+        return if (isFile) {
+            listOf(this)
+        } else {
+            listFiles()?.flatMap {
+                it.listGeneratedFiles()
+            } ?: emptyList()
+        }
     }
 
 }

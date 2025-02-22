@@ -4,8 +4,8 @@ import kotlin.Number
 import kotlin.String
 import kotlinx.coroutines.flow.Flow
 
-public class TestInterfaceMediator(
-    private val commandExecutor: CommandExecutor<TestClass>,
+public class __TestInterfaceMediator(
+    private val commandExecutor: CommandExecutor<TestInterface>,
 ) : TestInterface {
 
     public override fun flowEvent(arg1: String, arg2: Int): Flow<Number> {

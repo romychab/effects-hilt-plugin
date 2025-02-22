@@ -3,8 +3,8 @@ import java.util.concurrent.Callable
 import kotlin.String
 import kotlinx.coroutines.flow.Flow
 
-public class TestInterfaceMediator(
-    private val commandExecutor: CommandExecutor<TestClass>,
+public class __TestInterfaceMediator(
+    private val commandExecutor: CommandExecutor<TestInterface>,
 ) : TestInterface {
 
     public override fun <K, T : Callable<K>> flowEvent(arg1: String, arg2: T): Flow<T> {

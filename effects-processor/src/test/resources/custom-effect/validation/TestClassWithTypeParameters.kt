@@ -1,6 +1,6 @@
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 
 interface BaseInterface
 
-@CustomEffect
+@HiltEffect
 class TestClassWithTypeParameters<T> : BaseInterface

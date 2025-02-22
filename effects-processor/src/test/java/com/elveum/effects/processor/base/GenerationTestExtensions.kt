@@ -5,6 +5,7 @@ package com.elveum.effects.processor.base
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 
 fun AbstractKspTest.runGenerationTest(
     block: GenerationTestScope.() -> Unit,
@@ -25,6 +26,10 @@ interface GenerationTestScope {
         fileName: String,
         expectedOutputFileName: String = "Output.kt",
     )
+
+    fun assertFileIsNotGenerated(fileName: String)
+
+    fun assertCompilationCompletes()
 
     fun assertCompilationFails(
         expectedMessage: String = "",
@@ -55,8 +60,17 @@ private class GenerationTestScopeImpl(
         generatedMediator.assertContent("$packageName/$expectedOutputFileName")
     }
 
+    override fun assertCompilationCompletes() {
+        assertEquals(ExitCode.OK, this.result.exitCode)
+    }
+
     override fun assertCompilationFails(expectedMessage: String) {
         assertEquals(ExitCode.COMPILATION_ERROR, this.result.exitCode)
         this.result.assertErrorLogged(expectedMessage)
     }
+
+    override fun assertFileIsNotGenerated(fileName: String) {
+        assertTrue(result.kspGeneratedFiles.all { it.fileName != fileName })
+    }
+
 }

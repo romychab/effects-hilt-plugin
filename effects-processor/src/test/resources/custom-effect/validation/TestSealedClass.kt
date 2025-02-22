@@ -1,8 +1,8 @@
-import com.elveum.effects.annotations.CustomEffect
+import com.elveum.effects.annotations.HiltEffect
 
 interface BaseInterface
 
-@CustomEffect
+@HiltEffect
 sealed class TestSealedClass : BaseInterface {
     data object Test : TestSealedClass()
 }
