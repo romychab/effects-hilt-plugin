@@ -55,7 +55,7 @@ dependencies {
     testImplementation "junit:junit:$junit"
     testImplementation "io.mockk:mockk:$mockk"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_core"
-    testImplementation "com.uandcode:flowtest:0.1.0"
+    testImplementation "com.uandcode:flowtest:1.0.0"
 }
 
 ext {
