@@ -3,6 +3,22 @@ package com.elveum.effects.compose.v2.impl
 import com.elveum.effects.compose.v2.ComposeEffectNode
 import kotlin.reflect.KClass
 
+/**
+ * Replace real effect implementations by fake ones.
+ *
+ * Usually it can be helpful in unit tests.
+ *
+ * Usage example:
+ *
+ * ```
+ * val fakeEffect = remember { MyFakeEffect() }
+ * CompositionLocalProvider(
+ *     LocalComposeEffectNode provides FakeComposeEffectNode(fakeEffect)
+ * ) {
+ *     // ...
+ * }
+ * ```
+ */
 public class FakeComposeEffectNode(
     fakeEffects: List<Any>,
 ) : ComposeEffectNode {
