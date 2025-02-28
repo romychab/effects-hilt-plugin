@@ -222,7 +222,7 @@ Let's take a brief look at different ways of connecting event handlers:
 The generalized mechanism of this plugin works as follows:
 the plugin allows objects with a longer lifecycle to interact with
 objects with a shorter lifecycle without memory leaks.
-The most likely scenario is calling UI-related methods from the ViewModel.
+The most likely scenario is calling UI-related methods from view-models.
 
 If an object with a shorter lifecycle is not available at the time of the call,
 the call is queued until the object becomes available.
@@ -234,9 +234,9 @@ There are three types of calls in total:
 
 Let's take a closer look at all three types of calls.
 
-### 1. One-off Events
+### 1. One-off Event
 
-It is just one-off events. They can be used when you don't
+It is just one-off event. One of events can be used when you don't
 need the result of the execution. A simple example is displaying a Toast message.
 
 In order to declare a one-off event, simply write a regular non-suspend method that
@@ -378,7 +378,7 @@ class DialogsImpl : Dialogs {
 ```
 
 In this example, the implementation consists of two methods.
-The first method `ask()` is overridden from the interface. It controls
+The first method `ask()` is overridden from the interface. It manages
 the dialog state:
 
 ```kotlin
@@ -571,7 +571,7 @@ method will also throw an exception. Third, from the ViewModel's perspective,
 terminal operators like `collect()` will not stop working when the Activity goes to the
 STOPPED state. They will wait until the Activity goes back to the STARTED state.
 At the same time, from the effect implementation’s perspective, the Flow will be
-automatically canceled after `onStop()` is called, and then restarted again after `onStart()`.
+automatically cancelled after `onStop()` is called, and then restarted again after `onStart()`.
 
 ## Multiple effect handlers
 
@@ -595,7 +595,7 @@ class MyViewModel @Inject constructor(
 ```
 
 In this case, when multiple implementations are connected to the same interface,
-method calls on the interface can be delegated differently to the corresponding
+calls on the interface can be delegated differently to the corresponding
 implementations:
 
 1. Regular one-off events (non-suspend methods that don’t return a result) are
