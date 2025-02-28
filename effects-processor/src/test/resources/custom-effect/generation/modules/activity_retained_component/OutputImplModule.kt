@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.multibindings.IntoSet
 import javax.inject.Provider
+import TestInterface
 import dagger.hilt.android.components.ActivityRetainedComponent
 
 @Module

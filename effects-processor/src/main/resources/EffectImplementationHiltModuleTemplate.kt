@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.multibindings.IntoSet
 import javax.inject.Provider
+import %TARGET_INTERFACE_CLASSNAME%
 import %HILT_COMPONENT%
 
 @Module

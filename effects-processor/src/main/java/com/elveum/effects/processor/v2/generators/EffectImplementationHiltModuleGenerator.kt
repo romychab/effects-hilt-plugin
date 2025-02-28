@@ -17,6 +17,7 @@ class EffectImplementationHiltModuleGenerator(
         ).apply {
             setVariable("EFFECT_IMPL_NAME", effectInfo.effectName)
             setVariable("TARGET_INTERFACE_NAME", effectInfo.targetInterfaceName)
+            setVariable("TARGET_INTERFACE_CLASSNAME", effectInfo.targetInterfaceClassName.canonicalName)
             setVariable("HILT_COMPONENT", effectInfo.hiltComponent.canonicalName)
             setVariable("HILT_COMPONENT_NAME", effectInfo.hiltComponent.simpleName)
         }

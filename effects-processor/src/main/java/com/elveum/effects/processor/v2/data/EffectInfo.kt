@@ -54,10 +54,14 @@ class EffectInfo(
     }
 
     private fun createDependencies(): Dependencies {
+        val files = listOfNotNull(
+            effectClassDeclaration.containingFile,
+            targetInterface.containingFile,
+        )
+
         return Dependencies(
             aggregating = false,
-            checkNotNull(effectClassDeclaration.containingFile),
-            checkNotNull(targetInterface.containingFile),
+            *files.toTypedArray(),
         )
     }
 

@@ -18,13 +18,14 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 
 class EffectSymbolProcessor(
     private val logger: KSPLogger,
     codeGenerator: CodeGenerator,
 ) : SymbolProcessor {
 
-    val writer = KspClassV2Writer(codeGenerator)
+    private val writer = KspClassV2Writer(codeGenerator)
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
@@ -33,10 +34,11 @@ class EffectSymbolProcessor(
 
             generateEffectImplementationModules(effects)
 
-            if (hasHiltApp(resolver)) {
-                val effectMetadataList = parseMetadata(resolver) +
-                        effects.map { EffectMetadata(it) }
-                val uniqueEffectMetadataList = validateAndFilterEffectMetadata(effectMetadataList)
+            val hiltAppClassDeclaration = getHiltApp(resolver)
+            if (hiltAppClassDeclaration != null) {
+                val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
+                        effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
+                val uniqueEffectMetadataList = validateAndFilterEffectMetadata(effectMetadataSequence)
                 generateEffectMediators(uniqueEffectMetadataList)
             }
         } catch (e: AbstractEffectKspException) {
@@ -55,7 +57,7 @@ class EffectSymbolProcessor(
     }
 
     private fun generateEffectMediators(
-        uniqueEffectMetadataList: List<EffectMetadata>
+        uniqueEffectMetadataList: List<EffectMetadata>,
     ) {
         val mediatorGenerator = EffectMediatorGenerator(writer)
         val interfaceHiltModuleGenerator = EffectInterfaceHiltModuleGenerator(writer)
@@ -65,11 +67,11 @@ class EffectSymbolProcessor(
         }
     }
 
-    private fun hasHiltApp(resolver: Resolver): Boolean {
+    private fun getHiltApp(resolver: Resolver): KSClassDeclaration? {
         val annotatedSymbols = resolver.getSymbolsWithAnnotation(
             Const.HiltAppAnnotationName.canonicalName
         )
-        return annotatedSymbols.toList().isNotEmpty()
+        return annotatedSymbols.firstOrNull() as? KSClassDeclaration
     }
 
 }

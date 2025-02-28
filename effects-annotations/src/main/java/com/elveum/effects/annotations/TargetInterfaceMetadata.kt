@@ -3,10 +3,10 @@ package com.elveum.effects.annotations
 /**
  * For internal usage only.
  *
- * This annotation is used by KSP code generator in order to collect
- * effect interfaces from all modules.
+ * This annotation is used by KSP code generator for correct collecting
+ * of effect interfaces in multi-module projects.
  */
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 public annotation class TargetInterfaceMetadata(
     val implementationClassName: String,

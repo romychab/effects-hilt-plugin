@@ -13,14 +13,21 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
 
-fun parseMetadata(resolver: Resolver): Sequence<EffectMetadata> {
+fun parseMetadata(
+    resolver: Resolver,
+    hiltAppClassDeclaration: KSClassDeclaration,
+): Sequence<EffectMetadata> {
     val metadata = resolver.getDeclarationsFromPackage(Const.MetadataPackage)
     return metadata
         .filterIsInstance<KSClassDeclaration>()
         .mapNotNull { metadataDeclaration ->
             metadataDeclaration.annotations
                 .findTargetInterfaceMetadataAnnotation()
-                ?.let { buildEffectMetadata(it, resolver) }
+                ?.let { annotation ->
+                    buildEffectMetadata(
+                        metadataDeclaration, hiltAppClassDeclaration, annotation, resolver
+                    )
+                }
         }
 }
 
@@ -31,6 +38,8 @@ private fun Sequence<KSAnnotation>.findTargetInterfaceMetadataAnnotation(): KSAn
 }
 
 private fun buildEffectMetadata(
+    metadataDeclaration: KSClassDeclaration,
+    hiltAppClassDeclaration: KSClassDeclaration,
     annotation: KSAnnotationWrapper,
     resolver: Resolver,
 ): EffectMetadata? {
@@ -48,7 +57,9 @@ private fun buildEffectMetadata(
             targetInterfaceDeclaration = KSClassDeclarationWrapper(interfaceDeclaration),
             effectClassDeclaration = KSClassDeclarationWrapper(implDeclaration),
             hiltComponent = hiltComponent,
-            hiltScope = hiltScope
+            hiltScope = hiltScope,
+            metadataDeclaration = metadataDeclaration,
+            hiltAppClassDeclaration = hiltAppClassDeclaration,
         )
     } else {
         null
