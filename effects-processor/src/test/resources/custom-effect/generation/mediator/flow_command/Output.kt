@@ -1,4 +1,4 @@
-import com.elveum.effects.core.v2.CommandExecutor
+import com.elveum.effects.core.CommandExecutor
 import kotlin.Int
 import kotlin.Number
 import kotlin.String

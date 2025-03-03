@@ -1,10 +1,10 @@
-import com.elveum.effects.core.v2.CommandExecutor
-import com.elveum.effects.core.v2.EffectController
-import com.elveum.effects.core.v2.EffectRecord
-import com.elveum.effects.core.v2.ObservableResourceStore
-import com.elveum.effects.core.v2.impl.CommandExecutorImpl
-import com.elveum.effects.core.v2.impl.EffectControllerImpl
-import com.elveum.effects.core.v2.impl.ObservableResourceStoreImpl
+import com.elveum.effects.core.CommandExecutor
+import com.elveum.effects.core.EffectController
+import com.elveum.effects.core.EffectRecord
+import com.elveum.effects.core.ObservableResourceStore
+import com.elveum.effects.core.impl.CommandExecutorImpl
+import com.elveum.effects.core.impl.EffectControllerImpl
+import com.elveum.effects.core.impl.ObservableResourceStoreImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

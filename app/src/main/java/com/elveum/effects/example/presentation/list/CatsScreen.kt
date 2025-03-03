@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.elveum.container.Container
-import com.elveum.effects.compose.v2.getEffect
+import com.elveum.effects.compose.getEffect
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions

@@ -2,7 +2,7 @@
 
 package com.elveum.effects.processor.base
 
-import com.elveum.effects.processor.v2.EffectSymbolProcessorProvider
+import com.elveum.effects.processor.EffectSymbolProcessorProvider
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders

@@ -1,4 +1,4 @@
-import com.elveum.effects.core.v2.CommandExecutor
+import com.elveum.effects.core.CommandExecutor
 import java.util.concurrent.Callable
 import kotlin.String
 

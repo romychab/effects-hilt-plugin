@@ -13,8 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.elveum.effects.compose.v2.EffectProvider
-import com.elveum.effects.compose.v2.getHostActivity
+import com.elveum.effects.compose.EffectProvider
+import com.elveum.effects.compose.getHostActivity
 import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.base.effects.dialogs.ComposeDialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.ComposeRouter
