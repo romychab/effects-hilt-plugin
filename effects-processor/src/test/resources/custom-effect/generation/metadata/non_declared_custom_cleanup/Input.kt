@@ -7,17 +7,12 @@ import dagger.hilt.android.components.FragmentComponent
 
 interface TestInterface {
     fun oneTimeEvent(arg1: String, arg2: Int)
-    fun nonDefaultCleanUp() = Unit
 }
 
-interface TestInterface2
-
 @HiltEffect(
-    target = TestInterface::class,
-    installIn = FragmentComponent::class,
     cleanUpMethodName = "nonDefaultCleanUp",
 )
-class TestClass : TestInterface2, TestInterface {
+class TestClass : TestInterface {
     override fun oneTimeEvent(arg1: String, arg2: Int) = Unit
 }
 

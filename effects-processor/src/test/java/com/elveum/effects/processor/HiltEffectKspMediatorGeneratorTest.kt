@@ -84,4 +84,25 @@ class HiltEffectKspMediatorGeneratorTest : AbstractKspTest("custom-effect/genera
         assertFileIsNotGenerated("__TestInterfaceMediator.kt")
     }
 
+    @Test
+    fun test_cleanUpFunctionImplementation() = runGenerationTest {
+        compileResourceSubPackage(packageName = "cleanup_valid_function")
+
+        assertGeneratedFile("__TestInterfaceMediator.kt")
+    }
+
+    @Test
+    fun cleanUpFunction_withNonUnitReturnType_fails() = runGenerationTest {
+        compileResourceSubPackage(packageName = "cleanup_with_non_unit_return_type")
+
+        assertCompilationFails("Input.kt:6: Clean-up function 'cleanUp' should not return any type")
+    }
+
+    @Test
+    fun cleanUpFunction_withAbstractModifier_fails() = runGenerationTest {
+        compileResourceSubPackage(packageName = "cleanup_with_abstract_modifier")
+
+        assertCompilationFails("Input.kt:6: Clean-up function 'cleanUp' should not be abstract")
+    }
+
 }

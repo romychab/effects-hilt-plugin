@@ -7,5 +7,6 @@ import com.elveum.effects.annotations.TargetInterfaceMetadata
     interfaceClassName = "test.TestInterface",
     hiltComponentClassName = "dagger.hilt.android.components.ActivityRetainedComponent",
     hiltScopeClassName = "dagger.hilt.android.scopes.ActivityRetainedScoped",
+    cleanUpMethodName = "",
 )
 public class __test_TestClass2_Metadata
