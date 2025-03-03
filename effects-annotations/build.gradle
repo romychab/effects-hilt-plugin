@@ -20,7 +20,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.elveum'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-annotations'
-    PUBLISH_DESCRIPTION = "Hilt plugin (annotations library) for easier implementation of effects in MVVM"
+    PUBLISH_DESCRIPTION = "Hilt plugin (annotations library) for easier implementation of one-off events"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"

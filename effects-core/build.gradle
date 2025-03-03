@@ -46,7 +46,6 @@ kotlin {
 
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core"
-    implementation "androidx.activity:activity-ktx:$activity_ktx_version"
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     ksp "com.google.dagger:hilt-compiler:$hilt_version"
@@ -62,7 +61,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.elveum'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-core'
-    PUBLISH_DESCRIPTION = "Hilt plugin (core library) for easier implementation of effects in MVVM"
+    PUBLISH_DESCRIPTION = "Hilt plugin (core library) for easier implementation of one-off events"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"
