@@ -29,13 +29,13 @@ components with a shorter lifecycle without memory leaks.
 
 ```kotlin
 // annotation processor (required):
-ksp "com.elveum:effects-processor:1.0.0"
+ksp "com.elveum:effects-processor:1.0.1"
 
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:1.0.0"
+implementation "com.elveum:effects-compose:1.0.1"
 
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:1.0.0"
+implementation "com.elveum:effects-core:1.0.1"
 ```
 
 ## Primitive example
@@ -684,6 +684,29 @@ implementations:
    a terminal operator (`collect()`) on a Flow returned by the interface will
    rethrow that exception. If all Flows are finite and complete their
    work, the resulting Flow will also complete.
+
+## Multi-module projects
+
+Right now the plugin can be easily used in multi-module Android projects:
+
+- Target interfaces can be located either in other modules or even in pre-built binaries, because
+  `@HiltEffect` annotation is applied not to target interfaces, but to their implementation classes.
+- Each module containing classes annotated with `@HiltEffect` annotation should add the same dependencies
+  as your application module (along with KSP and Hilt):
+
+  ```kotlin
+  ksp("com.elveum:effects-processor:$lib_version")
+  implementation("com.elveum:effects-core:$lib_version")
+  // plus Hilt and KSP dependencies/plugins
+  ```  
+
+- The main application module should have an Application class annotated with 
+  standard `@HiltAndroidApp` annotation
+
+  ```kotlin
+  @HiltAndroidApp
+  class App : Application()
+  ```
 
 ## Limitations
 
