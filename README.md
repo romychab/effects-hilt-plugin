@@ -29,13 +29,13 @@ components with a shorter lifecycle without memory leaks.
 
 ```kotlin
 // annotation processor (required):
-ksp "com.elveum:effects-processor:1.0.0"
+ksp "com.elveum:effects-processor:1.0.1"
 
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:1.0.0"
+implementation "com.elveum:effects-compose:1.0.1"
 
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:1.0.0"
+implementation "com.elveum:effects-core:1.0.1"
 ```
 
 ## Primitive example
