@@ -33,7 +33,7 @@ fun TypeSpec.Builder.implementInterface(
         }
 }
 
-private fun implementInterfaceMethod(
+fun implementInterfaceMethod(
     function: KSFunctionDeclaration,
     typeParameterResolver: TypeParameterResolver,
 ): FunSpec.Builder {

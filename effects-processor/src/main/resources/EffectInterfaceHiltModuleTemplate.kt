@@ -1,12 +1,10 @@
 %PACKAGE_STATEMENT%
 
 import com.elveum.effects.core.v2.CommandExecutor
-import com.elveum.effects.core.v2.EffectCleaner
 import com.elveum.effects.core.v2.EffectController
 import com.elveum.effects.core.v2.EffectRecord
 import com.elveum.effects.core.v2.ObservableResourceStore
 import com.elveum.effects.core.v2.impl.CommandExecutorImpl
-import com.elveum.effects.core.v2.impl.EffectCleanerImpl
 import com.elveum.effects.core.v2.impl.EffectControllerImpl
 import com.elveum.effects.core.v2.impl.ObservableResourceStoreImpl
 import dagger.Module
@@ -42,13 +40,6 @@ object %CLASSNAME% {
         observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>
     ): EffectController<%TARGET_INTERFACE_NAME%> {
         return EffectControllerImpl(observableResourceStore)
-    }
-
-    @Provides
-    fun provideCleanerOfEffectInterface(
-        observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>,
-    ): EffectCleaner<%TARGET_INTERFACE_NAME%> {
-        return EffectCleanerImpl(observableResourceStore)
     }
 
 }

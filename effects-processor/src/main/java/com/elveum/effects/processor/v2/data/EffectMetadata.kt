@@ -12,6 +12,7 @@ class EffectMetadata(
     val hiltComponent: ClassName,
     val hiltScope: ClassName,
     val hiltAppClassDeclaration: KSClassDeclaration,
+    val cleanUpMethodName: EffectCleanUpMethodName,
     val metadataDeclaration: KSClassDeclaration? = null,
 ) {
 
@@ -29,6 +30,7 @@ class EffectMetadata(
         effectClassDeclaration = effectInfo.effectClassDeclaration,
         hiltComponent = effectInfo.hiltComponent,
         hiltScope = effectInfo.hiltScope,
+        cleanUpMethodName = effectInfo.cleanUpMethodName,
         hiltAppClassDeclaration = hiltAppClassDeclaration,
     )
 

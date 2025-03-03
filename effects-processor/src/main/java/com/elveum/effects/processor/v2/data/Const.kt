@@ -23,6 +23,8 @@ object Const {
 
     const val TargetArgument: String = "target"
     const val InstallInArgument: String = "installIn"
+    const val CleanUpMethodNameArgument: String = "cleanUpMethodName"
+    const val CleanUpMethodNameArgumentDefaultValue: String = "cleanUp"
 
     const val MetadataPackage: String = "hilt_effects_plugin"
     const val TargetInterfaceMetadataAnnotation: String = "TargetInterfaceMetadata"
@@ -30,6 +32,7 @@ object Const {
     const val MetadataImplClassname: String = "implementationClassName"
     const val MetadataHiltComponent: String = "hiltComponentClassName"
     const val MetadataHiltScope: String = "hiltScopeClassName"
+    const val MetadataCleanUpMethodName: String = "cleanUpMethodName"
 
     fun commandExecutorName(
         className: ClassName,

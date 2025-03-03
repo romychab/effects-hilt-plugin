@@ -2,9 +2,11 @@ package com.elveum.effects.core.v2.impl
 
 import com.elveum.effects.core.v2.CommandExecutor
 import com.elveum.effects.core.v2.ObservableResourceStore
+import com.elveum.effects.core.v2.ObservableResourceStore.ResourceObserver
 import com.elveum.effects.core.v2.impl.observers.CoroutineCommandObserver
 import com.elveum.effects.core.v2.impl.observers.FlowCommandObserver
 import com.elveum.effects.core.v2.impl.observers.OneTimeResourceObserver
+import com.elveum.effects.core.v2.impl.observers.OneTimeResourceObserver.ObserverRemovalListener
 import com.elveum.effects.core.v2.impl.observers.SimpleCommandObserver
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -16,11 +18,14 @@ import kotlinx.coroutines.flow.channelFlow
 
 public class CommandExecutorImpl<Resource>(
     private val resourceStore: ObservableResourceStore<Resource>,
-) : CommandExecutor<Resource> {
+) : CommandExecutor<Resource>, ObserverRemovalListener<Resource> {
+
+    private val activeUnitCommandObservers = mutableSetOf<ResourceObserver<Resource>>()
 
     override fun execute(command: (Resource) -> Unit) {
         val observer = SimpleCommandObserver(command)
-        val oneTimeObserver = OneTimeResourceObserver(resourceStore, observer)
+        val oneTimeObserver = OneTimeResourceObserver(resourceStore, observer, this)
+        activeUnitCommandObservers.add(oneTimeObserver)
         resourceStore.addObserver(oneTimeObserver)
     }
 
@@ -57,6 +62,16 @@ public class CommandExecutorImpl<Resource>(
                 resourceStore.removeObserver(flowCommandObserver)
             }
         }
+    }
+
+    override fun cleanUp() {
+        this.activeUnitCommandObservers.toList()
+            .forEach(resourceStore::removeObserver)
+        this.activeUnitCommandObservers.clear()
+    }
+
+    override fun onObserverRemoved(observer: ResourceObserver<Resource>) {
+        this.activeUnitCommandObservers.remove(observer)
     }
 
 }

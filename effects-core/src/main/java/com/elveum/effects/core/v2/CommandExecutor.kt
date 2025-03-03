@@ -60,4 +60,9 @@ public interface CommandExecutor<Resource> {
         command: (Resource) -> Flow<T>
     ): Flow<T>
 
+    /**
+     * Cancel all pending non-processed unit commands executed by [execute].
+     */
+    public fun cleanUp()
+
 }

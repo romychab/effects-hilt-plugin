@@ -1,10 +1,8 @@
 %PACKAGE_STATEMENT%
 
-import com.elveum.effects.core.v2.EffectCleaner
 import com.elveum.effects.core.v2.EffectController
 import com.elveum.effects.core.v2.EffectRecord
 import com.elveum.effects.core.v2.ObservableResourceStore
-import com.elveum.effects.core.v2.impl.EffectCleanerImpl
 import com.elveum.effects.core.v2.impl.EffectControllerImpl
 import dagger.Module
 import dagger.Provides
@@ -17,13 +15,6 @@ import %HILT_COMPONENT%
 @Module
 @InstallIn(%HILT_COMPONENT_NAME%::class)
 object %CLASSNAME% {
-
-    @Provides
-    fun provideCleanerOfEffectImpl(
-        observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>,
-    ): EffectCleaner<%EFFECT_IMPL_NAME%> {
-        return EffectCleanerImpl(observableResourceStore)
-    }
 
     @Provides
     fun provideControllerOfEffectImpl(

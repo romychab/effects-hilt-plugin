@@ -34,6 +34,10 @@ class EffectInfo(
     val hiltComponent: ClassName by lazy { hiltComponentDeclaration.toClassName() }
     val hiltScope: ClassName by lazy { hiltComponentDeclaration.findHiltScope(effectAnnotation) }
 
+    val cleanUpMethodName: EffectCleanUpMethodName by lazy {
+        EffectCleanUpMethodName(effectAnnotation.getString(Const.CleanUpMethodNameArgument))
+    }
+
     private fun findCustomAnnotation() = effectClassDeclaration.wrappedAnnotations
         .firstInstanceOf<HiltEffect>()
 

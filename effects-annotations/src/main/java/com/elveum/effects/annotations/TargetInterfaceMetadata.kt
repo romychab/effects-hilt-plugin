@@ -13,4 +13,5 @@ public annotation class TargetInterfaceMetadata(
     val interfaceClassName: String,
     val hiltComponentClassName: String,
     val hiltScopeClassName: String,
+    val cleanUpMethodName: String,
 )

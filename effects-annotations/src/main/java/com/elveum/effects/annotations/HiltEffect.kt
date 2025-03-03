@@ -57,4 +57,47 @@ public annotation class HiltEffect(
      */
     public val installIn: KClass<*> = Any::class,
 
+    /**
+     * Set an optional Clean-up method name in the target interface.
+     *
+     * Please note, the cleanUp() logic cancels only Unit commands. Suspend- and
+     * Flow- commands can be cancelled by cancelling a CoroutineScope used
+     * for their execution.
+     *
+     * By default, 'cleanUp' name is used if this parameter is not specified.
+     *
+     * A cleanUp() method is a special method which should not be abstract and
+     * should not return any result. You can add such method to your target interface
+     * if you want to manually clear pending unit commands which hasn't been processed yet.
+     *
+     * For example:
+     *
+     * ```
+     * interface MyEffects {
+     *     fun showToast(message: String)
+     *     fun cleanUp() = Unit // should not be abstract
+     * }
+     *
+     * @HiltEffect(cleanUpMethodName = "cleanUp")
+     * class MyEffectsImpl : MyEffects { ... }
+     *
+     * @HiltViewModel
+     * class MyViewModel @Inject constructor(
+     *     private val myEffects: MyEffects
+     * ) {
+     *
+     *     override fun onCleared() {
+     *         super.onCleared()
+     *         myEffects.cleanUp()
+     *     }
+     *
+     * }
+     * ```
+     *
+     * In this particular case, calling `myEffects.cleanUp` in the
+     * `ViewModel.onCleared` will cancel all non-processed commands
+     * for displaying Toast-messages.
+     */
+    public val cleanUpMethodName: String = "",
+
 )

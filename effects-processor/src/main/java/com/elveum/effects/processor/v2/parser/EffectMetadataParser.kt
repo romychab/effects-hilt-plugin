@@ -3,6 +3,7 @@
 package com.elveum.effects.processor.v2.parser
 
 import com.elveum.effects.processor.v2.data.Const
+import com.elveum.effects.processor.v2.data.EffectCleanUpMethodName
 import com.elveum.effects.processor.v2.data.EffectMetadata
 import com.elveum.effects.processor.v2.extensions.KSAnnotationWrapper
 import com.elveum.effects.processor.v2.extensions.KSClassDeclarationWrapper
@@ -51,6 +52,7 @@ private fun buildEffectMetadata(
     )
     val hiltComponent = ClassName.bestGuess(annotation.getString(Const.MetadataHiltComponent))
     val hiltScope = ClassName.bestGuess(annotation.getString(Const.MetadataHiltScope))
+    val originCleanUpMethodName = annotation.getString(Const.MetadataCleanUpMethodName)
 
     return if (interfaceDeclaration != null && implDeclaration != null) {
         EffectMetadata(
@@ -60,6 +62,7 @@ private fun buildEffectMetadata(
             hiltScope = hiltScope,
             metadataDeclaration = metadataDeclaration,
             hiltAppClassDeclaration = hiltAppClassDeclaration,
+            cleanUpMethodName = EffectCleanUpMethodName(originCleanUpMethodName)
         )
     } else {
         null

@@ -2,11 +2,16 @@ package com.elveum.effects.processor.v2.generators
 
 import com.elveum.effects.processor.v2.data.Const
 import com.elveum.effects.processor.v2.data.EffectMetadata
+import com.elveum.effects.processor.v2.exceptions.CleanUpFunctionIsAbstractException
+import com.elveum.effects.processor.v2.exceptions.NonDefaultCleanUpMethodIsNotSpecifiedException
+import com.elveum.effects.processor.v2.exceptions.NonUnitCleanUpFunctionException
 import com.elveum.effects.processor.v2.exceptions.UnitCommandWithReturnTypeException
 import com.elveum.effects.processor.v2.extensions.KSFunctionDeclarationWrapper
 import com.elveum.effects.processor.v2.extensions.implementInterface
+import com.elveum.effects.processor.v2.extensions.implementInterfaceMethod
 import com.elveum.effects.processor.v2.extensions.primaryConstructorWithProperties
 import com.elveum.effects.processor.v2.generators.base.KspClassV2Writer
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
 import com.squareup.kotlinpoet.ClassName
@@ -19,6 +24,7 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 
 class EffectMediatorGenerator(
     private val writer: KspClassV2Writer,
@@ -34,6 +40,12 @@ class EffectMediatorGenerator(
         val typeSpecBuilder = TypeSpec.classBuilder(mediatorClassName)
             .addConstructor(interfaceClassName)
             .implementInterface(interfaceDeclaration, ::implementMethod)
+            .apply {
+                val cleanUpMethodDeclaration = findCleanUpMethod(effectMetadata)
+                if (cleanUpMethodDeclaration != null) {
+                    implementCleanUpMethod(cleanUpMethodDeclaration)
+                }
+            }
 
         writer.write(
             typeSpec = typeSpecBuilder.build(),
@@ -50,6 +62,18 @@ class EffectMediatorGenerator(
         return primaryConstructorWithProperties(
             FunSpec.constructorBuilder()
                 .addParameter(COMMAND_EXECUTOR_PROPERTY, Const.commandExecutorName(interfaceClassName))
+                .build()
+        )
+    }
+
+    private fun TypeSpec.Builder.implementCleanUpMethod(
+        cleanUpMethodDeclaration: KSFunctionDeclaration,
+    ): TypeSpec.Builder {
+        val typeParameterResolver = cleanUpMethodDeclaration.typeParameters.toTypeParameterResolver()
+        val funBuilder = implementInterfaceMethod(cleanUpMethodDeclaration, typeParameterResolver)
+        return addFunction(
+            funBuilder
+                .addCode("commandExecutor.cleanUp()")
                 .build()
         )
     }
@@ -114,6 +138,36 @@ class EffectMediatorGenerator(
         typeParameterResolver: TypeParameterResolver,
     ): Boolean {
         return toTypeName(typeParameterResolver) == UNIT
+    }
+
+    private fun findCleanUpMethod(metadata: EffectMetadata): KSFunctionDeclaration? {
+        val cleanUpMethodName = metadata.cleanUpMethodName
+        return metadata.targetInterfaceDeclaration.getAllFunctions()
+            .firstOrNull { functionDeclaration ->
+                functionDeclaration.simpleName.asString() == cleanUpMethodName.simpleText
+            }
+            .let { assertCleanUpFunctionDeclaration(metadata, it) }
+    }
+
+    private fun assertCleanUpFunctionDeclaration(
+        metadata: EffectMetadata,
+        cleanUpFunctionDeclaration: KSFunctionDeclaration?,
+    ): KSFunctionDeclaration? {
+        if (cleanUpFunctionDeclaration == null ) {
+            if (metadata.cleanUpMethodName.isDefaultCleanUpMethodName) {
+                return null
+            } else {
+                throw NonDefaultCleanUpMethodIsNotSpecifiedException(metadata)
+            }
+        }
+        val typeParameterResolver = cleanUpFunctionDeclaration.typeParameters.toTypeParameterResolver()
+        if (cleanUpFunctionDeclaration.returnType?.isUnit(typeParameterResolver) != true) {
+            throw NonUnitCleanUpFunctionException(cleanUpFunctionDeclaration)
+        }
+        if (cleanUpFunctionDeclaration.isAbstract) {
+            throw CleanUpFunctionIsAbstractException(cleanUpFunctionDeclaration)
+        }
+        return cleanUpFunctionDeclaration
     }
 
     enum class CommandType(

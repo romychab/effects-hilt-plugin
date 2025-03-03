@@ -21,6 +21,7 @@ class EffectMetadataGenerator(
             setVariable("TARGET_INTERFACE_CLASSNAME", effectInfo.targetInterfaceClassName.canonicalName)
             setVariable("HILT_COMPONENT_CLASSNAME", effectInfo.hiltComponent.canonicalName)
             setVariable("HILT_SCOPE_CLASSNAME", effectInfo.hiltScope.canonicalName)
+            setVariable("CLEAN_UP_METHOD_NAME", effectInfo.cleanUpMethodName.originCleanUpMethodName)
         }
         writer.write(classContent)
     }
