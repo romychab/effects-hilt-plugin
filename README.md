@@ -13,6 +13,9 @@ As a result, you can work with one-off events more easily. For example,
 you can show toasts, display dialogs, execute navigation commands in a view-model
 without memory leaks.
 
+> In general, the plugin allows components with a longer lifecycle to interact with
+components with a shorter lifecycle without memory leaks.
+
 ## Prerequisites
 
 1. Use the latest version of Android Studio.
@@ -63,7 +66,7 @@ Let's imagine you want to:
    }
    ```
 
-2. Inject the interface to a view-model constructor:
+2. Inject the interface to a view-model constructor (yep, you don't need to create a separate Hilt module):
 
    ```kotlin
    @HiltViewModel
@@ -88,7 +91,10 @@ Let's imagine you want to:
    }
    ```
 
-3. Implement the interface. All you need is to annotate the implementation with `@HiltEffect`:
+3. Implement the interface and annotate the implementation with `@HiltEffect`.
+   As a result, a Hilt module will be automatically generated for you. And
+   in addition, you can safely use an activity reference or any other UI-related
+   stuff in the implementation:
 
    ```kotlin
    @HiltEffect // <-- do not forget this annotation
@@ -204,7 +210,8 @@ Let's take a brief look at different ways of connecting event handlers:
    when `EffectProvider` composition is going to be destroyed. Also `EffectProvider` provides
    you an additional function `getEffect<T>()` which can be used for retrieving handlers.
 3. `EffectController<T>` instances; usually you don't need to use effect controllers
-   directly. But in rare cases it may be useful, e.g. in custom UI components:
+   directly. But in rare cases it may be useful, e.g. in custom UI components. Effect
+   controllers are not created by hands; instead they are automatically provided by Hilt DI framework:
 
    ```kotlin
    @Inject
@@ -213,15 +220,15 @@ Let's take a brief look at different ways of connecting event handlers:
    // attach an event handler to the interface
    effectController.start(MyEffectImpl())
    
-   // detach the previosly attached event handler
+   // detach the previously attached event handler
    effectController.stop()
    ```
 
 ## Detailed explanation
 
 The generalized mechanism of this plugin works as follows:
-the plugin allows objects with a longer lifecycle to interact with
-objects with a shorter lifecycle without memory leaks.
+the plugin allows components with a longer lifecycle to interact with
+components with a shorter lifecycle without memory leaks.
 The most likely scenario is calling UI-related methods from view-models.
 
 If an object with a shorter lifecycle is not available at the time of the call,
@@ -234,9 +241,9 @@ There are three types of calls in total:
 
 Let's take a closer look at all three types of calls.
 
-### 1. One-off Event
+### :one: One-off Event
 
-It is just one-off event. One of events can be used when you don't
+It is just one-off event. One-off events can be used when you don't
 need the result of the execution. A simple example is displaying a Toast message.
 
 In order to declare a one-off event, simply write a regular non-suspend method that
@@ -303,7 +310,7 @@ If you still need not only to send a one-off event but also to receive the resul
 of its execution (whether success or error, it doesn’t matter), then consider
 the second type of calls - Suspend Calls.
 
-### 2. Suspend Call
+### :two: Suspend Call
 
 This is more advanced call because it can return a result - either success or an
 error (`Exception`). You can think of this type of call as a request with an
@@ -319,7 +326,7 @@ interface Dialogs {
 
 Let’s consider an implementation example, now based on Jetpack Compose UI framework:
 
-```
+```kotlin
 @HiltEffect
 class DialogsImpl : Dialogs {
 
@@ -450,15 +457,15 @@ class MainActivity: AppCompatActivity() {
             }
         }
     }
+    
+}
 
-    @Composable
-    fun MyApp() {
-        // your app code here...
+@Composable
+fun MyApp() {
+    // your app code here...
 
-        // show dialog if requested
-        getEffect<DialogsImpl>().Dialog()
-    }
-
+    // show dialog if requested
+    getEffect<DialogsImpl>().Dialog()
 }
 
 @HiltViewModel
@@ -494,7 +501,7 @@ waits for the restart of the Activity. But from the effect implementation's pers
 the call is cancelled when the Activity is stopped, and then re-executed again when
 the Activity is restarted.
 
-### 3. Flow Call
+### :three: Flow Call
 
 The third type of call allows you to get multiple or even an infinite number of
 results. For example, you can implement event listening behavior.
@@ -573,6 +580,74 @@ STOPPED state. They will wait until the Activity goes back to the STARTED state.
 At the same time, from the effect implementation’s perspective, the Flow will be
 automatically cancelled after `onStop()` is called, and then restarted again after `onStart()`.
 
+## Manual Clean-up 
+
+All Suspend- and Flow- calls are automatically released when you cancel a `CoroutineScope` which
+has been used for the execution of that calls. For example, when you call a suspending method in
+a view-model, you usually use `viewModelScope`:
+
+```kotlin
+interface MyEffects {
+    suspend fun testSuspend(): String
+}
+
+@HiltViewModel
+class MyViewModel @Inject constructor(
+    private val myEffects: MyEffects
+) : ViewModel() {
+    
+    fun bar() {
+        viewModelScope.launch { // <-- using viewModelScope
+            // here myEffects.testSuspend() execution will
+            // be automatically cancelled when the view-model is destroyed
+            val result = myEffects.testSuspend()
+            println(result)
+        }
+    }
+}
+```
+
+But this behavior is not applied to simple Unit calls, because they can be
+executed from any place, and they don't track coroutine scopes. 
+
+Sometimes you should manually cancel them to avoid unexpected executions
+after you close a screen. For this purpose, an optional `cleanUp()` method is introduced:
+
+```kotlin
+interface MyEffects {
+    fun showToast(message: String)
+    fun cleanUp() = Unit // optional cleanUp
+}
+
+@HiltViewModel
+class MyViewModel @Inject constructor(
+    private val myEffects: MyEffects
+) : ViewModel() {
+
+    override fun onCleared() {
+        super.onCleared()
+        // manual call of cleanUp();
+        // this will cancel any pending non-processed toast-messages,
+        // even if MyEffects instance has longer lifecycle than the view-model
+        myEffects.cleanUp()
+    }
+}
+```
+
+Also, you can set your own name for the cleanUp function if needed:
+
+```kotlin
+interface MyEffects {
+    fun showToast(message: String)
+    fun destroy() = Unit
+}
+
+@HiltEffect(
+    cleanUpMethodName = "destroy"
+)
+class MyEffectsImpl : MyEffects { ... }
+```
+
 ## Multiple effect handlers
 
 Up until now, we assumed that interfaces + implementations have a one-to-one relationship.
@@ -647,4 +722,43 @@ implementations:
   interface Router<T : Screen> {
       fun launch(screen: T)
   }
+  ```
+
+- Multiple effect implementations can point to the same target interface. But in this
+  case they should be installed into the same Hilt component and they should have the same
+  cleanUp method name.
+
+  For example, this is a target interface:
+
+  ```kotlin
+  interface Router {
+      fun launch(route: String)
+  }
+  ```
+  
+  You can create two or more implementations like this:
+
+  ```kotlin
+  @HiltEffect
+  class Router1 : Router { ... }
+  
+  @HiltEffect
+  class Router2 : Router { ... }
+  ```
+  
+  Also, you can specify additional parameters, but they should be the same
+  for both implementations:
+
+  ```kotlin
+  @HiltEffect(
+    installIn = SingletonComponent::class,
+    cleanUpMethodName = "destroy",
+  )
+  class Router1 : Router { ... }
+  
+  @HiltEffect(
+    installIn = SingletonComponent::class,
+    cleanUpMethodName = "destroy",
+  )
+  class Router2 : Router { ... }
   ```
