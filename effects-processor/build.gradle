@@ -8,21 +8,24 @@ kotlin {
 }
 
 dependencies {
-    //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project (':effects-annotations')
 
-    implementation 'com.squareup:javapoet:1.13.0'
     implementation 'com.squareup:kotlinpoet:1.14.2'
     implementation 'com.squareup:kotlinpoet-ksp:1.14.2'
-    implementation 'com.squareup:kotlinpoet-javapoet:1.12.0'
     implementation 'com.google.devtools.ksp:symbol-processing-api:2.0.20-1.0.25'
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core"
+    testImplementation "junit:junit:$junit"
+    testImplementation "io.mockk:mockk:$mockk"
+    testImplementation "com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0"
+    testImplementation "javax.inject:javax.inject:1"
 }
 
 ext {
     PUBLISH_GROUP_ID = 'com.elveum'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-processor'
-    PUBLISH_DESCRIPTION = "Hilt plugin (annotation processor) for easier implementation of effects in MVVM"
+    PUBLISH_DESCRIPTION = "Hilt plugin (annotation processor) for easier implementation of one-off events"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"

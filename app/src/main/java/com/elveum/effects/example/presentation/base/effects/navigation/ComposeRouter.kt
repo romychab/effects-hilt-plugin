@@ -1,27 +1,25 @@
 package com.elveum.effects.example.presentation.base.effects.navigation
 
 import androidx.activity.ComponentActivity
-import androidx.navigation.NavController
-import com.elveum.effects.annotations.MviEffect
+import androidx.compose.runtime.Stable
+import androidx.navigation.NavHostController
+import com.elveum.effects.annotations.HiltEffect
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.presentation.CatDetailsRoute
 
-@MviEffect
+@HiltEffect
+@Stable
 class ComposeRouter(
-    private val activity: ComponentActivity
+    private val activity: ComponentActivity,
+    val navController: NavHostController,
 ) : Router {
 
-    private var navController: NavController? = null
-
     override fun launchDetails(cat: Cat) {
-        navController?.navigate(CatDetailsRoute(cat.id))
+        navController.navigate(CatDetailsRoute(cat.id))
     }
 
     override fun goBack() {
         activity.onBackPressedDispatcher.onBackPressed()
     }
 
-    fun setNavController(navController: NavController) {
-        this.navController = navController
-    }
 }

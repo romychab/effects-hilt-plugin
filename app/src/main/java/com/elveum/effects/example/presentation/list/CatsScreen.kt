@@ -29,8 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.elveum.container.Container
+import com.elveum.effects.compose.getEffect
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
+import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.components.ContainerView
 import com.elveum.effects.example.presentation.components.LikedIcon
 
@@ -38,15 +40,14 @@ import com.elveum.effects.example.presentation.components.LikedIcon
 fun CatsScreen() {
     val viewModel = hiltViewModel<CatsViewModel>()
     val container by viewModel.catsLiveData.observeAsState(Container.Pending)
+    val uiActions = getEffect<ComposeUiActions>()
     ContainerView(
         modifier = Modifier.fillMaxSize(),
         container = container,
     ) { cats ->
         CatsContent(
             cats = cats,
-            onLike = viewModel::toggleLike,
-            onDelete = viewModel::delete,
-            onCatChosen = viewModel::launchDetails,
+            onAction = uiActions::submitAction,
         )
     }
 }
@@ -54,9 +55,7 @@ fun CatsScreen() {
 @Composable
 fun CatsContent(
     cats: List<Cat>,
-    onLike: (Cat) -> Unit,
-    onDelete: (Cat) -> Unit,
-    onCatChosen: (Cat) -> Unit,
+    onAction: (CatsAction) -> Unit,
 ) {
     LazyColumn {
         items(
@@ -65,10 +64,10 @@ fun CatsContent(
         ) { cat ->
             CatItem(
                 cat = cat,
-                onLike = { onLike(cat) },
-                onDelete = { onDelete(cat) },
+                onLike = { onAction(CatsAction.ToggleLike(cat)) },
+                onDelete = { onAction(CatsAction.Delete(cat)) },
                 modifier = Modifier
-                    .clickable { onCatChosen(cat) }
+                    .clickable { onAction(CatsAction.LaunchDetails(cat)) }
                     .animateItem(),
             )
         }

@@ -59,7 +59,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.elveum'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects-compose'
-    PUBLISH_DESCRIPTION = "Hilt plugin (Jetpack Compose library) for easier implementation of effects in MVVM / Jetpack Compose"
+    PUBLISH_DESCRIPTION = "Hilt plugin (Jetpack Compose library) for easier implementation of one-off events in MVVM / Jetpack Compose"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"
