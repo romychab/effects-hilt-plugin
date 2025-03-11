@@ -22,20 +22,22 @@ components with a shorter lifecycle without memory leaks.
 2. Make sure [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) is added properly to your project. Minimal version of Hilt should be `2.48.1`.
 3. Make sure [KSP](https://kotlinlang.org/docs/ksp-quickstart.html#add-a-processor) plugin is added to your project.
 
+Check out [this page](docs/ksp-and-hilt-installation.md) for more details about installation of Hilt + KSP.
+
 ## Installation
 
-1. Add [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) and [KSP](https://kotlinlang.org/docs/ksp-quickstart.html#add-a-processor) to your Android project
+1. Add [Hilt and KSP](docs/ksp-and-hilt-installation.md) to your Android project
 2. Add the following dependencies:
 
 ```kotlin
 // annotation processor (required):
-ksp "com.elveum:effects-processor:1.0.1"
+ksp("com.elveum:effects-processor:1.0.1")
 
 // for projects with Jetpack Compose:
-implementation "com.elveum:effects-compose:1.0.1"
+implementation("com.elveum:effects-compose:1.0.1")
 
 // for projects without Jetpack Compose:
-implementation "com.elveum:effects-core:1.0.1"
+implementation("com.elveum:effects-core:1.0.1")
 ```
 
 ## Primitive example
