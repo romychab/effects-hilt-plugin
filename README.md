@@ -16,6 +16,21 @@ without memory leaks.
 > In general, the plugin allows components with a longer lifecycle to interact with
 components with a shorter lifecycle without memory leaks.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Primitive Example](#primitive-example)
+- [Default Lifecycle](#default-lifecycle)
+- [Detailed Explanation](#detailed-explanation)
+    1. [One-off Event](#one-one-off-event)
+    2. [Suspend Call](#two-suspend-call)
+    3. [Flow Call](#three-flow-call)
+- [Manual Clean-up](#manual-clean-up)
+- [Multiple Effect Handlers](#multiple-effect-handlers)
+- [Multi-Module Projects](#multi-module-projects)
+- [Limitations](#limitations)
+
 ## Prerequisites
 
 1. Use the latest version of Android Studio.
