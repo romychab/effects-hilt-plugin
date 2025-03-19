@@ -16,7 +16,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-@HiltEffect
+//@HiltEffect
 @Stable
 class ComposeDialogs(
     @ActivityContext private val context: Context,
