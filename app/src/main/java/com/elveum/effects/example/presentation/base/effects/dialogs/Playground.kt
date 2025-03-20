@@ -25,9 +25,6 @@ public class __DialogsMediator @Inject constructor(
     private val commandExecutor: CommandExecutor<Dialogs>,
 ) : Dialogs {
 
-    // --- new property
-    private var isUnitCommandDestroyed = false
-
     public override suspend fun showAlertDialog(config: AlertDialogConfig): Boolean {
         return commandExecutor.executeCoroutine {
             it.showAlertDialog(config)
@@ -36,7 +33,6 @@ public class __DialogsMediator @Inject constructor(
 
     // --- modified
     public override fun toast(message: String) {
-        if (isUnitCommandDestroyed) return
         commandExecutor.execute {
             it.toast(message)
         }
@@ -49,7 +45,6 @@ public class __DialogsMediator @Inject constructor(
 
     // --- new method
     public fun __internalCleanUp() {
-        isUnitCommandDestroyed = true
         commandExecutor.cleanUp()
     }
 
@@ -145,10 +140,18 @@ class __DialogsViewModelMediator(
     viewModelLifecycle: ViewModelLifecycle,
 ) : Dialogs by dialogsMediator {
 
+    private var isUnitCommandDestroyed = false
+
     init {
         viewModelLifecycle.addOnClearedListener {
             dialogsMediator.__internalCleanUp()
+            isUnitCommandDestroyed = true
         }
+    }
+
+    override fun toast(message: String) {
+        if (isUnitCommandDestroyed) return
+        dialogsMediator.toast(message)
     }
 
 }
