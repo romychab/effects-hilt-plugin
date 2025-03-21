@@ -24,6 +24,7 @@ class EffectInterfaceHiltModuleGenerator(
             setVariable("HILT_SCOPE", effectMetadata.hiltScope.canonicalName)
             setVariable("HILT_SCOPE_NAME", effectMetadata.hiltScope.simpleName)
             setVariable("MEDIATOR_NAME", result.mediatorClassName.simpleName)
+            setVariable("PRIORITY_CONST", effectMetadata.getHiltComponentPriorityConstName())
         }
         writer.write(classContent)
     }

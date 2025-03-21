@@ -6,6 +6,4 @@ interface Dialogs {
 
     fun toast(message: String)
 
-    fun cleanUp() = Unit
-
 }

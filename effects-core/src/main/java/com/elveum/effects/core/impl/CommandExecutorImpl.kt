@@ -21,8 +21,10 @@ public class CommandExecutorImpl<Resource>(
 ) : CommandExecutor<Resource>, ObserverRemovalListener<Resource> {
 
     private val activeUnitCommandObservers = mutableSetOf<ResourceObserver<Resource>>()
+    private var isUnitCommandDestroyed = false
 
     override fun execute(command: (Resource) -> Unit) {
+        if (isUnitCommandDestroyed) return
         val observer = SimpleCommandObserver(command)
         val oneTimeObserver = OneTimeResourceObserver(resourceStore, observer, this)
         activeUnitCommandObservers.add(oneTimeObserver)
@@ -65,6 +67,7 @@ public class CommandExecutorImpl<Resource>(
     }
 
     override fun cleanUp() {
+        this.isUnitCommandDestroyed = true
         this.activeUnitCommandObservers.toList()
             .forEach(resourceStore::removeObserver)
         this.activeUnitCommandObservers.clear()

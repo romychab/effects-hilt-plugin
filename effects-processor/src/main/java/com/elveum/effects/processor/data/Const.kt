@@ -17,9 +17,11 @@ object Const {
     val DefineComponentName = ClassName("dagger.hilt", "DefineComponent")
 
     val ActivityRetainedComponentName = ClassName("dagger.hilt.android.components", "ActivityRetainedComponent")
+    val SingletonComponentName = ClassName("dagger.hilt.components", "SingletonComponent")
     val ActivityRetainedScope = ClassName("dagger.hilt.android.scopes", "ActivityRetainedScoped")
     val JavaxScopeAnnotationName = ClassName("javax.inject", "Scope")
     val JakartaScopeAnnotationName = ClassName("jakarta.inject", "Scope")
+    val JavaxInjectAnnotationName = ClassName("javax.inject", "Inject")
 
     const val TargetArgument: String = "target"
     const val InstallInArgument: String = "installIn"
@@ -33,6 +35,11 @@ object Const {
     const val MetadataHiltComponent: String = "hiltComponentClassName"
     const val MetadataHiltScope: String = "hiltScopeClassName"
     const val MetadataCleanUpMethodName: String = "cleanUpMethodName"
+
+    const val SingletonPriorityConstName = "SINGLETON_PRIORITY"
+    const val ActivityRetainedPriorityConstName = "ACTIVITY_RETAINED_PRIORITY"
+    const val ViewModelPriorityConstName = "VIEW_MODEL_PRIORITY"
+    const val OtherPriorityConstName = "OTHER_PRIORITY"
 
     fun commandExecutorName(
         className: ClassName,

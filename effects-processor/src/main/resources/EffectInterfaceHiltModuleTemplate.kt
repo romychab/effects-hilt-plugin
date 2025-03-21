@@ -3,7 +3,9 @@
 import com.elveum.effects.core.CommandExecutor
 import com.elveum.effects.core.EffectController
 import com.elveum.effects.core.EffectRecord
+import com.elveum.effects.core.HiltOverridable
 import com.elveum.effects.core.ObservableResourceStore
+import com.elveum.effects.core.getInstanceWithMaxPriority
 import com.elveum.effects.core.impl.CommandExecutorImpl
 import com.elveum.effects.core.impl.EffectControllerImpl
 import com.elveum.effects.core.impl.ObservableResourceStoreImpl
@@ -31,8 +33,15 @@ object %CLASSNAME% {
     }
 
     @Provides
-    fun provideMediator(commandExecutor: CommandExecutor<%TARGET_INTERFACE_NAME%>): %TARGET_INTERFACE_NAME% {
-        return %MEDIATOR_NAME%(commandExecutor)
+    @IntoSet
+    fun provideMediatorIntoSet(commandExecutor: CommandExecutor<%TARGET_INTERFACE_NAME%>): HiltOverridable<%TARGET_INTERFACE_NAME%> {
+        val mediator = %MEDIATOR_NAME%(commandExecutor)
+        return HiltOverridable(mediator, HiltOverridable.%PRIORITY_CONST%)
+    }
+
+    @Provides
+    fun provideMediator(set: Set<@JvmSuppressWildcards HiltOverridable<%TARGET_INTERFACE_NAME%>>): %TARGET_INTERFACE_NAME% {
+        return set.getInstanceWithMaxPriority()
     }
 
     @Provides
