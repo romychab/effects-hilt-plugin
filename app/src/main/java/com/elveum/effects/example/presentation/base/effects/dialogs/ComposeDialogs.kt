@@ -13,22 +13,25 @@ import androidx.compose.runtime.setValue
 import com.elveum.effects.annotations.HiltEffect
 import dagger.hilt.android.qualifiers.ActivityContext
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-//@HiltEffect
+@HiltEffect
 @Stable
 class ComposeDialogs(
     @ActivityContext private val context: Context,
 ) : Dialogs {
 
-    private var dialogRecord by mutableStateOf<DialogRecord?>(null)
+    private var dialogState by mutableStateOf<DialogState?>(null)
 
     override suspend fun showAlertDialog(config: AlertDialogConfig): Boolean {
         return suspendCancellableCoroutine { continuation ->
-            this.dialogRecord = DialogRecord(config, continuation)
+            val onResponse: (Boolean) -> Unit = {
+                continuation.resume(it)
+                this.dialogState = null
+            }
+            this.dialogState = DialogState(config, onResponse)
             continuation.invokeOnCancellation {
-                this.dialogRecord = null
+                this.dialogState = null
             }
         }
     }
@@ -39,42 +42,31 @@ class ComposeDialogs(
 
     @Composable
     fun Dialog() {
-        val finalDialogRecord = this.dialogRecord ?: return
-        with(finalDialogRecord.config) {
+        this.dialogState?.apply {
             AlertDialog(
-                onDismissRequest = {
-                    finalDialogRecord.continuation.resume(false)
-                    dialogRecord = null
+                onDismissRequest = ::reject,
+                dismissButton = {
+                    TextButton(::reject) {
+                        Text(config.negativeButton)
+                    }
                 },
                 confirmButton = {
-                    TextButton(
-                        onClick = {
-                            finalDialogRecord.continuation.resume(true)
-                            dialogRecord = null
-                        }
-                    ) {
-                        Text(positiveButton)
+                    TextButton(::confirm) {
+                        Text(config.positiveButton)
                     }
                 },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            finalDialogRecord.continuation.resume(false)
-                            dialogRecord = null
-                        }
-                    ) {
-                        Text(negativeButton)
-                    }
-                },
-                title = { Text(title) },
-                text = { Text(message) },
+                title = { Text(config.title) },
+                text = { Text(config.message) },
             )
         }
     }
 
-    private class DialogRecord(
+    private class DialogState(
         val config: AlertDialogConfig,
-        val continuation: Continuation<Boolean>,
-    )
+        val onResponse: (Boolean) -> Unit,
+    ) {
+        fun confirm() = onResponse(true)
+        fun reject() = onResponse(false)
+    }
 
 }
