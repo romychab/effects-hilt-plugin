@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 
 abstract class AbstractKspTest(
     private val baseResourcePath: String,
+    internal val testMode: KspTestMode = KspTestMode.Assertion,
 ) {
 
     fun compileSourceFile(filePath: String): KspResult {
