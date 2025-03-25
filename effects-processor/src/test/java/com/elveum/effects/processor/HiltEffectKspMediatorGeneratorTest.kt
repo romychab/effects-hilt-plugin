@@ -4,7 +4,7 @@ import com.elveum.effects.processor.base.AbstractKspTest
 import com.elveum.effects.processor.base.runGenerationTest
 import org.junit.Test
 
-class HiltEffectKspMediatorGeneratorTest : AbstractKspTest("custom-effect/generation/mediator") {
+class HiltEffectKspMediatorGeneratorTest : AbstractKspTest("hilt-effect/generation/mediator") {
 
     @Test
     fun testUnitCommandImplementation() = runGenerationTest {

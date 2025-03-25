@@ -4,7 +4,7 @@ import com.elveum.effects.processor.base.AbstractKspTest
 import com.elveum.effects.processor.base.runGenerationTest
 import org.junit.Test
 
-class HiltEffectKspMetadataGeneratorTest : AbstractKspTest("custom-effect/generation/metadata") {
+class HiltEffectKspMetadataGeneratorTest : AbstractKspTest("hilt-effect/generation/metadata") {
 
     @Test
     fun generator_withDefaultArgs_generatesMetadata() = runGenerationTest {

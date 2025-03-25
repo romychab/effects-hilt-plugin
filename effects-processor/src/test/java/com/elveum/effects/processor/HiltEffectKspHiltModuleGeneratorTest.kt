@@ -4,7 +4,7 @@ import com.elveum.effects.processor.base.AbstractKspTest
 import com.elveum.effects.processor.base.runGenerationTest
 import org.junit.Test
 
-class HiltEffectKspHiltModuleGeneratorTest : AbstractKspTest("custom-effect/generation/modules") {
+class HiltEffectKspHiltModuleGeneratorTest : AbstractKspTest("hilt-effect/generation/modules") {
 
     @Test
     fun test_withDefaultInstallInParameter() = runGenerationTest {
