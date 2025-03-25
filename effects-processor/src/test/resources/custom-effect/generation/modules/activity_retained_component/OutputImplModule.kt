@@ -1,4 +1,3 @@
-
 import com.elveum.effects.core.EffectController
 import com.elveum.effects.core.EffectRecord
 import com.elveum.effects.core.ObservableResourceStore
