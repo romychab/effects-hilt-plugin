@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class HiltEffectKspValidationTest : AbstractKspTest("custom-effect/validation") {
+class HiltEffectKspValidationTest : AbstractKspTest("hilt-effect/validation") {
 
     @Test
     fun abstractClass_fails() {

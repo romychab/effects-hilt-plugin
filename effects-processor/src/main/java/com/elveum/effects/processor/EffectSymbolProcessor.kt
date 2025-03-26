@@ -5,8 +5,7 @@ import com.elveum.effects.processor.data.EffectInfo
 import com.elveum.effects.processor.data.EffectMetadata
 import com.elveum.effects.processor.exceptions.AbstractEffectKspException
 import com.elveum.effects.processor.generators.EffectImplementationHiltModuleGenerator
-import com.elveum.effects.processor.generators.EffectInterfaceHiltModuleGenerator
-import com.elveum.effects.processor.generators.EffectMediatorGenerator
+import com.elveum.effects.processor.generators.EffectMediatorGenerators
 import com.elveum.effects.processor.generators.EffectMetadataGenerator
 import com.elveum.effects.processor.generators.base.KspClassWriter
 import com.elveum.effects.processor.parser.parseEffects
@@ -26,6 +25,7 @@ class EffectSymbolProcessor(
 ) : SymbolProcessor {
 
     private val writer = KspClassWriter(codeGenerator)
+    private val effectMediatorGenerators = EffectMediatorGenerators(writer)
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
@@ -39,7 +39,7 @@ class EffectSymbolProcessor(
                 val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
                         effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
                 val uniqueEffectMetadataList = validateAndFilterEffectMetadata(effectMetadataSequence)
-                generateEffectMediators(uniqueEffectMetadataList)
+                effectMediatorGenerators.generateEffectMediators(uniqueEffectMetadataList)
             }
         } catch (e: AbstractEffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)
@@ -53,17 +53,6 @@ class EffectSymbolProcessor(
         effects.forEach { effectInfo ->
             metadataGenerator.generate(effectInfo)
             implHiltModuleGenerator.generate(effectInfo)
-        }
-    }
-
-    private fun generateEffectMediators(
-        uniqueEffectMetadataList: List<EffectMetadata>,
-    ) {
-        val mediatorGenerator = EffectMediatorGenerator(writer)
-        val interfaceHiltModuleGenerator = EffectInterfaceHiltModuleGenerator(writer)
-        uniqueEffectMetadataList.forEach { parsedMetadata ->
-            val mediatorResult = mediatorGenerator.generate(parsedMetadata)
-            interfaceHiltModuleGenerator.generate(parsedMetadata, mediatorResult)
         }
     }
 

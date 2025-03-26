@@ -19,7 +19,7 @@ buildscript {
         leak_canary = "2.12"
         compose_bom = "2024.10.00"
 
-        effects_lib_version = "1.0.1"
+        effects_lib_version = "1.0.2"
         junit = "4.13.2"
         mockk = "1.13.16"
     }

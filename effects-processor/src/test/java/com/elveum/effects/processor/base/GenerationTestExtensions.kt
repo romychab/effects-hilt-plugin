@@ -55,9 +55,12 @@ private class GenerationTestScopeImpl(
         fileName: String,
         expectedOutputFileName: String,
     ) {
-        val generatedMediator = result.getGeneratedFile(fileName)
-        assertEquals(ExitCode.OK, this.result.exitCode)
-        generatedMediator.assertContent("$packageName/$expectedOutputFileName")
+        abstractKspTest.testMode.execute(
+            packageName = this.packageName,
+            generatedFileName = fileName,
+            resourceFileName = expectedOutputFileName,
+            result = this.result,
+        )
     }
 
     override fun assertCompilationCompletes() {

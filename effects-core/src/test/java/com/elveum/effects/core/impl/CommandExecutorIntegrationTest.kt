@@ -8,6 +8,7 @@ import com.elveum.effects.core.ObservableResourceStore.ResourceObserver
 import com.uandcode.flowtest.CollectStatus
 import com.uandcode.flowtest.runFlowTest
 import io.mockk.MockKAnnotations
+import io.mockk.called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -366,6 +367,17 @@ class CommandExecutorIntegrationTest {
         assertTrue(resource1Channel.isClosedForSend)
         assertTrue(resource2Channel.isClosedForSend)
         resources.assertAllObserversAreRemoved()
+    }
+
+    @Test
+    fun `execute after cleanUp should not execute command`() {
+        commandExecutor.execute(simpleCommand)
+        commandExecutor.cleanUp()
+        resources.attachResource("Resource")
+
+        verify {
+            simpleCommand wasNot called
+        }
     }
 
     private fun expectedCoroutineResult(input: String) = Result.success("processed-$input")

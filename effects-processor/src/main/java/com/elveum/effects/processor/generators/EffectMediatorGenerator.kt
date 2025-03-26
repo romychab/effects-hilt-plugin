@@ -46,6 +46,7 @@ class EffectMediatorGenerator(
                     implementCleanUpMethod(cleanUpMethodDeclaration)
                 }
             }
+            .addInternalCleanUpMethod()
 
         writer.write(
             typeSpec = typeSpecBuilder.build(),
@@ -61,6 +62,7 @@ class EffectMediatorGenerator(
     private fun TypeSpec.Builder.addConstructor(interfaceClassName: ClassName): TypeSpec.Builder {
         return primaryConstructorWithProperties(
             FunSpec.constructorBuilder()
+                .addAnnotation(Const.JavaxInjectAnnotationName)
                 .addParameter(COMMAND_EXECUTOR_PROPERTY, Const.commandExecutorName(interfaceClassName))
                 .build()
         )
@@ -73,7 +75,15 @@ class EffectMediatorGenerator(
         val funBuilder = implementInterfaceMethod(cleanUpMethodDeclaration, typeParameterResolver)
         return addFunction(
             funBuilder
-                .addCode("commandExecutor.cleanUp()")
+                .addCode("$INTERNAL_CLEAN_UP_METHOD()")
+                .build()
+        )
+    }
+
+    private fun TypeSpec.Builder.addInternalCleanUpMethod(): TypeSpec.Builder {
+        return addFunction(
+            FunSpec.builder(INTERNAL_CLEAN_UP_METHOD)
+                .addCode("$COMMAND_EXECUTOR_PROPERTY.cleanUp()")
                 .build()
         )
     }
@@ -180,9 +190,11 @@ class EffectMediatorGenerator(
 
     class Result(
         val mediatorClassName: ClassName,
+        val internalCleanUpMethodName: String = INTERNAL_CLEAN_UP_METHOD,
     )
 
     companion object {
         private const val COMMAND_EXECUTOR_PROPERTY = "commandExecutor"
+        private const val INTERNAL_CLEAN_UP_METHOD = "__internalCleanUp"
     }
 }

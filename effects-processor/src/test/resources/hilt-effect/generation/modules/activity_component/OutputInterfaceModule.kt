@@ -1,5 +1,3 @@
-%PACKAGE_STATEMENT%
-
 import com.elveum.effects.core.CommandExecutor
 import com.elveum.effects.core.EffectController
 import com.elveum.effects.core.EffectRecord
@@ -14,40 +12,40 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.multibindings.IntoSet
 import javax.inject.Provider
-import %HILT_COMPONENT%
-import %HILT_SCOPE%
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.scopes.ActivityScoped
 
 @Module
-@InstallIn(%HILT_COMPONENT_NAME%::class)
-object %CLASSNAME% {
+@InstallIn(ActivityComponent::class)
+object TestInterfaceEffectModule {
 
     @Provides
-    @%HILT_SCOPE_NAME%
-    fun provideStore(): ObservableResourceStore<%TARGET_INTERFACE_NAME%> {
+    @ActivityScoped
+    fun provideStore(): ObservableResourceStore<TestInterface> {
         return ObservableResourceStoreImpl()
     }
 
     @Provides
-    fun provideCommandExecutor(resourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>): CommandExecutor<%TARGET_INTERFACE_NAME%> {
+    fun provideCommandExecutor(resourceStore: ObservableResourceStore<TestInterface>): CommandExecutor<TestInterface> {
         return CommandExecutorImpl(resourceStore)
     }
 
     @Provides
     @IntoSet
-    fun provideMediatorIntoSet(commandExecutor: CommandExecutor<%TARGET_INTERFACE_NAME%>): HiltOverridable<%TARGET_INTERFACE_NAME%> {
-        val mediator = %MEDIATOR_NAME%(commandExecutor)
-        return HiltOverridable(mediator, HiltOverridable.%PRIORITY_CONST%)
+    fun provideMediatorIntoSet(commandExecutor: CommandExecutor<TestInterface>): HiltOverridable<TestInterface> {
+        val mediator = __TestInterfaceMediator(commandExecutor)
+        return HiltOverridable(mediator, HiltOverridable.OTHER_PRIORITY)
     }
 
     @Provides
-    fun provideMediator(set: Set<@JvmSuppressWildcards HiltOverridable<%TARGET_INTERFACE_NAME%>>): %TARGET_INTERFACE_NAME% {
+    fun provideMediator(set: Set<@JvmSuppressWildcards HiltOverridable<TestInterface>>): TestInterface {
         return set.getInstanceWithMaxPriority()
     }
 
     @Provides
     fun provideControllerOfEffectInterface(
-        observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>
-    ): EffectController<%TARGET_INTERFACE_NAME%> {
+        observableResourceStore: ObservableResourceStore<TestInterface>
+    ): EffectController<TestInterface> {
         return EffectControllerImpl(observableResourceStore)
     }
 

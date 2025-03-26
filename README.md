@@ -46,13 +46,13 @@ Check out [this page](docs/ksp-and-hilt-installation.md) for more details about 
 
 ```kotlin
 // annotation processor (required):
-ksp("com.elveum:effects-processor:1.0.1")
+ksp("com.elveum:effects-processor:1.0.2")
 
 // for projects with Jetpack Compose:
-implementation("com.elveum:effects-compose:1.0.1")
+implementation("com.elveum:effects-compose:1.0.2")
 
 // for projects without Jetpack Compose:
-implementation("com.elveum:effects-core:1.0.1")
+implementation("com.elveum:effects-core:1.0.2")
 ```
 
 ## Primitive example
@@ -347,57 +347,51 @@ Let’s consider an implementation example, now based on Jetpack Compose UI fram
 @HiltEffect
 class DialogsImpl : Dialogs {
 
-    private var dialogInfo by mutableStateOf<DialogInfo?>(null)
-    
+    private class DialogState(
+        val messageId: Int,
+        val onResponse: (Boolean) -> Unit,
+    ) {
+        fun confirm() = onResponse(true)
+        fun reject() = onResponse(false)
+    }
+
+    private var dialogState by mutableStateOf<DialogState?>(null)
+
     override suspend fun ask(@StringRes messageId: Int): Boolean {
-        if (dialogInfo != null)
-            throw IllegalStateException("Other dialog is active right now") 
+        check(this.dialogState == null) { "Dialog is already displayed" }
         return suspendCancellableCoroutine { continuation ->
-            dialogInfo = DialogInfo(messageId, continuation)
+            val onResponse: (Boolean) -> Unit = {
+                this.dialogState = null
+                continuation.resume(it)
+            }
+            this.dialogState = DialogState(messageId, onResponse)
             continuation.invokeOnCancellation {
-                dialogInfo = null
+                this.dialogState = null
             }
         }
     }
-    
+
     @Composable
     fun Dialog() {
-        this.dialogInfo?.let { dialogInfo ->
+        this.dialogState?.let { dialogState ->
             AlertDialog(
-                onDismissRequest = {
-                    dialogInfo.continuation.resume(false)
-                    this.dialogInfo = null
-                },
+                onDismissRequest = dialogState::reject,
                 dismissButton = {
-                    TextButton(
-                        onClick = {
-                            dialogInfo.continuation.resume(false)
-                            this.dialogInfo = null
-                        }
-                    ) {
+                    TextButton(dialogState::reject) {
                         Text("No")
                     }
                 },
                 confirmButton = {
-                    TextButton(
-                        onClick = {
-                            dialogInfo.continuation.resume(true)
-                            this.dialogInfo = null
-                        }
-                    ) {
+                    TextButton(dialogState::confirm) {
                         Text("Yes")
                     }
                 },
                 title = { Text("Dialog Title") },
-                text = { Text(stringResource(dialogRequest.messageId)) },
+                text = { Text(stringResource(dialogState.messageId)) },
             )
         }
     }
 
-    private class DialogInfo(
-        val messageId: Int,
-        val continuation: Continuation<Boolean>,
-    )
 }
 ```
 
@@ -407,13 +401,15 @@ the dialog state:
 
 ```kotlin
 override suspend fun ask(@StringRes messageId: Int): Boolean {
-    if (dialogRequest != null)
-        throw IllegalStateException("Other dialog is active right now")
-
+    check(this.dialogState == null) { "Dialog is already displayed" }
     return suspendCancellableCoroutine { continuation ->
-        dialogRequest = DialogRequest(messageId, continuation)
+        val onResponse: (Boolean) -> Unit = {
+            this.dialogState = null
+            continuation.resume(it)
+        }
+        this.dialogState = DialogState(messageId, onResponse)
         continuation.invokeOnCancellation {
-            dialogRequest = null
+            this.dialogState = null
         }
     }
 }
@@ -426,34 +422,21 @@ method from any other @Composable function:
 ```kotlin
 @Composable
 fun Dialog() {
-    this.dialogInfo?.let { dialogInfo ->
+    this.dialogState?.let { dialogState ->
         AlertDialog(
-            onDismissRequest = {
-                dialogInfo.continuation.resume(false)
-                this.dialogInfo = null
-            },
+            onDismissRequest = dialogState::reject,
             dismissButton = {
-                TextButton(
-                    onClick = {
-                        dialogInfo.continuation.resume(false)
-                        this.dialogInfo = null
-                    }
-                ) {
+                TextButton(dialogState::reject) {
                     Text("No")
                 }
             },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        dialogInfo.continuation.resume(true)
-                        this.dialogInfo = null
-                    }
-                ) {
+                TextButton(dialogState::confirm) {
                     Text("Yes")
                 }
             },
             title = { Text("Dialog Title") },
-            text = { Text(stringResource(dialogRequest.messageId)) },
+            text = { Text(stringResource(dialogState.messageId)) },
         )
     }
 }

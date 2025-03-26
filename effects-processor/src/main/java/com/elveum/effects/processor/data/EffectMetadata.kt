@@ -22,6 +22,11 @@ class EffectMetadata(
     val pkg: String = targetInterfaceDeclaration.packageName.asString()
     val dependencies: Dependencies by lazy { buildDependencies() }
 
+    private val hiltComponentToConstNameMap = mapOf(
+        Const.SingletonComponentName to Const.SingletonPriorityConstName,
+        Const.ActivityRetainedComponentName to Const.ActivityRetainedPriorityConstName,
+    )
+
     constructor(
         effectInfo: EffectInfo,
         hiltAppClassDeclaration: KSClassDeclaration,
@@ -33,6 +38,15 @@ class EffectMetadata(
         cleanUpMethodName = effectInfo.cleanUpMethodName,
         hiltAppClassDeclaration = hiltAppClassDeclaration,
     )
+
+    fun shouldGenerateViewModelMediator(): Boolean {
+        return hiltComponentToConstNameMap.keys.contains(hiltComponent)
+    }
+
+    fun getHiltComponentPriorityConstName(): String {
+        return hiltComponentToConstNameMap[hiltComponent]
+            ?: Const.OtherPriorityConstName
+    }
 
     private fun buildDependencies(): Dependencies {
         val files = listOfNotNull(
