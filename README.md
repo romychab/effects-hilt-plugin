@@ -582,13 +582,14 @@ automatically cancelled after `onStop()` is called, and then restarted again aft
 
 ## Manual Clean-up 
 
-All Suspend- and Flow- calls are automatically released when you cancel a `CoroutineScope` which
-has been used for the execution of that calls. For example, when you call a suspending method in
-a view-model, you usually use `viewModelScope`:
+All Suspend-, and Flow- calls are automatically released when you cancel a `CoroutineScope` which
+has been used for the execution of that calls. In addition, Unit calls are released when a ViewModel 
+is going to be destroyed:
 
 ```kotlin
 interface MyEffects {
     suspend fun testSuspend(): String
+    fun testUnit()
 }
 
 @HiltViewModel
@@ -603,32 +604,38 @@ class MyViewModel @Inject constructor(
             val result = myEffects.testSuspend()
             println(result)
         }
+        
+        // and this call will also be cancelled automatically, because MyEffects
+        // instance is injected to the ViewModel
+        myEffects.testUnit()
     }
 }
 ```
 
-But this behavior is not applied to simple Unit calls, because they can be
-executed from any place, and they don't track coroutine scopes. 
-
-Sometimes you should manually cancel them to avoid unexpected executions
+However, this behavior does not apply to simple Unit calls if you inject an interface 
+into a class other than a ViewModel. That's why sometimes you should manually cancel them to avoid unexpected executions
 after you close a screen. For this purpose, an optional `cleanUp()` method is introduced:
 
 ```kotlin
 interface MyEffects {
-    fun showToast(message: String)
+    fun executeAction(action: Action)
     fun cleanUp() = Unit // optional cleanUp
 }
 
-@HiltViewModel
-class MyViewModel @Inject constructor(
-    private val myEffects: MyEffects
-) : ViewModel() {
+@AndroidEntryPoint
+class MyActivity : ComponentActivity() {
 
-    override fun onCleared() {
-        super.onCleared()
+    // injection of the interface into non-ViewModel class;
+    // it is a very rare case, but still we can imagine that
+    // fragments with shorter lifecycle process actions triggered
+    // by the activity
+    @Inject
+    lateinit var myEffects: MyEffects 
+
+    override fun onDestroy() {
+        super.onDestroy()
         // manual call of cleanUp();
-        // this will cancel any pending non-processed toast-messages,
-        // even if MyEffects instance has longer lifecycle than the view-model
+        // this will cancel any pending non-processed actions
         myEffects.cleanUp()
     }
 }
@@ -638,7 +645,7 @@ Also, you can set your own name for the cleanUp function if needed:
 
 ```kotlin
 interface MyEffects {
-    fun showToast(message: String)
+    fun executeAction(message: String)
     fun destroy() = Unit
 }
 
