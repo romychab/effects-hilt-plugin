@@ -1,0 +1,30 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+plugins {
+    id 'kotlin'
+    id 'org.jetbrains.dokka'
+}
+java {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+    }
+    jvmToolchain(17)
+    explicitApi()
+}
+
+dependencies {
+    implementation project(":effects-v2-core-api")
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'com.uandcode'
+    PUBLISH_VERSION = effects_lib_version
+    PUBLISH_ARTIFACT_ID = 'effects2-stub'
+    PUBLISH_DESCRIPTION = "Hilt plugin (internal stub library) for easier implementation of one-off events"
+}
+
+apply from: "${rootProject.projectDir}/publish-library.gradle"
