@@ -24,7 +24,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.uandcode'
     PUBLISH_VERSION = effects_lib_version
     PUBLISH_ARTIFACT_ID = 'effects2-core-api'
-    PUBLISH_DESCRIPTION = "Hilt plugin (core API library) for easier implementation of one-off events"
+    PUBLISH_DESCRIPTION = "Library (core API) for easier implementation of one-off events and even more"
 }
 
 apply from: "${rootProject.projectDir}/publish-library.gradle"

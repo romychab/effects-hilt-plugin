@@ -1,15 +1,18 @@
 package com.uandcode.effects.core.annotations
 
-import com.uandcode.effects.core.EffectModule
 import kotlin.reflect.KClass
 
 /**
- * Mark your class as an implementation of effect interface.
+ * Mark your class as an implementation of an effect interface.
  *
  * Usually you don't need to use this annotation directly, check available plugins
  * for your favorite DI framework instead.
  *
- * Requirements for the annotated implementation class:
+ * This annotation generates an alternative proxy class which implements the
+ * same target interface. The generated proxy can be injected into objects
+ * that have longer lifecycle than your implementation's lifecycle.
+ *
+ * Requirements for the annotated class:
  * - it should be a top-level class
  * - it should implement at least one interface
  * - if the class implements more than one interface, a [target] argument
@@ -21,9 +24,6 @@ import kotlin.reflect.KClass
  * - methods can have generic type parameters
  * - target interface and annotated class can't have generic type parameters
  *
- * This annotation generates an [EffectModule] that can be instantiated
- * by using `EffectModuleFactory.createFor<TargetInterface>()` call.
- *
  * Usage example:
  *
  * ```
@@ -32,8 +32,8 @@ import kotlin.reflect.KClass
  *     fun showToast(message: String)
  * }
  *
- * // 2. Implement the interface and annotate it with @GenerateEffectModule
- * @GenerateEffectModule
+ * // 2. Implement the interface and annotate it with @EffectClass
+ * @EffectClass
  * class MyEffectsImpl(
  *     private val activity: Activity,
  * ) : MyEffects {
@@ -46,40 +46,30 @@ import kotlin.reflect.KClass
  * @EffectApplication
  * class MyApp : Application
  *
- * // 4. Retrieve an instance of EffectModule
- * object EffectModules {
- *     val myEffectsModule = EffectModuleFactory.createFor<MyEffects>()
- * }
- *
- * // 5. Use myEffectsModule.provide() in a component with longer lifecycle:
+ * // 5. Use RootEffectComponents.global.get() for retrieving a generated instance
+ * //    of MyEffects interface in a object with lifecycle longer than the lifecycle
+ * //    or your implementation class (for example, in a ViewModel):
  * class MyViewModel(
- *     val myEffects: MyEffects = EffectModules.myEffectsModule.provide()
+ *     val myEffects: MyEffects = RootEffectComponents.global.get()
  * ) : ViewModel()
  *
- * // 6. Use myEffectsModule.createController() or myEffectsModule.createBoundController()
- * //    in a component with shorter lifecycle:
+ * // 6. Use lazyEffect delegate in a object with shorter lifecycle:
  * class MyActivity : AppCompatActivity() {
  *
- *     private val controller: BoundEffectController<MyEffectsImpl> =
- *         EffectModules.myEffectsModule.createBoundController(MyEffectsImpl(this))
- *
- *     override fun onStart() {
- *         super.onStart()
- *         controller.start()
+ *     private val myEffectsImpl by lazyEffect(RootEffectComponents.global) {
+ *         MyEffectsImpl(activity = this)
  *     }
  *
- *     override fun onStop() {
- *         super.onStop()
- *         controller.stop()
- *     }
  * }
+ *
+ * // As a result, MyEffectsImpl object will be attached to the MyEffects proxy injected to the
+ * // ViewModel when the Activity is at least in STARTED state (between onStart/onStop calls).
  * ```
  *
- * @see EffectModule
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
-public annotation class GenerateEffectModule(
+public annotation class EffectClass(
 
     /**
      * If your class implements only 1 single interface, then
