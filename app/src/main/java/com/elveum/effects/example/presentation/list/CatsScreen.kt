@@ -17,8 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,26 +28,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.elveum.container.Container
-import com.elveum.effects.compose.getEffect
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
-import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.components.ContainerView
 import com.elveum.effects.example.presentation.components.LikedIcon
 
 @Composable
 fun CatsScreen() {
     val viewModel = hiltViewModel<CatsViewModel>()
-    val container by viewModel.catsLiveData.observeAsState(Container.Pending)
-    val uiActions = getEffect<ComposeUiActions>()
+    val container by viewModel.catsFlow.collectAsState()
     ContainerView(
         modifier = Modifier.fillMaxSize(),
         container = container,
     ) { cats ->
         CatsContent(
             cats = cats,
-            onAction = uiActions::submitAction,
+            onAction = viewModel::processAction,
         )
     }
 }
@@ -64,10 +60,10 @@ fun CatsContent(
         ) { cat ->
             CatItem(
                 cat = cat,
-                onLike = { onAction(CatsAction.ToggleLike(cat)) },
+                onLike = { onAction(CatsAction.Toggle(cat)) },
                 onDelete = { onAction(CatsAction.Delete(cat)) },
                 modifier = Modifier
-                    .clickable { onAction(CatsAction.LaunchDetails(cat)) }
+                    .clickable { onAction(CatsAction.ShowDetails(cat)) }
                     .animateItem(),
             )
         }

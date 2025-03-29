@@ -1,18 +1,18 @@
 package com.elveum.effects.example.presentation.list
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.elveum.container.Container
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
-import com.elveum.effects.example.presentation.base.effects.actions.UiActions
-import com.elveum.effects.example.presentation.base.effects.actions.handleActions
 import com.elveum.effects.example.presentation.base.effects.dialogs.AlertDialogConfig
 import com.elveum.effects.example.presentation.base.effects.dialogs.Dialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.Router
 import com.elveum.effects.example.presentation.base.resources.Resources
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,19 +22,15 @@ class CatsViewModel @Inject constructor(
     private val router: Router,
     private val dialogs: Dialogs,
     private val resources: Resources,
-    uiActions: UiActions,
 ) : ViewModel() {
 
-    val catsLiveData = catsRepository.getCats().asLiveData()
+    val catsFlow = catsRepository.getCats()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), Container.Pending)
 
-    init {
-        uiActions.handleActions<CatsAction>(viewModelScope) { action ->
-            when (action) {
-                is CatsAction.Delete -> delete(action.cat)
-                is CatsAction.LaunchDetails -> launchDetails(action.cat)
-                is CatsAction.ToggleLike -> toggleLike(action.cat)
-            }
-        }
+    fun processAction(action: CatsAction) = when(action) {
+        is CatsAction.Delete -> delete(action.cat)
+        is CatsAction.ShowDetails -> launchDetails(action.cat)
+        is CatsAction.Toggle -> toggleLike(action.cat)
     }
 
     private fun toggleLike(cat: Cat) {

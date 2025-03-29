@@ -14,8 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.elveum.effects.compose.EffectProvider
+import com.elveum.effects.compose.getEffect
 import com.elveum.effects.compose.getHostActivity
-import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.base.effects.dialogs.ComposeDialogs
 import com.elveum.effects.example.presentation.base.effects.navigation.ComposeRouter
 import com.elveum.effects.example.presentation.details.CatDetailsScreen
@@ -25,17 +25,22 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    // example for non- Jetpack Compose projects how to connect
+    // an implementation to a proxy Dialogs instances injected to view-models:
+    //   private val dialogs by lazyEffect { ComposeDialogs(context = this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val dialogs = remember { ComposeDialogs(this) }
-            val uiActions = remember { ComposeUiActions() }
-            EffectProvider(dialogs, uiActions) {
+            // the first EffectProvider; it connects ComposeDialogs to
+            // Dialogs proxy instances injected to view-models when
+            // activity is in a STARTED state
+            EffectProvider(dialogs) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     CatsApp(modifier = Modifier.padding(innerPadding))
                 }
             }
-            dialogs.Dialog()
         }
     }
 
@@ -46,6 +51,8 @@ fun CatsApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val activity = LocalContext.current.getHostActivity()
     val composeRouter = remember { ComposeRouter(activity, navController) }
+    // the second, nested EffectProvider which connects ComposeRouter to
+    // Router proxy instances injected to view-models
     EffectProvider(composeRouter) {
         NavHost(
             navController = navController,
@@ -55,5 +62,8 @@ fun CatsApp(modifier: Modifier = Modifier) {
             composable<CatsRoute> { CatsScreen() }
             composable<CatDetailsRoute> { CatDetailsScreen() }
         }
+
+        // example of using getEffect() function
+        getEffect<ComposeDialogs>().Dialog()
     }
 }

@@ -1,14 +1,13 @@
 package com.elveum.effects.example.data
 
 import com.elveum.container.Container
-import com.elveum.container.ContainerFlow
-import com.elveum.container.ListContainerFlow
 import com.elveum.container.containerMap
 import com.elveum.container.subject.LazyFlowSubject
 import com.elveum.effects.example.domain.Cat
 import com.elveum.effects.example.domain.CatsRepository
 import com.github.javafaker.Faker
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -54,7 +53,7 @@ class InMemoryCatsRepository @Inject constructor() : CatsRepository {
         }
     }
 
-    override fun getCats(): ListContainerFlow<Cat> {
+    override fun getCats(): Flow<Container<List<Cat>>> {
         return subject.listen()
     }
 
@@ -67,7 +66,7 @@ class InMemoryCatsRepository @Inject constructor() : CatsRepository {
         }
     }
 
-    override fun getById(id: Long): ContainerFlow<Cat> {
+    override fun getById(id: Long): Flow<Container<Cat>> {
         return getCats()
             .containerMap { list ->
                 list.first { it.id == id }

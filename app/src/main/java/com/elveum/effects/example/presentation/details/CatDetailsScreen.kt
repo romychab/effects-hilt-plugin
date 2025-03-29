@@ -15,8 +15,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,26 +27,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.elveum.container.Container
-import com.elveum.effects.compose.getEffect
 import com.elveum.effects.example.R
 import com.elveum.effects.example.domain.Cat
-import com.elveum.effects.example.presentation.base.effects.actions.ComposeUiActions
 import com.elveum.effects.example.presentation.components.ContainerView
 import com.elveum.effects.example.presentation.components.LikedIcon
 
 @Composable
 fun CatDetailsScreen() {
-    val viewModel = hiltViewModel<DetailsViewModel>()
-    val catContainer by viewModel.catLiveData.observeAsState(Container.Pending)
-    val uiActions = getEffect<ComposeUiActions>()
+    val viewModel = hiltViewModel<CatDetailsViewModel>()
+    val catContainer by viewModel.catFlow.collectAsState()
     ContainerView(
         modifier = Modifier.fillMaxSize(),
         container = catContainer
     ) { cat ->
         CatDetailsContent(
             cat = cat,
-            onAction = uiActions::submitAction,
+            onAction = viewModel::processAction,
         )
     }
 }
@@ -54,7 +50,7 @@ fun CatDetailsScreen() {
 @Composable
 fun CatDetailsContent(
     cat: Cat,
-    onAction: (DetailsAction) -> Unit,
+    onAction: (CatDetailsAction) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -67,13 +63,15 @@ fun CatDetailsContent(
         Box {
             AsyncImage(
                 model = cat.image,
-                modifier = Modifier.size(128.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(128.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
             LikedIcon(
                 isLiked = cat.isLiked,
-                onToggle = { onAction(DetailsAction.ToggleLike) },
+                onToggle = { onAction(CatDetailsAction.ToggleLike) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .background(Color.White, CircleShape)
@@ -99,7 +97,7 @@ fun CatDetailsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { onAction(DetailsAction.GoBack) }) {
+        Button(onClick = { onAction(CatDetailsAction.GoBack) }) {
             Text(stringResource(R.string.go_back))
         }
     }
