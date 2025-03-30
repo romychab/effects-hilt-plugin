@@ -1,0 +1,80 @@
+[versions]
+# version of the project itself
+effectLibraryVersion = "1.0.2"
+# android sdk & jvm versions
+minSdk = "23"
+targetSdk = "34"
+toolchainJvm = "17"
+minJvm = "1.8"
+# plugin and kotlin versions
+agp = "8.9.1"
+nexusPublish = "1.3.0"
+dokka = "1.8.20"
+kotlin = "2.1.10"
+kotlinKsp = "2.1.10-1.0.31"
+hilt = "2.56.1"
+# library versions
+hiltNavigationCompose = "1.2.0"
+kotlinSerialization = "1.8.0"
+coroutinesCore = "1.10.1"
+container = "0.7"
+leakCanary = "2.12"
+composeBom = "2025.03.01"
+navigation = "2.8.9"
+javaFaker = "1.0.2"
+coil = "2.7.0"
+junit = "4.13.2"
+mockk = "1.13.16"
+flowtest = "1.0.0"
+kotlinPoet = "2.1.0"
+kotlinKspTesting = "1.6.0"
+javaxInject = "1"
+
+[libraries]
+kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesCore" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-activity = { module = "androidx.activity:activity-compose" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+java-faker = { module = "com.github.javafaker:javafaker", version.ref = "javaFaker" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+container = { module = "com.elveum:container", version.ref = "container" }
+leak-canary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose"}
+junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesCore" }
+flowtest = { module = "com.uandcode:flowtest", version.ref = "flowtest" }
+kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
+kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKsp" }
+ksp-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing-ksp", version.ref = "kotlinKspTesting" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
+# plugins in the included buildSrc:
+libplugin-nexusPublish = { module = "io.github.gradle-nexus:publish-plugin", version.ref = "nexusPublish" }
+libplugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+libplugin-kotlinJvm = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+libplugin-androidApp = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "agp" }
+libplugin-androidLibrary = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "agp" }
+libplugin-kotlinAndroid = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin", version.ref = "kotlin" }
+libplugin-kotlinSerialization = { module = "org.jetbrains.kotlin.plugin.serialization:org.jetbrains.kotlin.plugin.serialization.gradle.plugin", version.ref = "kotlin" }
+libplugin-kotlinCompose = { module = "org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref = "kotlin" }
+libplugin-hilt = { module = "com.google.dagger.hilt.android:com.google.dagger.hilt.android.gradle.plugin", version.ref = "hilt" }
+libplugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "kotlinKsp" }
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp" }
+hilt = { id = "com.google.dagger.hilt.android" }
+compose = { id = "org.jetbrains.kotlin.plugin.compose" }
+custom-application = { id = "custom-app" }
+custom-library = { id = "custom-library" }
+custom-android-library = { id = "custom-android-library" }
+custom-maven-publish = { id = "custom-maven-publish" }
+custom-root-publish = { id = "custom-root-publish" }
