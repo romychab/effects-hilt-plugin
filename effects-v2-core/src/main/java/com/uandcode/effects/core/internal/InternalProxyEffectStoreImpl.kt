@@ -2,6 +2,7 @@ package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.core.ProxyEffectStore
+import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import kotlin.reflect.KClass
 
 /**
@@ -21,14 +22,14 @@ public class InternalProxyEffectStoreImpl : ProxyEffectStore {
     }
 
     override fun findTargetInterface(clazz: KClass<*>): KClass<*> {
-        return targetInterfaceClassesMap[clazz] ?: throwException(clazz)
+        return targetInterfaceClassesMap[clazz] ?: throw EffectNotFoundException(clazz)
     }
 
     override fun <T : Any> createProxy(
         clazz: KClass<T>,
         commandExecutor: CommandExecutor<T>,
     ): T {
-        val creatorFunction = providerMap[clazz] ?: throwException(clazz)
+        val creatorFunction = providerMap[clazz] ?: throw EffectNotFoundException(clazz)
         return creatorFunction.invoke(commandExecutor as CommandExecutor<*>) as T
     }
 
@@ -47,7 +48,4 @@ public class InternalProxyEffectStoreImpl : ProxyEffectStore {
         targetInterfaceClassesMap[targetClass] = targetClass
     }
 
-    private fun throwException(clazz: KClass<*>): Nothing {
-        throw IllegalArgumentException("Can't find an effect for '$clazz'. Make sure you use correct annotations.")
-    }
 }

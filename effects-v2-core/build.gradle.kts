@@ -12,4 +12,10 @@ publishConfig {
 dependencies {
     api(projects.effectsV2CoreApi)
     compileOnly(projects.effectsV2Stub)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.flowtest)
+    testImplementation(projects.effectsV2Stub)
 }
