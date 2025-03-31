@@ -2,6 +2,7 @@ package com.uandcode.effects.stub
 
 import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.core.ProxyEffectStore
+import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
 import kotlin.reflect.KClass
 
 /**
@@ -24,21 +25,14 @@ public object GeneratedProxyEffectStore : ProxyEffectStore {
         clazz: KClass<T>,
         commandExecutor: CommandExecutor<T>,
     ): T {
-        throwStubException()
+        throw InvalidEffectSetupException()
     }
 
     /**
      * @see ProxyEffectStore.findTargetInterface
      */
     override fun findTargetInterface(clazz: KClass<*>): KClass<*>? {
-        throwStubException()
-    }
-
-    private fun throwStubException(): Nothing {
-        throw IllegalStateException("@EffectApplication annotation or KSP annotation processor not found.\n" +
-                "1. Make sure you've added @EffectApplication annotation to your main application module\n" +
-                "2. Review your dependencies in build.gradle file\n" +
-                "3. Do not forget to replace RootEffectComponents in unit tests by using setEmpty() and/or setGlobal()  method")
+        throw InvalidEffectSetupException()
     }
 
 }

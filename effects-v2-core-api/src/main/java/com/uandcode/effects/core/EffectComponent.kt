@@ -1,5 +1,7 @@
 package com.uandcode.effects.core
 
+import com.uandcode.effects.core.exceptions.EffectNotFoundException
+import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
 import kotlin.reflect.KClass
 
 /**
@@ -13,7 +15,7 @@ import kotlin.reflect.KClass
  * ```
  *
  * Alternatively, you can create your own components with different lifecycles
- * for each effect interface:
+ * for your own groups of effect interfaces:
  *
  * ```
  * // store this variable somewhere in a singleton object
@@ -36,31 +38,34 @@ public interface EffectComponent {
 
     /**
      * Get an auto-generated proxy class of target interface [T].
+     * Only interfaces are allowed.
      *
      * @param clazz KClass representing an effect interface (only interfaces are allowed)
-     * @throws IllegalArgumentException if the specified [T] interface is not a valid target
-     * @throws IllegalStateException if the library is not setup correctly
+     * @throws EffectNotFoundException if the specified [T] interface is not a valid target
+     * @throws InvalidEffectSetupException if the library is not setup correctly
      */
     public fun <T : Any> get(clazz: KClass<T>): T
 
     /**
-     * Get a new controller for attaching an effect implementation to a target effect interface
+     * Get a new effect controller which can attach any effect implementation to a target effect interface.
      *
      * @param clazz KClass representing either an effect interface or its annotated child class
-     * @throws IllegalArgumentException if the specified [T] type is not a valid target interface or
-     *                                  it is not a child class of valid interface
-     * @throws IllegalStateException if the library is not setup correctly
+     * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
+     *                                 it is not a child class of valid interface
+     * @throws InvalidEffectSetupException if the library is not setup correctly
      */
     public fun <T : Any> getController(clazz: KClass<T>): EffectController<T>
 
     /**
-     * Get a new controller for attaching an effect implementation to a target effect interface.
-     * This is a bound controller with pre-defined effect implementation provided by [provider] argument.
+     * Get a new bound effect controller which can attach any effect implementation to a target effect interface.
+     *
+     * A bound effect controller differs from a simple controller, because it
+     * contains a pre-defined effect implementation provided by a [provider] argument.
      *
      * @param clazz KClass representing either an effect interface or its annotated child class
-     * @throws IllegalArgumentException if the specified [T] type is not a valid target interface or
-     *                                  it is not a child class of valid interface
-     * @throws IllegalStateException if the library is not setup correctly
+     * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
+     *                                 it is not a child class of valid interface
+     * @throws InvalidEffectSetupException if the library is not setup correctly
      */
     public fun <T : Any> getBoundController(
         clazz: KClass<T>,
@@ -71,6 +76,8 @@ public interface EffectComponent {
      * Create a child [EffectComponent] instance that inherits all effects
      * from this parent component and additionally it can provide proxy effects
      * listed in a [interfaces] argument.
+     *
+     * @param interfaces the list of target effect interfaces (only interfaces are allowed)
      */
     public fun createChild(vararg interfaces: KClass<*>): EffectComponent
 

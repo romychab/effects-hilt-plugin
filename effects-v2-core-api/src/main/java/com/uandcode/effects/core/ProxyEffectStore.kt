@@ -1,5 +1,7 @@
 package com.uandcode.effects.core
 
+import com.uandcode.effects.core.exceptions.EffectNotFoundException
+import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
 import kotlin.reflect.KClass
 
 /**
@@ -17,8 +19,8 @@ public interface ProxyEffectStore {
 
     /**
      * Create a proxy class of the specified effect interface [T].
-     * @throws IllegalStateException if annotations are not used correctly or dependencies are not added to the build.gradle
-     * @throws IllegalArgumentException if there is no effect class for the specified interface [T]
+     * @throws InvalidEffectSetupException if annotations are not used correctly or dependencies are not added to the build.gradle
+     * @throws EffectNotFoundException if there is no effect class for the specified interface [T]
      */
     public fun <T : Any> createProxy(clazz: KClass<T>, commandExecutor: CommandExecutor<T>): T
 
