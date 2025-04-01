@@ -4,7 +4,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-private const val catalogName = "libs"
+private const val catalogName = "buildSrcLibs"
 
 val VersionCatalogsExtension.effectLibraryVersion: String
     get() = version("effectLibraryVersion")

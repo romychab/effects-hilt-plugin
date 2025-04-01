@@ -21,6 +21,11 @@ dependencyResolutionManagement {
         mavenCentral()
         mavenLocal()
     }
+    versionCatalogs {
+        create("buildSrcLibs") {
+            from(files("gradle/buildSrcLibs.versions.toml"))
+        }
+    }
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -33,3 +38,4 @@ include(":effects-core")
 include(":effects-compose")
 include(":effects-v2-stub")
 include(":effects-v2-core-api")
+include(":effects-v2-core")

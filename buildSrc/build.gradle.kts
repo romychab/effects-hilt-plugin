@@ -3,14 +3,14 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.libplugin.nexusPublish)
-    implementation(libs.libplugin.dokka)
-    implementation(libs.libplugin.kotlinJvm)
-    implementation(libs.libplugin.androidApp)
-    implementation(libs.libplugin.androidLibrary)
-    implementation(libs.libplugin.kotlinAndroid)
-    implementation(libs.libplugin.kotlinSerialization)
-    implementation(libs.libplugin.kotlinCompose)
-    implementation(libs.libplugin.hilt)
-    implementation(libs.libplugin.ksp)
+    implementation(buildSrcLibs.libplugin.nexusPublish)
+    implementation(buildSrcLibs.libplugin.dokka)
+    implementation(buildSrcLibs.libplugin.kotlinJvm)
+    implementation(buildSrcLibs.libplugin.androidApp)
+    implementation(buildSrcLibs.libplugin.androidLibrary)
+    implementation(buildSrcLibs.libplugin.kotlinAndroid)
+    implementation(buildSrcLibs.libplugin.kotlinSerialization)
+    implementation(buildSrcLibs.libplugin.kotlinCompose)
+    implementation(buildSrcLibs.libplugin.hilt)
+    implementation(buildSrcLibs.libplugin.ksp)
 }
