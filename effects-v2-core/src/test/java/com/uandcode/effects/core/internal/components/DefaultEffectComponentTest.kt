@@ -2,9 +2,12 @@ package com.uandcode.effects.core.internal.components
 
 import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
-import com.uandcode.effects.stub.GeneratedProxyEffectStore
+import com.uandcode.effects.core.internal.ProxyEffectStoreProvider
+import com.uandcode.effects.stub.api.ProxyConfiguration
+import com.uandcode.effects.stub.api.ProxyEffectStore
 import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -17,24 +20,29 @@ import org.junit.Test
 
 class DefaultEffectComponentTest {
 
+    @MockK
+    private lateinit var proxyEffectStore: ProxyEffectStore
+
     private lateinit var effectComponent: DefaultEffectComponent
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         effectComponent = DefaultEffectComponent(setOf(Effect1::class))
-        mockkObject(GeneratedProxyEffectStore)
-        every { GeneratedProxyEffectStore.createProxy(Effect1::class, any()) } answers { ProxyEffect1(secondArg()) }
-        every { GeneratedProxyEffectStore.createProxy(Effect2::class, any()) } answers { ProxyEffect2(secondArg()) }
-        every { GeneratedProxyEffectStore.findTargetInterface(Effect1::class) } returns Effect1::class
-        every { GeneratedProxyEffectStore.findTargetInterface(Effect1Impl::class) } returns Effect1::class
-        every { GeneratedProxyEffectStore.findTargetInterface(Effect2::class) } returns Effect2::class
-        every { GeneratedProxyEffectStore.findTargetInterface(Effect2Impl::class) } returns Effect2::class
+        mockkObject(ProxyEffectStoreProvider)
+        every { ProxyEffectStoreProvider.getGeneratedProxyEffectStore() } returns proxyEffectStore
+        every { proxyEffectStore.proxyConfiguration } returns ProxyConfiguration()
+        every { proxyEffectStore.createProxy(Effect1::class, any()) } answers { ProxyEffect1(secondArg()) }
+        every { proxyEffectStore.createProxy(Effect2::class, any()) } answers { ProxyEffect2(secondArg()) }
+        every { proxyEffectStore.findTargetInterface(Effect1::class) } returns Effect1::class
+        every { proxyEffectStore.findTargetInterface(Effect1Impl::class) } returns Effect1::class
+        every { proxyEffectStore.findTargetInterface(Effect2::class) } returns Effect2::class
+        every { proxyEffectStore.findTargetInterface(Effect2Impl::class) } returns Effect2::class
     }
 
     @After
     fun tearDown() {
-        unmockkObject(GeneratedProxyEffectStore)
+        unmockkObject(ProxyEffectStoreProvider)
     }
 
     @Test

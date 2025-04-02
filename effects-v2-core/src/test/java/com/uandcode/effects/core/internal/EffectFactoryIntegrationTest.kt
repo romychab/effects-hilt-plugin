@@ -2,9 +2,11 @@ package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.stub.GeneratedProxyEffectStore
-import io.mockk.clearAllMocks
+import com.uandcode.effects.stub.api.ProxyConfiguration
+import com.uandcode.effects.stub.api.ProxyEffectStore
+import io.mockk.MockKAnnotations
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import org.junit.After
@@ -15,25 +17,31 @@ import org.junit.Test
 
 class EffectFactoryIntegrationTest {
 
+    @MockK
+    private lateinit var proxyEffectStore: ProxyEffectStore
+
     private lateinit var resourceStore: ObservableResourceStore<Effect>
     private lateinit var effectFactory: EffectFactory<Effect>
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
+        mockkObject(ProxyEffectStoreProvider)
         resourceStore = ObservableResourceStoreImpl()
         effectFactory = EffectFactory(Effect::class, resourceStore)
+        every { ProxyEffectStoreProvider.getGeneratedProxyEffectStore() } returns proxyEffectStore
+        every { proxyEffectStore.proxyConfiguration } returns ProxyConfiguration()
     }
 
     @After
     fun tearDown() {
-        clearAllMocks()
+        unmockkObject(ProxyEffectStoreProvider)
     }
 
     @Test
     fun `provideProxy provides proxy implementation with resourceStore from constructor`() {
-        mockkObject(GeneratedProxyEffectStore)
         every {
-            GeneratedProxyEffectStore.createProxy<Effect>(any(), any())
+            proxyEffectStore.createProxy<Effect>(any(), any())
         } answers {
             ProxyEffectImpl(secondArg())
         }
@@ -59,8 +67,6 @@ class EffectFactoryIntegrationTest {
         // assert the second effect implementation is updated, because it is the newest started implementation
         proxyEffect.update()
         assertTrue(effectImpl2.isUpdated)
-
-        unmockkObject(GeneratedProxyEffectStore)
     }
 
     private interface Effect {

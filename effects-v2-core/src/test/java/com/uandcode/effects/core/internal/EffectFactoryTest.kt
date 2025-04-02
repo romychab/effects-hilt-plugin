@@ -2,11 +2,11 @@ package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.EffectController
 import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.stub.GeneratedProxyEffectStore
+import com.uandcode.effects.stub.api.ProxyEffectStore
 import io.mockk.MockKAnnotations
 import io.mockk.called
-import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -20,6 +20,9 @@ import org.junit.Test
 
 class EffectFactoryTest {
 
+    @MockK
+    private lateinit var proxyEffectStore: ProxyEffectStore
+
     @RelaxedMockK
     private lateinit var resourceStore: ObservableResourceStore<Effect>
 
@@ -28,29 +31,29 @@ class EffectFactoryTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkObject(ProxyEffectStoreProvider)
+        every { ProxyEffectStoreProvider.getGeneratedProxyEffectStore() } returns proxyEffectStore
         effectFactory = EffectFactory(Effect::class, resourceStore)
     }
 
     @After
     fun tearDown() {
-        clearAllMocks()
+        unmockkObject(ProxyEffectStoreProvider)
     }
 
     @Test
     fun `test provideProxy`() {
         val expectedEffect = ProxyEffectImpl()
-        mockkObject(GeneratedProxyEffectStore)
         every {
-            GeneratedProxyEffectStore.createProxy<Effect>(any(), any())
+            proxyEffectStore.createProxy<Effect>(any(), any())
         } returns expectedEffect
 
         val resultEffect = effectFactory.provideProxy()
 
         assertSame(expectedEffect, resultEffect)
         verify(exactly = 1) {
-            GeneratedProxyEffectStore.createProxy(Effect::class, any())
+            proxyEffectStore.createProxy(Effect::class, any())
         }
-        unmockkObject(GeneratedProxyEffectStore)
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.uandcode.effects.core.EffectComponent
 import com.uandcode.effects.core.RootEffectComponents
 import com.uandcode.effects.core.annotations.EffectClass
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
-import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
+import com.uandcode.effects.stub.api.InvalidEffectSetupException
 import com.uandcode.effects.core.getBoundController
 import com.uandcode.effects.core.lifecycle.internal.LazyEffectDelegateImpl
 

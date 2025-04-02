@@ -3,7 +3,7 @@ package com.uandcode.effects.core.internal
 import com.uandcode.effects.core.BoundEffectController
 import com.uandcode.effects.core.EffectController
 import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.stub.GeneratedProxyEffectStore
+import com.uandcode.effects.core.internal.ProxyEffectStoreProvider.getGeneratedProxyEffectStore
 import kotlin.reflect.KClass
 
 internal class EffectFactory<Effect : Any>(
@@ -13,7 +13,7 @@ internal class EffectFactory<Effect : Any>(
 
     fun provideProxy(): Effect {
         val commandExecutor = CommandExecutorImpl(resourceStore)
-        return GeneratedProxyEffectStore.createProxy(clazz, commandExecutor)
+        return getGeneratedProxyEffectStore().createProxy(clazz, commandExecutor)
     }
 
     fun <T : Effect> createController(): EffectController<T> {

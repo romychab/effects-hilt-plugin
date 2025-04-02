@@ -1,8 +1,10 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.CommandExecutor
-import com.uandcode.effects.core.ProxyEffectStore
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
+import com.uandcode.effects.stub.api.ProxyConfiguration
+import com.uandcode.effects.stub.api.ProxyDependency
+import com.uandcode.effects.stub.api.ProxyEffectStore
 import kotlin.reflect.KClass
 
 /**
@@ -12,7 +14,9 @@ import kotlin.reflect.KClass
  * auto-generated code.
  */
 @Suppress("UNCHECKED_CAST")
-public class InternalProxyEffectStoreImpl : ProxyEffectStore {
+public class InternalProxyEffectStoreImpl(
+    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration(),
+) : ProxyEffectStore {
 
     private val providerMap = mutableMapOf<KClass<*>, (CommandExecutor<*>) -> Any>()
     private val targetInterfaceClassesMap = mutableMapOf<KClass<*>, KClass<*>>()
@@ -22,14 +26,15 @@ public class InternalProxyEffectStoreImpl : ProxyEffectStore {
     }
 
     override fun findTargetInterface(clazz: KClass<*>): KClass<*> {
-        return targetInterfaceClassesMap[clazz] ?: throw EffectNotFoundException(clazz)
+        return targetInterfaceClassesMap[clazz] ?: throw EffectNotFoundException(clazz, proxyConfiguration)
     }
 
     override fun <T : Any> createProxy(
         clazz: KClass<T>,
-        commandExecutor: CommandExecutor<T>,
+        proxyDependency: ProxyDependency,
     ): T {
-        val creatorFunction = providerMap[clazz] ?: throw EffectNotFoundException(clazz)
+        val commandExecutor = proxyDependency as CommandExecutor<T>
+        val creatorFunction = providerMap[clazz] ?: throw EffectNotFoundException(clazz, proxyConfiguration)
         return creatorFunction.invoke(commandExecutor as CommandExecutor<*>) as T
     }
 

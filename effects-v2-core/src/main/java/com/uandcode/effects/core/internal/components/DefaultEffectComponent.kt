@@ -4,7 +4,7 @@ import com.uandcode.effects.core.BoundEffectController
 import com.uandcode.effects.core.EffectComponent
 import com.uandcode.effects.core.EffectController
 import com.uandcode.effects.core.internal.EffectFactory
-import com.uandcode.effects.stub.GeneratedProxyEffectStore
+import com.uandcode.effects.core.internal.ProxyEffectStoreProvider.getGeneratedProxyEffectStore
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
@@ -47,7 +47,7 @@ internal class DefaultEffectComponent(
     }
 
     private fun <T : Any> getFactory(clazz: KClass<T>): EffectFactory<T>? {
-        val interfaceClass = GeneratedProxyEffectStore.findTargetInterface(clazz)
+        val interfaceClass = getGeneratedProxyEffectStore().findTargetInterface(clazz)
         return factories[interfaceClass]?.value as? EffectFactory<T>
     }
 

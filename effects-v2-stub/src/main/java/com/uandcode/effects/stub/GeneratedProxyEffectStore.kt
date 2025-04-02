@@ -1,8 +1,9 @@
 package com.uandcode.effects.stub
 
-import com.uandcode.effects.core.CommandExecutor
-import com.uandcode.effects.core.ProxyEffectStore
-import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
+import com.uandcode.effects.stub.api.InvalidEffectSetupException
+import com.uandcode.effects.stub.api.ProxyConfiguration
+import com.uandcode.effects.stub.api.ProxyDependency
+import com.uandcode.effects.stub.api.ProxyEffectStore
 import kotlin.reflect.KClass
 
 /**
@@ -12,6 +13,8 @@ import kotlin.reflect.KClass
  * @see ProxyEffectStore
  */
 public object GeneratedProxyEffectStore : ProxyEffectStore {
+
+    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration()
 
     /**
      * @see ProxyEffectStore.allTargetInterfaces
@@ -23,7 +26,7 @@ public object GeneratedProxyEffectStore : ProxyEffectStore {
      */
     override fun <T : Any> createProxy(
         clazz: KClass<T>,
-        commandExecutor: CommandExecutor<T>,
+        proxyDependency: ProxyDependency,
     ): T {
         throw InvalidEffectSetupException()
     }

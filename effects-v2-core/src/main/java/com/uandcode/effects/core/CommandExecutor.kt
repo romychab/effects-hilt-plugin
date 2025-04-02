@@ -1,18 +1,20 @@
 package com.uandcode.effects.core
 
+import com.uandcode.effects.stub.api.ProxyDependency
 import kotlinx.coroutines.flow.Flow
 
 /**
  * For internal usage!
  *
- * An interface for executing commands on a resource.
+ * An interface for executing commands on a resource, which is used as a dependency
+ * by all generated proxy classes.
  *
  * Commands are not executed immediately if there are no available resources;
  * instead, they are added to a queue and executed once a resource becomes available.
  *
  * @param Resource The type of resource on which commands are executed.
  */
-public interface CommandExecutor<Resource> {
+public interface CommandExecutor<Resource> : ProxyDependency {
 
     /**
      * Executes a simple command on the given resource.

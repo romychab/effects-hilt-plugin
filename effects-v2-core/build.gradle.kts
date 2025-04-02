@@ -10,7 +10,7 @@ publishConfig {
 }
 
 dependencies {
-    api(projects.effectsV2CoreApi)
+    api(projects.effectsV2StubApi)
     compileOnly(projects.effectsV2Stub)
 
     testImplementation(libs.junit)

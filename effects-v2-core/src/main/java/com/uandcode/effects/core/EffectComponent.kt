@@ -1,7 +1,7 @@
 package com.uandcode.effects.core
 
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
-import com.uandcode.effects.core.exceptions.InvalidEffectSetupException
+import com.uandcode.effects.stub.api.InvalidEffectSetupException
 import kotlin.reflect.KClass
 
 /**

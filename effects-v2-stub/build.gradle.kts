@@ -10,5 +10,5 @@ publishConfig {
 }
 
 dependencies {
-    implementation(projects.effectsV2CoreApi)
+    implementation(projects.effectsV2StubApi)
 }

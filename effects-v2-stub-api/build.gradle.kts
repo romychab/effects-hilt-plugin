@@ -5,8 +5,8 @@ plugins {
 
 publishConfig {
     groupId = "com.uandcode"
-    artifactId = "effects2-core-api"
-    description = "A library (Core API artifact) for simplifying the implementation of one-off events"
+    artifactId = "effects2-stub-api"
+    description = "A library (internal stub API artifact) for simplifying the implementation of one-off events"
 }
 
 dependencies {
