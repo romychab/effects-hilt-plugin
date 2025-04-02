@@ -12,6 +12,7 @@ publishConfig {
 dependencies {
     api(libs.androidx.lifecycle.jvm)
     api(projects.effectsV2Core)
+    api(projects.effectsV2CoreAnnotations)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
