@@ -1,7 +1,7 @@
 package com.uandcode.effects.core.internal.observers
 
-import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 
 internal class OneTimeResourceObserver<Resource>(
     private val store: ObservableResourceStore<Resource>,

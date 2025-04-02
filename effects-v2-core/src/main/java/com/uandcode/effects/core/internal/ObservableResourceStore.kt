@@ -1,4 +1,4 @@
-package com.uandcode.effects.core
+package com.uandcode.effects.core.internal
 
 /**
  * For internal usage.
@@ -10,12 +10,12 @@ package com.uandcode.effects.core
  *
  * @param Resource The type of resource being managed.
  */
-public interface ObservableResourceStore<Resource> {
+internal interface ObservableResourceStore<Resource> {
 
     /**
      * The currently attached resources maintained in reverse order of addition
      */
-    public val currentAttachedResources: Iterable<Resource>
+    val currentAttachedResources: Iterable<Resource>
 
     /**
      * Add a new resource to the store.
@@ -24,7 +24,7 @@ public interface ObservableResourceStore<Resource> {
      *
      * @param resource The resource to be attached.
      */
-    public fun attachResource(resource: Resource)
+    fun attachResource(resource: Resource)
 
     /**
      * Remove a resource from the store.
@@ -33,7 +33,7 @@ public interface ObservableResourceStore<Resource> {
      *
      * @param resource The resource to be detached.
      */
-    public fun detachResource(resource: Resource)
+    fun detachResource(resource: Resource)
 
     /**
      * Adds an observer to monitor resource changes.
@@ -44,7 +44,7 @@ public interface ObservableResourceStore<Resource> {
      *
      * @param observer The observer to be added.
      */
-    public fun addObserver(observer: ResourceObserver<Resource>)
+    fun addObserver(observer: ResourceObserver<Resource>)
 
     /**
      * Removes an observer from monitoring resource changes.
@@ -53,38 +53,38 @@ public interface ObservableResourceStore<Resource> {
      *
      * @param observer The observer to be removed.
      */
-    public fun removeObserver(observer: ResourceObserver<Resource>)
+    fun removeObserver(observer: ResourceObserver<Resource>)
 
     /**
      * Removes all observers from the store.
      */
-    public fun removeAllObservers()
+    fun removeAllObservers()
 
     /**
      * An observer interface for monitoring resource attachments and detachments.
      *
      * @param Resource The type of resource being observed.
      */
-    public interface ResourceObserver<Resource> {
+    interface ResourceObserver<Resource> {
 
         /**
          * Called when a resource is attached.
          *
          * @param resource The resource that was attached.
          */
-        public fun onResourceAttached(resource: Resource)
+        fun onResourceAttached(resource: Resource)
 
         /**
          * Called when a resource is detached.
          *
          * @param resource The resource that was detached.
          */
-        public fun onResourceDetached(resource: Resource)
+        fun onResourceDetached(resource: Resource)
 
         /**
          * Called when the observer is removed.
          */
-        public fun onObserverRemoved()
+        fun onObserverRemoved()
 
     }
 

@@ -1,6 +1,6 @@
 package com.uandcode.effects.core.internal.observers
 
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope

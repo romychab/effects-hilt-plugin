@@ -1,6 +1,6 @@
 package com.uandcode.effects.core.internal.observers
 
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 
 internal class SimpleCommandObserver<Resource>(
     private val command: (Resource) -> Unit,

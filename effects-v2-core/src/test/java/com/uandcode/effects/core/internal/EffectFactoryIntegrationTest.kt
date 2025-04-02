@@ -1,7 +1,6 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.CommandExecutor
-import com.uandcode.effects.core.ObservableResourceStore
 import com.uandcode.effects.stub.api.ProxyConfiguration
 import com.uandcode.effects.stub.api.ProxyEffectStore
 import io.mockk.MockKAnnotations

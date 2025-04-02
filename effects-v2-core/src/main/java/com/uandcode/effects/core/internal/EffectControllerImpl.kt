@@ -1,7 +1,6 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ObservableResourceStore
 
 internal class EffectControllerImpl<EffectImplementation>(
     private val observableResourceStore: ObservableResourceStore<in EffectImplementation>

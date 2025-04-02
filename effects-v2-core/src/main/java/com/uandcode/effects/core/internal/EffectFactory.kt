@@ -2,7 +2,6 @@ package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.BoundEffectController
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ObservableResourceStore
 import com.uandcode.effects.core.internal.ProxyEffectStoreProvider.getGeneratedProxyEffectStore
 import kotlin.reflect.KClass
 

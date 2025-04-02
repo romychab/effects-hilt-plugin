@@ -1,7 +1,6 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ObservableResourceStore
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify

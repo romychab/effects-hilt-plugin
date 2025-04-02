@@ -1,6 +1,6 @@
 package com.uandcode.effects.core.internal
 
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

@@ -1,8 +1,7 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.CommandExecutor
-import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 import com.uandcode.effects.core.internal.observers.CoroutineCommandObserver
 import com.uandcode.effects.core.internal.observers.FlowCommandObserver
 import com.uandcode.effects.core.internal.observers.OneTimeResourceObserver

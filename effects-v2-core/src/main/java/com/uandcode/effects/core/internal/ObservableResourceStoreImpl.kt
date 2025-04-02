@@ -1,7 +1,6 @@
 package com.uandcode.effects.core.internal
 
-import com.uandcode.effects.core.ObservableResourceStore
-import com.uandcode.effects.core.ObservableResourceStore.ResourceObserver
+import com.uandcode.effects.core.internal.ObservableResourceStore.ResourceObserver
 
 internal class ObservableResourceStoreImpl<Resource> : ObservableResourceStore<Resource> {
 
