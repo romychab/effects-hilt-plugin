@@ -7,16 +7,16 @@ import com.uandcode.effects.core.annotations.EffectClass
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.stub.api.InvalidEffectSetupException
 import com.uandcode.effects.core.getBoundController
-import com.uandcode.effects.core.lifecycle.internal.LazyEffectDelegateImpl
+import com.uandcode.effects.core.lifecycle.internal.EffectLifecycleDelegateImpl
 
 /**
- * Attach an effect implementation of a type [T] created by a [provider] to the
+ * Attach an effect implementation of a type [T] created by a [effectProvider] to the
  * target interface. The class [T] must be annotated with an [EffectClass] annotation.
  *
  * The effect implementation is automatically attached when the lifecycle
  * managed by [LifecycleOwner] is started and detached when it is stopped.
  *
- * Please note that the [provider] function is called lazily and only once.
+ * Please note that the [effectProvider] function is called lazily and only once.
  *
  * Usage example:
  *
@@ -42,19 +42,21 @@ import com.uandcode.effects.core.lifecycle.internal.LazyEffectDelegateImpl
  * @param component The [EffectComponent] that is used to retrieve an instance
  *                  of the effect interface to which the effect implementation
  *                  will be attached. By default, [RootEffectComponents.global] is used.
- * @param provider The function that creates an instance of the effect implementation.
- *                 This function is called lazily and only once.
+ * @param effectProvider The function that creates an instance of the effect implementation.
+ *                       This function is called lazily and only once.
  * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
  *                                 it is not a child class annotated with [EffectClass]
  * @throws InvalidEffectSetupException if the library is not setup correctly
  */
 public inline fun <reified T : Any> LifecycleOwner.lazyEffect(
     component: EffectComponent = RootEffectComponents.global,
-    noinline provider: () -> T,
-): LazyEffectDelegate<T> {
-    val controller = component.getBoundController(provider)
-    return LazyEffectDelegateImpl(
-        lifecycleOwner = this,
-        controller = controller,
-    )
+    noinline effectProvider: () -> T,
+): EffectLifecycleDelegate<T> {
+    return EffectLifecycleDelegate.lazy {
+        val controller = component.getBoundController(effectProvider)
+        EffectLifecycleDelegateImpl(
+            lifecycleOwner = this,
+            controller = controller,
+        )
+    }
 }
