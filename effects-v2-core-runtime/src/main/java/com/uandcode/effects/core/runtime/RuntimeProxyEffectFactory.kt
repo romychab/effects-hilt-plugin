@@ -6,7 +6,6 @@ import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.stub.api.ProxyConfiguration
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.implementation.MethodDelegation
-import net.bytebuddy.implementation.bytecode.assign.Assigner
 import net.bytebuddy.matcher.ElementMatchers
 import kotlin.reflect.KClass
 
@@ -50,9 +49,9 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         return ByteBuddy()
             .subclass(javaInterface)
             .method(ElementMatchers.isDeclaredBy(javaInterface))
-            .intercept(MethodDelegation
-                .to(proxyMethodInterceptor)
-                .withAssigner(Assigner.DEFAULT))
+            .intercept(MethodDelegation.to(proxyMethodInterceptor))
+            .implement(AutoCloseable::class.java)
+            .intercept(MethodDelegation.to(proxyMethodInterceptor, "close"))
             .make()
             .load(javaInterface.classLoader)
             .loaded

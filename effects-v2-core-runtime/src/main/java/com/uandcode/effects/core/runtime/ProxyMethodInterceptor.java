@@ -54,6 +54,11 @@ public class ProxyMethodInterceptor<Effect> {
         }
     }
 
+    @SuppressWarnings("unused")
+    public void close() {
+        commandExecutor.cleanUp();
+    }
+
     private Object execute(Effect effect, Method method, Object[] args) {
         try {
             Method targetMethod = effect.getClass().getDeclaredMethod(method.getName(), method.getParameterTypes());
