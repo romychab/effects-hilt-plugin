@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("UNCHECKED_CAST")
 public class InternalProxyEffectStoreImpl(
-    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration(),
+    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration.Default(),
 ) : ProxyEffectStore {
 
     private val providerMap = mutableMapOf<KClass<*>, (CommandExecutor<*>) -> Any>()

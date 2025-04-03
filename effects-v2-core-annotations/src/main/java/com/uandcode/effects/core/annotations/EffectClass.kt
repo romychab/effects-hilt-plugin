@@ -67,7 +67,7 @@ import kotlin.reflect.KClass
  * ```
  *
  */
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 public annotation class EffectClass(
 

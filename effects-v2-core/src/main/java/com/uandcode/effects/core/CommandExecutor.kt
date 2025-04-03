@@ -4,8 +4,6 @@ import com.uandcode.effects.stub.api.ProxyDependency
 import kotlinx.coroutines.flow.Flow
 
 /**
- * For internal usage!
- *
  * An interface for executing commands on a resource, which is used as a dependency
  * by all generated proxy classes.
  *

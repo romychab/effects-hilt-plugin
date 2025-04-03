@@ -4,9 +4,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.uandcode.effects.core.EffectComponent
 import com.uandcode.effects.core.RootEffectComponents
 import com.uandcode.effects.core.annotations.EffectClass
+import com.uandcode.effects.core.bind
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
+import com.uandcode.effects.core.getController
 import com.uandcode.effects.stub.api.InvalidEffectSetupException
-import com.uandcode.effects.core.getBoundController
 import com.uandcode.effects.core.lifecycle.internal.EffectLifecycleDelegateImpl
 
 /**
@@ -53,7 +54,7 @@ public inline fun <reified T : Any> LifecycleOwner.lazyEffect(
     noinline effectProvider: () -> T,
 ): EffectLifecycleDelegate<T> {
     return EffectLifecycleDelegate.lazy {
-        val controller = component.getBoundController(effectProvider)
+        val controller = component.getController<T>().bind(effectProvider)
         EffectLifecycleDelegateImpl(
             lifecycleOwner = this,
             controller = controller,

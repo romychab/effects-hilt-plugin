@@ -13,14 +13,13 @@ import com.uandcode.effects.core.internal.components.GlobalEffectComponent
  */
 public object RootEffectComponents {
 
-    private var _empty: EffectComponent = EmptyEffectComponent
     private var _global: EffectComponent = GlobalEffectComponent
 
     /**
      * This is an empty effect component that can be used to create your
      * own hierarchy of components.
      */
-    public val empty: EffectComponent get() = _empty
+    public val empty: EffectComponent = EmptyEffectComponent
 
     /**
      * Global singleton component contains references to all annotated effects.
@@ -29,26 +28,17 @@ public object RootEffectComponents {
 
     /**
      * Set a custom [EffectComponent] instance which will be used
-     * by [empty] property as a default component.
-     */
-    public fun setEmpty(node: EffectComponent) {
-        _empty = node
-    }
-
-    /**
-     * Set a custom [EffectComponent] instance which will be used
      * by [global] property as a default component.
      */
-    public fun setGlobal(node: EffectComponent) {
-        _global = node
+    public fun setGlobal(component: EffectComponent) {
+        _global = component
     }
 
     /**
-     * Reset components in [empty] and [global] properties to
-     * default ones.
+     * Reset component in [global] property to
+     * default one.
      */
-    public fun resetComponents() {
-        _empty = EmptyEffectComponent
+    public fun resetGlobalComponent() {
         _global = GlobalEffectComponent
     }
 

@@ -1,32 +1,17 @@
 package com.uandcode.effects.core.internal.components
 
-import com.uandcode.effects.core.BoundEffectController
-import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.exceptions.EffectNotFoundException
-import com.uandcode.effects.core.internal.ProxyEffectStoreProvider.getGeneratedProxyEffectStore
-import kotlin.reflect.KClass
+import com.uandcode.effects.core.EffectComponent
+import com.uandcode.effects.core.internal.DefaultProxyEffectFactory
+import com.uandcode.effects.core.EffectInterfaces
 
-internal object EmptyEffectComponent : AbstractEffectComponent() {
+internal val EmptyEffectComponent: EffectComponent = LazyEffectComponent {
+    buildEmptyEffectComponent()
+}
 
-    private val config by lazy {
-        getGeneratedProxyEffectStore().proxyConfiguration
-    }
-
-    override fun <T : Any> get(clazz: KClass<T>): T {
-        throw EffectNotFoundException(clazz, config)
-    }
-
-    override fun <T : Any> getController(clazz: KClass<T>): EffectController<T> {
-        throw EffectNotFoundException(clazz, config)
-    }
-
-    override fun <T : Any> getBoundController(
-        clazz: KClass<T>,
-        provider: () -> T
-    ): BoundEffectController<T> {
-        throw EffectNotFoundException(clazz, config)
-    }
-
-    override fun cleanUp() = Unit
-
+internal fun buildEmptyEffectComponent(): EffectComponent {
+    return DefaultEffectComponent(
+        interfaces = EffectInterfaces.ListOf(),
+        proxyEffectFactory = DefaultProxyEffectFactory,
+        parent = null,
+    )
 }

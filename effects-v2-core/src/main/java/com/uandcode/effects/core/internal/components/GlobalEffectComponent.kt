@@ -1,7 +1,8 @@
 package com.uandcode.effects.core.internal.components
 
 import com.uandcode.effects.core.EffectComponent
-import com.uandcode.effects.core.internal.ProxyEffectStoreProvider.getGeneratedProxyEffectStore
+import com.uandcode.effects.core.internal.DefaultProxyEffectFactory
+import com.uandcode.effects.core.EffectInterfaces
 
 internal val GlobalEffectComponent: EffectComponent = LazyEffectComponent {
     buildGlobalEffectComponent()
@@ -9,6 +10,8 @@ internal val GlobalEffectComponent: EffectComponent = LazyEffectComponent {
 
 internal fun buildGlobalEffectComponent(): EffectComponent {
     return DefaultEffectComponent(
-        getGeneratedProxyEffectStore().allTargetInterfaces
+        interfaces = EffectInterfaces.Everything,
+        proxyEffectFactory = DefaultProxyEffectFactory,
+        parent = null,
     )
 }

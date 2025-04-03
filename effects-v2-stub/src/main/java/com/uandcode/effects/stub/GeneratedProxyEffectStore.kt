@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  */
 public object GeneratedProxyEffectStore : ProxyEffectStore {
 
-    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration()
+    override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration.Default()
 
     /**
      * @see ProxyEffectStore.allTargetInterfaces
