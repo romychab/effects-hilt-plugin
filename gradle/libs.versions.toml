@@ -19,6 +19,7 @@ javaxInject = "1"
 lifecycle = "2.8.7"
 androidxActivity = "1.10.1"
 immutableCollections = "0.3.8"
+byteBuddy = "1.14.17"
 
 [libraries]
 kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
@@ -51,6 +52,7 @@ androidx-lifecycle-jvm = { module = "androidx.lifecycle:lifecycle-common-jvm", v
 androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
+byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byteBuddy" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp" }
