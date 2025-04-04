@@ -3,7 +3,7 @@
 effectLibraryVersion = "1.0.2"
 # android sdk & jvm versions
 minSdk = "23"
-targetSdk = "34"
+targetSdk = "35"
 toolchainJvm = "17"
 minJvm = "1.8"
 # plugin and kotlin versions
