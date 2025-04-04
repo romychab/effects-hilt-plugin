@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.custom.library)
     alias(libs.plugins.custom.maven.publish)
+    alias(libs.plugins.ksp)
 }
 
 publishConfig {
@@ -12,10 +13,12 @@ publishConfig {
 dependencies {
     api(projects.effectsV2StubApi)
     compileOnly(projects.effectsV2Stub)
+    testImplementation(projects.effectsV2Stub)
+    testImplementation(projects.effectsV2CoreRuntime)
+    testImplementation(projects.effectsV2CoreAnnotations)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.flowtest)
-    testImplementation(projects.effectsV2Stub)
 }

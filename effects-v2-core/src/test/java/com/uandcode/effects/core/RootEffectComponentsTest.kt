@@ -29,12 +29,6 @@ class RootEffectComponentsTest {
     }
 
     @Test
-    fun `test set custom empty component`() {
-        RootEffectComponents.setEmpty(effectComponent)
-        assertEquals(effectComponent, RootEffectComponents.empty)
-    }
-
-    @Test
     fun `test set custom global component`() {
         RootEffectComponents.setGlobal(effectComponent)
         assertEquals(effectComponent, RootEffectComponents.global)
@@ -42,10 +36,8 @@ class RootEffectComponentsTest {
 
     @Test
     fun `test reset components`() {
-        RootEffectComponents.setEmpty(effectComponent)
         RootEffectComponents.setGlobal(effectComponent)
-        RootEffectComponents.resetComponents()
-        assertEquals(EmptyEffectComponent, RootEffectComponents.empty)
+        RootEffectComponents.resetGlobalComponent()
         assertEquals(GlobalEffectComponent, RootEffectComponents.global)
     }
 

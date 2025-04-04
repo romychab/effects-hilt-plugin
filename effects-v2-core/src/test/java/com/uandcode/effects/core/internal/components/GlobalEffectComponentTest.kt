@@ -34,14 +34,16 @@ class GlobalEffectComponentTest {
         val expectedTargetInterfaces = setOf(Effect::class)
         every { proxyEffectStore.allTargetInterfaces } returns expectedTargetInterfaces
         every { proxyEffectStore.createProxy(Effect::class, any()) } returns ProxyEffectImpl()
+        every { proxyEffectStore.findTargetInterface(Effect::class) } returns Effect::class
 
         val globalComponent = buildGlobalEffectComponent()
 
         assertTrue(globalComponent is DefaultEffectComponent)
-        val proxyEffect = globalComponent.get(Effect::class)
+        val proxyEffect = globalComponent.getProxy(Effect::class)
         assertTrue(proxyEffect is ProxyEffectImpl)
     }
 
     private interface Effect
     private class ProxyEffectImpl : Effect
+
 }
