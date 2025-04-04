@@ -67,7 +67,7 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
                 val targetMethod = annotation.javaClass.getDeclaredMethod(TARGET_ANNOTATION_ARG)
                 val targetClass = targetMethod.invoke(annotation) as Class<*>
                 if (targetClass != Any::class.java) {
-                    return clazz.java.interfaces.firstOrNull()?.kotlin
+                    return targetClass.kotlin
                 }
             } catch (ignored: NoSuchMethodException) { }
         }
