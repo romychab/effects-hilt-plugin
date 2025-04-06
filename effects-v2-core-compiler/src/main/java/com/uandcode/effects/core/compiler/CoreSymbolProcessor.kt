@@ -1,5 +1,6 @@
 package com.uandcode.effects.core.compiler
 
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
@@ -11,8 +12,9 @@ import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.GeneratedProxy
 import com.uandcode.effects.core.compiler.api.data.ParsedEffect
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
-import com.uandcode.effects.core.compiler.generators.ProxyEffectStoreGenerator
+import com.uandcode.effects.core.compiler.exceptions.InternalEffectKspException
 import com.uandcode.effects.core.compiler.generators.ProxyEffectGenerator
+import com.uandcode.effects.core.compiler.generators.ProxyEffectStoreGenerator
 import com.uandcode.effects.core.compiler.parser.parseEffects
 import com.uandcode.effects.core.compiler.parser.parseMetadata
 import com.uandcode.effects.core.compiler.validators.validateAndFilterEffectMetadata
@@ -43,7 +45,9 @@ internal class CoreSymbolProcessor(
                         effects.map { effectExtension.buildMetadataFromParsedEffect(it, appClassDeclaration) }
                 val validationResult = validateAndFilterEffectMetadata(effectExtension, parsedMetadataList)
                 val groupedMetadata = validationResult.groupedMetadata
-                val generatedProxies = generateProxies(validationResult.uniqueMetadata)
+                val autoCloseableDeclaration = resolver.getClassDeclarationByName(Const.AutoCloseableClassName.canonicalName)
+                    ?: throw InternalEffectKspException("Can't find AutoCloseable interface in the classpath.")
+                val generatedProxies = generateProxies(validationResult.uniqueMetadata, autoCloseableDeclaration)
                 proxyEffectStoreGenerator.generate(effectExtension, generatedProxies, groupedMetadata)
                 effectExtension.generateExtensions(groupedMetadata, writer)
             }
@@ -57,8 +61,11 @@ internal class CoreSymbolProcessor(
         effects.forEach { metadataGenerator.generate(it) }
     }
 
-    private fun generateProxies(metadataList: List<ParsedMetadata>): List<GeneratedProxy> {
-        return metadataList.map { proxyEffectGenerator.generate(it) }
+    private fun generateProxies(
+        metadataList: List<ParsedMetadata>,
+        autoCloseableDeclaration: KSClassDeclaration,
+    ): List<GeneratedProxy> {
+        return metadataList.map { proxyEffectGenerator.generate(it, autoCloseableDeclaration) }
     }
 
     private fun getApplication(resolver: Resolver): KSClassDeclaration? {

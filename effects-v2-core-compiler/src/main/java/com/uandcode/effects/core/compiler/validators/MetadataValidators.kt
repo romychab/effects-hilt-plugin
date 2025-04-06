@@ -3,7 +3,6 @@ package com.uandcode.effects.core.compiler.validators
 import com.squareup.kotlinpoet.ClassName
 import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
-import com.uandcode.effects.core.compiler.exceptions.InconsistentCleanUpMethodNameException
 
 internal fun validateAndFilterEffectMetadata(
     effectExtension: EffectExtension,
@@ -14,21 +13,6 @@ internal fun validateAndFilterEffectMetadata(
         .mapValues { (_, list) ->
             list.distinctBy { it.implementationClassName }
         }
-
-    effectMetadataMap.forEach {  (_, effectMetadataList) ->
-        val firstEffect = effectMetadataList.first()
-        effectMetadataList.forEach {
-            if (it.cleanUpMethodName.simpleText != firstEffect.cleanUpMethodName.simpleText) {
-                throw InconsistentCleanUpMethodNameException(
-                    firstEffect.interfaceDeclaration,
-                    firstEffect.implementationClassName,
-                    firstEffect.cleanUpMethodName.simpleText,
-                    it.implementationClassName,
-                    it.cleanUpMethodName.simpleText,
-                )
-            }
-        }
-    }
 
     effectExtension.validateMetadata(effectMetadataMap)
 

@@ -7,9 +7,9 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.uandcode.effects.core.annotations.EffectClass
+import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.api.extensions.KSAnnotationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapper
-import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.exceptions.ClassDoesNotImplementInterfaceException
 import com.uandcode.effects.core.compiler.exceptions.InvalidTargetInterfaceException
 import com.uandcode.effects.core.compiler.exceptions.TargetInterfaceIsNotSpecifiedException
@@ -22,7 +22,6 @@ public open class ParsedEffect(
     public val classDeclaration: KSClassDeclarationWrapper,
     public val annotationClassName: ClassName = EffectClass::class.asClassName(),
     public val targetArgument: String = Const.TargetArgument,
-    public val cleanUpMethodNameArgument: String = Const.CleanUpMethodNameArgument,
 ) {
 
     public val className: ClassName = classDeclaration.toClassName()
@@ -35,10 +34,6 @@ public open class ParsedEffect(
     public val targetInterfaceName: String get() = targetInterfaceClassName.simpleName
 
     public val effectAnnotation: KSAnnotationWrapper by lazy { findAnnotation() }
-
-    public val cleanUpMethodName: EffectCleanUpMethodName by lazy {
-        EffectCleanUpMethodName(effectAnnotation.getString(cleanUpMethodNameArgument))
-    }
 
     public val dependencies: Dependencies by lazy { createDependencies() }
 

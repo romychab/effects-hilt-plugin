@@ -13,14 +13,12 @@ import com.uandcode.effects.stub.api.ProxyEffectStore
 internal object Const {
 
     val TargetArgument = "target"
-    val CleanUpMethodNameArgument = "cleanUpMethodName"
+    val AutoCloseableClassName = AutoCloseable::class.asClassName()
 
     val MetadataInterfaceClassName: String = "interfaceClassName"
     val MetadataImplementationClassName: String = "implementationClassName"
-    val MetadataCleanUpMethodName: String = "cleanUpMethodName"
 
     val MetadataPackage: String = "com.uandcode.effects.core.compiler.generated"
-    val DefaultCleanUpMethodName = "cleanUp"
 
     val FlowClassName = ClassName("kotlinx.coroutines.flow", "Flow")
 

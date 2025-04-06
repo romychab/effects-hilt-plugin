@@ -4,7 +4,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
 import com.uandcode.effects.core.annotations.EffectClass
 import com.uandcode.effects.core.annotations.EffectMetadata
-import com.uandcode.effects.core.compiler.api.data.EffectCleanUpMethodName
 import com.uandcode.effects.core.compiler.api.data.ParsedEffect
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
 import com.uandcode.effects.core.compiler.api.extensions.KSAnnotationWrapper
@@ -109,7 +108,6 @@ public interface EffectExtension {
         applicationClassDeclaration: KSClassDeclaration,
         interfaceDeclaration: KSClassDeclarationWrapper,
         implementationClassDeclaration: KSClassDeclarationWrapper,
-        cleanUpMethodName: EffectCleanUpMethodName,
         metadataDeclaration: KSClassDeclaration,
         metadataAnnotation: KSAnnotationWrapper,
     ): ParsedMetadata

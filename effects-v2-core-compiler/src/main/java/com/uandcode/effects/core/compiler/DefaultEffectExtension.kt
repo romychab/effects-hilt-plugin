@@ -9,7 +9,6 @@ import com.uandcode.effects.core.annotations.EffectMetadata
 import com.uandcode.effects.core.compiler.api.AbstractMetadataGenerator
 import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.KspClassWriter
-import com.uandcode.effects.core.compiler.api.data.EffectCleanUpMethodName
 import com.uandcode.effects.core.compiler.api.data.ParsedEffect
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
 import com.uandcode.effects.core.compiler.api.extensions.KSAnnotationWrapper
@@ -30,7 +29,6 @@ internal object DefaultEffectExtension : EffectExtension {
         applicationClassDeclaration: KSClassDeclaration,
         interfaceDeclaration: KSClassDeclarationWrapper,
         implementationClassDeclaration: KSClassDeclarationWrapper,
-        cleanUpMethodName: EffectCleanUpMethodName,
         metadataDeclaration: KSClassDeclaration,
         metadataAnnotation: KSAnnotationWrapper
     ): ParsedMetadata {
@@ -38,7 +36,6 @@ internal object DefaultEffectExtension : EffectExtension {
             applicationClassDeclaration = applicationClassDeclaration,
             interfaceDeclaration = interfaceDeclaration,
             implementationClassDeclaration = implementationClassDeclaration,
-            cleanUpMethodName = cleanUpMethodName,
             metadataDeclaration = metadataDeclaration
         )
     }

@@ -1,5 +1,7 @@
 package com.uandcode.effects.core.compiler.generators
 
+import com.google.devtools.ksp.getDeclaredFunctions
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
@@ -13,25 +15,25 @@ import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.ksp.TypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
+import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.api.KspClassWriter
 import com.uandcode.effects.core.compiler.api.data.GeneratedProxy
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
+import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.KSFunctionDeclarationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.implementInterface
 import com.uandcode.effects.core.compiler.api.extensions.implementInterfaceMethod
 import com.uandcode.effects.core.compiler.api.extensions.primaryConstructorWithProperties
-import com.uandcode.effects.core.compiler.Const
-import com.uandcode.effects.core.compiler.exceptions.CleanUpFunctionHasArgumentsException
-import com.uandcode.effects.core.compiler.exceptions.NonDefaultCleanUpMethodIsNotSpecifiedException
-import com.uandcode.effects.core.compiler.exceptions.NonUnitCleanUpFunctionException
 import com.uandcode.effects.core.compiler.exceptions.UnitCommandWithReturnTypeException
 
 internal class ProxyEffectGenerator(
     private val writer: KspClassWriter,
 ) {
 
-    fun generate(metadata: ParsedMetadata): GeneratedProxy {
+    fun generate(
+        metadata: ParsedMetadata,
+        autoCloseableDeclaration: KSClassDeclaration,
+    ): GeneratedProxy {
         val interfaceDeclaration = metadata.interfaceDeclaration
         val interfaceClassName = interfaceDeclaration.toClassName()
         val interfaceName = interfaceClassName.simpleName
@@ -40,16 +42,12 @@ internal class ProxyEffectGenerator(
 
         val typeSpecBuilder = TypeSpec.classBuilder(proxyClassName)
             .addConstructor(interfaceClassName)
-            .implementInterface(interfaceDeclaration, ::implementMethod)
-            .implementAutoCloseable()
-            .apply {
-                val cleanUpMethodDeclaration = findCleanUpMethod(metadata)
-                if (cleanUpMethodDeclaration != null
-                        && cleanUpMethodDeclaration.simpleName.asString() != AUTO_CLOSE_METHOD) {
-                    implementCleanUpMethod(cleanUpMethodDeclaration)
-                }
-            }
-            .addInternalCleanUpMethod()
+            .implementInterface(
+                interfaceDeclaration = interfaceDeclaration,
+                filter = { function -> !isCloseMethod(function) },
+                functionBody = ::implementMethod,
+            )
+            .implementAutoCloseable(interfaceDeclaration, autoCloseableDeclaration)
 
         writer.write(
             typeSpec = typeSpecBuilder.build(),
@@ -64,50 +62,29 @@ internal class ProxyEffectGenerator(
         )
     }
 
-    private fun TypeSpec.Builder.implementAutoCloseable() = apply {
-        addSuperinterface(ClassName("kotlin", "AutoCloseable"))
-        addFunction(
-            FunSpec.builder(AUTO_CLOSE_METHOD)
-                .addModifiers(KModifier.OVERRIDE, KModifier.PUBLIC)
-                .addCode("${INTERNAL_CLEAN_UP_METHOD}()")
+    private fun TypeSpec.Builder.implementAutoCloseable(
+        interfaceDeclaration: KSClassDeclarationWrapper,
+        autoCloseableDeclaration: KSClassDeclaration,
+    ) = apply {
+        val implementedAutoCloseable = interfaceDeclaration.findAutoCloseable(autoCloseableDeclaration)
+        if (implementedAutoCloseable == null) {
+            addSuperinterface(Const.AutoCloseableClassName)
+        }
+        val autoCloseMethod = autoCloseableDeclaration.getDeclaredFunctions().first {
+            it.simpleName.asString() == AUTO_CLOSE_METHOD
+        }
+        val funBuilder = implementInterfaceMethod(autoCloseMethod, TypeParameterResolver.EMPTY)
+        return addFunction(
+            funBuilder
+                .addCode("${COMMAND_EXECUTOR_PROPERTY}.cleanUp()")
                 .build()
         )
-    }
-
-    private fun findCleanUpMethod(metadata: ParsedMetadata): KSFunctionDeclaration? {
-        val cleanUpMethodName = metadata.cleanUpMethodName
-        return metadata.interfaceDeclaration.getAllFunctions()
-            .firstOrNull { functionDeclaration ->
-                functionDeclaration.simpleName.asString() == cleanUpMethodName.simpleText
-                        && !functionDeclaration.isAbstract
-            }
-            .let { assertCleanUpFunctionDeclaration(metadata, it) }
     }
 
     private fun TypeSpec.Builder.addConstructor(interfaceClassName: ClassName): TypeSpec.Builder {
         return primaryConstructorWithProperties(
             FunSpec.constructorBuilder()
                 .addParameter(COMMAND_EXECUTOR_PROPERTY, Const.commandExecutorName(interfaceClassName))
-                .build()
-        )
-    }
-
-    private fun TypeSpec.Builder.implementCleanUpMethod(
-        cleanUpMethodDeclaration: KSFunctionDeclaration,
-    ): TypeSpec.Builder {
-        val typeParameterResolver = cleanUpMethodDeclaration.typeParameters.toTypeParameterResolver()
-        val funBuilder = implementInterfaceMethod(cleanUpMethodDeclaration, typeParameterResolver)
-        return addFunction(
-            funBuilder
-                .addCode("${INTERNAL_CLEAN_UP_METHOD}()")
-                .build()
-        )
-    }
-
-    private fun TypeSpec.Builder.addInternalCleanUpMethod(): TypeSpec.Builder {
-        return addFunction(
-            FunSpec.builder(INTERNAL_CLEAN_UP_METHOD)
-                .addCode("${COMMAND_EXECUTOR_PROPERTY}.cleanUp()")
                 .build()
         )
     }
@@ -161,27 +138,6 @@ internal class ProxyEffectGenerator(
         return returnType?.isKotlinFlow(typeParameterResolver) == true
     }
 
-    private fun assertCleanUpFunctionDeclaration(
-        metadata: ParsedMetadata,
-        cleanUpFunctionDeclaration: KSFunctionDeclaration?,
-    ): KSFunctionDeclaration? {
-        if (cleanUpFunctionDeclaration == null) {
-            if (metadata.cleanUpMethodName.isDefaultCleanUpMethodName) {
-                return null
-            } else {
-                throw NonDefaultCleanUpMethodIsNotSpecifiedException(metadata)
-            }
-        }
-        val typeParameterResolver = cleanUpFunctionDeclaration.typeParameters.toTypeParameterResolver()
-        if (cleanUpFunctionDeclaration.returnType?.isUnit(typeParameterResolver) != true) {
-            throw NonUnitCleanUpFunctionException(cleanUpFunctionDeclaration)
-        }
-        if (cleanUpFunctionDeclaration.parameters.isNotEmpty()) {
-            throw CleanUpFunctionHasArgumentsException(cleanUpFunctionDeclaration)
-        }
-        return cleanUpFunctionDeclaration
-    }
-
     private fun KSTypeReference.isKotlinFlow(
         typeParameterResolver: TypeParameterResolver,
     ): Boolean {
@@ -195,6 +151,22 @@ internal class ProxyEffectGenerator(
         return toTypeName(typeParameterResolver) == UNIT
     }
 
+    private fun KSClassDeclarationWrapper.findAutoCloseable(
+        autoCloseableDeclaration: KSClassDeclaration,
+    ): KSClassDeclaration? {
+        return interfaces.firstOrNull {
+            it.toClassName() == autoCloseableDeclaration.toClassName()
+        }
+    }
+
+    private fun isCloseMethod(
+        function: KSFunctionDeclaration,
+    ): Boolean {
+        return function.simpleName.asString() == AUTO_CLOSE_METHOD
+                && function.parameters.isEmpty()
+                && function.typeParameters.isEmpty()
+    }
+
     enum class CommandType(
         val commandExecutorMethodName: String
     ) {
@@ -205,7 +177,6 @@ internal class ProxyEffectGenerator(
 
     companion object {
         private const val COMMAND_EXECUTOR_PROPERTY = "commandExecutor"
-        private const val INTERNAL_CLEAN_UP_METHOD = "__internalCleanUp"
         private const val AUTO_CLOSE_METHOD = "close"
     }
 }

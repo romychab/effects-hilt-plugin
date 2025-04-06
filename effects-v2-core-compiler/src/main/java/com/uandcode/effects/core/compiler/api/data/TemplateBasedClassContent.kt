@@ -9,10 +9,12 @@ import com.uandcode.effects.core.compiler.exceptions.InternalEffectKspException
  * The template must contain the following placeholders:
  * - '%PACKAGE_STATEMENT%' - will be replaced with the [pkg] value.
  * - '%CLASSNAME%' - will be replaced with the [className] value.
+ * - '%EFFECT_INTERFACE_CLASSNAME%' - will be replaced with the target effect interface
+ * - '%EFFECT_IMPL_CLASSNAME%' - will be replaced with a classname of the annotated class
  *
  * Other placeholders can be defined by the user using [setVariable] method.
  *
- * Example if valid template:
+ * Example of valid template:
  *
  * ```
  * %PACKAGE_STATEMENT% // <-- required placeholder
@@ -20,8 +22,11 @@ import com.uandcode.effects.core.compiler.exceptions.InternalEffectKspException
  * import com.uandcode.effects.core.annotations.EffectMetadata
  *
  * @EffectMetadata(
- *     // custom placeholder:
- *     interfaceClassName = "%EFFECT_IMPL_CLASSNAME%",
+ *     // required params and placeholders:
+ *     interfaceClassName = "%EFFECT_INTERFACE_CLASSNAME%",
+ *     implementationClassName = "%EFFECT_IMPL_CLASSNAME%",
+ *     // custom param and placeholder:
+ *     yourAdditionalParam = "%PARAM_NAME%",
  * )
  * public class %CLASSNAME% // <-- required placeholder
  * ```

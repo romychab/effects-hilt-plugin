@@ -1,8 +1,8 @@
 package com.uandcode.effects.core.compiler.api
 
+import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.api.data.ParsedEffect
 import com.uandcode.effects.core.compiler.api.data.TemplateBasedClassContent
-import com.uandcode.effects.core.compiler.Const
 
 /**
  * Base class for generating metadata annotations. Other plugins can extend this class.
@@ -40,7 +40,6 @@ public abstract class AbstractMetadataGenerator(
         ).apply {
             setVariable("EFFECT_IMPL_CLASSNAME", effect.className.canonicalName)
             setVariable("EFFECT_INTERFACE_CLASSNAME", effect.targetInterfaceClassName.canonicalName)
-            setVariable("CLEAN_UP_METHOD_NAME", effect.cleanUpMethodName.originCleanUpMethodName)
             setupVariables(effect)
         }
         writer.write(classContent)

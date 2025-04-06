@@ -20,12 +20,13 @@ import com.squareup.kotlinpoet.ksp.toTypeVariableName
  */
 public fun TypeSpec.Builder.implementInterface(
     interfaceDeclaration: KSClassDeclarationWrapper,
+    filter: (KSFunctionDeclaration) -> Boolean = { true },
     functionBody: (KSFunctionDeclarationWrapper) -> CodeBlock,
 ): TypeSpec.Builder {
     return addSuperinterface(interfaceDeclaration.toClassName())
         .apply {
             interfaceDeclaration.getAllFunctions()
-                .filter { it.isAbstract }
+                .filter { it.isAbstract && filter(it) }
                 .forEach { function ->
                     val typeParameterResolver = function.typeParameters.toTypeParameterResolver()
                     val funSpecBuilder = implementInterfaceMethod(function, typeParameterResolver)

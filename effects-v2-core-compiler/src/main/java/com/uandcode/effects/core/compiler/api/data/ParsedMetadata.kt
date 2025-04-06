@@ -14,7 +14,6 @@ public open class ParsedMetadata(
     public val applicationClassDeclaration: KSClassDeclaration,
     public val interfaceDeclaration: KSClassDeclarationWrapper,
     public val implementationClassDeclaration: KSClassDeclarationWrapper,
-    public val cleanUpMethodName: EffectCleanUpMethodName,
     public val metadataDeclaration: KSClassDeclaration? = null,
 ) {
 
@@ -31,7 +30,6 @@ public open class ParsedMetadata(
         applicationClassDeclaration = applicationClass,
         interfaceDeclaration = effect.targetInterface,
         implementationClassDeclaration = effect.classDeclaration,
-        cleanUpMethodName = effect.cleanUpMethodName,
     )
 
     private fun buildDependencies(): Dependencies {
