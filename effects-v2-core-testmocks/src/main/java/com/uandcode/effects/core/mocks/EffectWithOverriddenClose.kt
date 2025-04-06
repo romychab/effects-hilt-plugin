@@ -2,12 +2,12 @@ package com.uandcode.effects.core.mocks
 
 import com.uandcode.effects.core.annotations.EffectClass
 
-public interface EffectWithDefaultCleanUp {
+public interface EffectWithOverriddenClose : AutoCloseable {
     public fun run(input: String)
-    public fun cleanUp(): Unit = Unit
+    public override fun close(): Unit = Unit
 }
 
 @EffectClass
-public class EffectWithDefaultCleanUpImpl : EffectWithDefaultCleanUp {
+public class EffectWithOverriddenCloseImpl : EffectWithOverriddenClose {
     override fun run(input: String): Unit = Unit
 }

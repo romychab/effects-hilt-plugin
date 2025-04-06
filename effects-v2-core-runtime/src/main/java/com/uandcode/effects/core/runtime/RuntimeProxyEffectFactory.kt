@@ -5,12 +5,8 @@ import com.uandcode.effects.core.ProxyEffectFactory
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.runtime.proxy.ProxyMethodInterceptor
 import com.uandcode.effects.stub.api.ProxyConfiguration
-import net.bytebuddy.ByteBuddy
-import net.bytebuddy.implementation.MethodDelegation
-import net.bytebuddy.matcher.ElementMatchers
+import java.lang.reflect.Proxy
 import kotlin.reflect.KClass
-import kotlin.reflect.KParameter
-import kotlin.reflect.full.createType
 
 /**
  * A [ProxyEffectFactory] implementation that uses ByteBuddy to generate
@@ -19,8 +15,6 @@ import kotlin.reflect.full.createType
  * Usually you don't need to use this class directly. See [RuntimeEffectComponents] instead.
  */
 public class RuntimeProxyEffectFactory : ProxyEffectFactory {
-
-    private val proxyClasses = mutableMapOf<KClass<*>, Class<*>>()
 
     override val proxyConfiguration: ProxyConfiguration = RuntimeProxyConfiguration
 
@@ -35,30 +29,13 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         clazz: KClass<T>,
         commandExecutor: CommandExecutor<T>,
     ): T {
-        val proxyClass = proxyClasses.getOrPut(clazz) {
-            createProxyClass(clazz, commandExecutor)
-        }
-        return proxyClass
-            .getDeclaredConstructor()
-            .newInstance() as T
-    }
-
-    private fun <T : Any> createProxyClass(
-        clazz: KClass<T>,
-        commandExecutor: CommandExecutor<T>,
-    ): Class<out T> {
-        val cleanUpMethodName = findCleanUpMethodName(clazz)
         val javaInterface = clazz.java
-        val proxyMethodInterceptor = ProxyMethodInterceptor(commandExecutor, cleanUpMethodName)
-        return ByteBuddy()
-            .subclass(javaInterface)
-            .method(ElementMatchers.isDeclaredBy(javaInterface))
-            .intercept(MethodDelegation.to(proxyMethodInterceptor))
-            .implement(AutoCloseable::class.java)
-            .intercept(MethodDelegation.to(proxyMethodInterceptor, DEFAULT_CLOSE_NAME))
-            .make()
-            .load(javaInterface.classLoader)
-            .loaded
+        val proxy = Proxy.newProxyInstance(
+            javaInterface.classLoader,
+            arrayOf(javaInterface, AutoCloseable::class.java),
+            ProxyMethodInterceptor(commandExecutor)
+        )
+        return proxy as T
     }
 
     private fun getTargetInterfaceFromAnnotation(clazz: KClass<*>): KClass<*>? {
@@ -78,18 +55,8 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         return clazz.java.interfaces.firstOrNull()?.kotlin
     }
 
-    private fun findCleanUpMethodName(clazz: KClass<*>): String? {
-        return clazz.members.firstOrNull { callable ->
-            !callable.isAbstract
-                    && callable.returnType == UNIT_TYPE
-                    && callable.parameters.count { it.kind != KParameter.Kind.INSTANCE } == 0
-        }?.name
-    }
-
     private companion object {
-        const val DEFAULT_CLOSE_NAME = "close"
         const val TARGET_ANNOTATION_ARG = "target"
-        val UNIT_TYPE = Unit::class.createType()
     }
 
 }

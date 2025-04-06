@@ -13,7 +13,6 @@ dependencies {
     api(projects.effectsV2Core)
     testImplementation(projects.effectsV2CoreTestmocks)
 
-    implementation(libs.byte.buddy)
     implementation(libs.coroutines.core)
     implementation(buildSrcLibs.kotlinx.reflection)
 
