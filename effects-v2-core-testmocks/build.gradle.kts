@@ -6,4 +6,5 @@ plugins {
 dependencies {
     implementation(projects.effectsV2Core)
     implementation(projects.effectsV2CoreAnnotations)
+    ksp(projects.effectsV2CoreCompiler)
 }

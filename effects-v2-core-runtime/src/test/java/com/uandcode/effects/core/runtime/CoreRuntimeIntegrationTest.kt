@@ -8,12 +8,10 @@ import com.uandcode.effects.core.mocks.Effect
 import com.uandcode.effects.core.mocks.Effect.Companion.EMIT_DELAY
 import com.uandcode.effects.core.mocks.Effect.Companion.expectedResult
 import com.uandcode.effects.core.mocks.EffectImpl
-import com.uandcode.effects.core.mocks.EffectWithCleanUp
-import com.uandcode.effects.core.mocks.EffectWithCleanUpImpl
-import com.uandcode.effects.core.mocks.EffectWithDefaultCleanUp
-import com.uandcode.effects.core.mocks.EffectWithDefaultCleanUpImpl
 import com.uandcode.effects.core.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.mocks.EffectWithDefaultTargetImpl
+import com.uandcode.effects.core.mocks.EffectWithNonOverriddenClose
+import com.uandcode.effects.core.mocks.EffectWithNonOverriddenCloseImpl
 import com.uandcode.effects.core.mocks.EffectWithTarget
 import com.uandcode.effects.core.mocks.EffectWithTargetImpl
 import com.uandcode.flowtest.CollectStatus
@@ -521,34 +519,34 @@ class CoreRuntimeIntegrationTest {
     }
 
     @Test
-    fun `default cleanUp call is not delivered to effect implementation`() {
-        val proxy = component.getProxy<EffectWithDefaultCleanUp>()
-        val effectImpl = spyk(EffectWithDefaultCleanUpImpl())
-        val controller = component.getController<EffectWithDefaultCleanUp>()
+    fun `non-overridden close() call is not delivered to effect implementation`() {
+        val proxy = component.getProxy<EffectWithNonOverriddenClose>()
+        val effectImpl = spyk(EffectWithNonOverriddenCloseImpl())
+        val controller = component.getController<EffectWithNonOverriddenClose>()
 
         proxy.run("input")
-        proxy.cleanUp()
+        proxy.close()
         controller.start(effectImpl)
 
         verify(exactly = 0) {
             effectImpl.run(any())
-            effectImpl.cleanUp()
+            effectImpl.close()
         }
     }
 
     @Test
-    fun `non-default cleanUp call is not delivered to effect implementation`() {
-        val proxy = component.getProxy<EffectWithCleanUp>()
-        val effectImpl = spyk(EffectWithCleanUpImpl())
-        val controller = component.getController<EffectWithCleanUp>()
+    fun `overridden close() call is not delivered to effect implementation`() {
+        val proxy = component.getProxy<EffectWithNonOverriddenClose>()
+        val effectImpl = spyk(EffectWithNonOverriddenCloseImpl())
+        val controller = component.getController<EffectWithNonOverriddenClose>()
 
         proxy.run("input")
-        proxy.destroy()
+        proxy.close()
         controller.start(effectImpl)
 
         verify(exactly = 0) {
             effectImpl.run(any())
-            effectImpl.destroy()
+            effectImpl.close()
         }
     }
 

@@ -1,5 +1,6 @@
 package com.uandcode.effects.core.mocks
 
+import com.uandcode.effects.core.annotations.EffectClass
 import com.uandcode.effects.core.mocks.Effect.Companion.expectedResult
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -30,6 +31,7 @@ public interface Effect {
     }
 }
 
+@EffectClass
 public class EffectImpl(private val resultModifier: String = "") : Effect {
 
     private val channel = Channel<String>(
