@@ -66,6 +66,17 @@ import kotlin.reflect.KClass
  * // ViewModel when the Activity is at least in STARTED state (between onStart/onStop calls).
  * ```
  *
+ * The target interface may optionally extend AutoCloseable interface
+ * and provide a default implementation of the `close()` method:
+ *
+ * ```
+ * interface MyEffects : AutoCloseable {
+ *     override fun close() = Unit
+ * }
+ * ```
+ *
+ * Calling `close()` cancels all pending calls that hasn't been finished or
+ * delivered yet from a proxy to an effect implementation.
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
@@ -79,20 +90,5 @@ public annotation class EffectClass(
      * 2 or more interfaces.
      */
     public val target: KClass<*> = Any::class,
-
-    /**
-     * Set an optional Clean-up method name in the target interface.
-     *
-     * Please note, the cleanUp() logic cancels only Unit commands. Suspend- and
-     * Flow- commands can be cancelled by cancelling a CoroutineScope used
-     * for their execution.
-     *
-     * By default, 'cleanUp' name is used if this parameter is not specified.
-     *
-     * A cleanUp() method is a special method which should not be abstract and
-     * should not return any result. You can add such method to your target interface
-     * if you want to manually clear pending unit commands which hasn't been processed yet.
-     */
-    public val cleanUpMethodName: String = "",
 
 )

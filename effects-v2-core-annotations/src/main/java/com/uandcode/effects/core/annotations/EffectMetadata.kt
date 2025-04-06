@@ -11,5 +11,4 @@ package com.uandcode.effects.core.annotations
 public annotation class EffectMetadata(
     val interfaceClassName: String,
     val implementationClassName: String,
-    val cleanUpMethodName: String,
 )
