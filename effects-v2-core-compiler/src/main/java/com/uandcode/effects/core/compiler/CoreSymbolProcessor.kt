@@ -1,5 +1,8 @@
+@file:OptIn(KspExperimental::class)
+
 package com.uandcode.effects.core.compiler
 
+import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
@@ -33,13 +36,14 @@ internal class CoreSymbolProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
-            val effects = parseEffects(resolver, effectExtension)
+            val appClassDeclaration = getApplication(resolver)
+
+            val effects = parseEffects(resolver, appClassDeclaration, effectExtension)
             validateEffects(effects)
             effectExtension.validateEffects(effects)
 
             generateMetadata(effects)
 
-            val appClassDeclaration = getApplication(resolver)
             if (appClassDeclaration != null) {
                 val parsedMetadataList = parseMetadata(resolver, effectExtension, appClassDeclaration) +
                         effects.map { effectExtension.buildMetadataFromParsedEffect(it, appClassDeclaration) }

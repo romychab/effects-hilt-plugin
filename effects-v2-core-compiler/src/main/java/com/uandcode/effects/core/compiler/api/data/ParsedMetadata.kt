@@ -25,9 +25,9 @@ public open class ParsedMetadata(
 
     public constructor(
         effect: ParsedEffect,
-        applicationClass: KSClassDeclaration,
+        applicationClassDeclaration: KSClassDeclaration,
     ) : this(
-        applicationClassDeclaration = applicationClass,
+        applicationClassDeclaration = applicationClassDeclaration,
         interfaceDeclaration = effect.targetInterface,
         implementationClassDeclaration = effect.classDeclaration,
     )
@@ -38,7 +38,7 @@ public open class ParsedMetadata(
             implementationClassDeclaration.containingFile,
             metadataDeclaration?.containingFile,
             applicationClassDeclaration.containingFile,
-        ).toTypedArray()
+        ).distinct().toTypedArray()
         return Dependencies(
             aggregating = false,
             *files,

@@ -82,7 +82,10 @@ public interface EffectExtension {
     /**
      * Parse the effect class marked with the [effectAnnotation] annotation.
      */
-    public fun parseEffect(classDeclaration: KSClassDeclarationWrapper): ParsedEffect
+    public fun parseEffect(
+        classDeclaration: KSClassDeclarationWrapper,
+        appClassDeclaration: KSClassDeclaration?,
+    ): ParsedEffect
 
     /**
      * Get metadata from the parsed effect.

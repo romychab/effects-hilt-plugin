@@ -20,6 +20,7 @@ import com.uandcode.effects.core.compiler.exceptions.TargetInterfaceIsNotSpecifi
  */
 public open class ParsedEffect(
     public val classDeclaration: KSClassDeclarationWrapper,
+    public val applicationClassDeclaration: KSClassDeclaration?,
     public val annotationClassName: ClassName = EffectClass::class.asClassName(),
     public val targetArgument: String = Const.TargetArgument,
 ) {
@@ -68,10 +69,10 @@ public open class ParsedEffect(
         val files = listOfNotNull(
             classDeclaration.containingFile,
             targetInterface.containingFile,
-        )
+        ).distinct()
 
         return Dependencies(
-            aggregating = false,
+            aggregating = applicationClassDeclaration == null,
             *files.toTypedArray(),
         )
     }

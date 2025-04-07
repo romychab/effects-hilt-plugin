@@ -6,11 +6,15 @@ import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.ParsedEffect
 import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapper
 
-internal fun parseEffects(resolver: Resolver, effectExtension: EffectExtension): Sequence<ParsedEffect> {
+internal fun parseEffects(
+    resolver: Resolver,
+    appClassDeclaration: KSClassDeclaration?,
+    effectExtension: EffectExtension,
+): Sequence<ParsedEffect> {
     val annotatedClasses = resolver.getSymbolsWithAnnotation(effectExtension.effectAnnotation.canonicalName)
     return annotatedClasses
         .filterIsInstance<KSClassDeclaration>()
         .map {
-            effectExtension.parseEffect(KSClassDeclarationWrapper(it))
+            effectExtension.parseEffect(KSClassDeclarationWrapper(it), appClassDeclaration)
         }
 }

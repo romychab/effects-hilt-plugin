@@ -21,8 +21,11 @@ internal object DefaultEffectExtension : EffectExtension {
     override val effectAnnotation: ClassName = EffectClass::class.asClassName()
     override val metadataAnnotation: ClassName = EffectMetadata::class.asClassName()
 
-    override fun parseEffect(classDeclaration: KSClassDeclarationWrapper): ParsedEffect {
-        return ParsedEffect(classDeclaration)
+    override fun parseEffect(
+        classDeclaration: KSClassDeclarationWrapper,
+        appClassDeclaration: KSClassDeclaration?,
+    ): ParsedEffect {
+        return ParsedEffect(classDeclaration, appClassDeclaration)
     }
 
     override fun buildMetadataFromAnnotation(
