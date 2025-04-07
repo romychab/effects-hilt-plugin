@@ -1,6 +1,6 @@
-package com.uandcode.effects.core.internal.components
+package com.uandcode.effects.core.internal.scopes
 
-import com.uandcode.effects.core.internal.ProxyEffectStoreProvider
+import com.uandcode.effects.core.GeneratedProxyEffectStoreProvider
 import com.uandcode.effects.stub.api.ProxyEffectStore
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -12,7 +12,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class GlobalEffectComponentTest {
+class GlobalEffectScopeTest {
 
     @MockK
     private lateinit var proxyEffectStore: ProxyEffectStore
@@ -20,26 +20,26 @@ class GlobalEffectComponentTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        mockkObject(ProxyEffectStoreProvider)
-        every { ProxyEffectStoreProvider.getGeneratedProxyEffectStore() } returns proxyEffectStore
+        mockkObject(GeneratedProxyEffectStoreProvider)
+        every { GeneratedProxyEffectStoreProvider.getGeneratedProxyEffectStore() } returns proxyEffectStore
     }
 
     @After
     fun tearDown() {
-        unmockkObject(ProxyEffectStoreProvider)
+        unmockkObject(GeneratedProxyEffectStoreProvider)
     }
 
     @Test
-    fun `test GlobalEffectComponent is DefaultEffectComponent`() {
+    fun `test GlobalEffectScope is LazyEffectScope`() {
         val expectedTargetInterfaces = setOf(Effect::class)
         every { proxyEffectStore.allTargetInterfaces } returns expectedTargetInterfaces
         every { proxyEffectStore.createProxy(Effect::class, any()) } returns ProxyEffectImpl()
         every { proxyEffectStore.findTargetInterface(Effect::class) } returns Effect::class
 
-        val globalComponent = buildGlobalEffectComponent()
+        val globalScope = buildGlobalEffectScope()
 
-        assertTrue(globalComponent is DefaultEffectComponent)
-        val proxyEffect = globalComponent.getProxy(Effect::class)
+        assertTrue(globalScope is LazyEffectScope)
+        val proxyEffect = globalScope.getProxy(Effect::class)
         assertTrue(proxyEffect is ProxyEffectImpl)
     }
 

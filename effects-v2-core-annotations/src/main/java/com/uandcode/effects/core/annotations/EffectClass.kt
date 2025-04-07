@@ -46,17 +46,17 @@ import kotlin.reflect.KClass
  * @EffectApplication
  * class MyApp : Application
  *
- * // 5. Use RootEffectComponents.global.get() for retrieving a generated instance
+ * // 5. Use RootEffectScopes.global.get() for retrieving a generated instance
  * //    of MyEffects interface in a object with lifecycle longer than the lifecycle
  * //    or your implementation class (for example, in a ViewModel):
  * class MyViewModel(
- *     val myEffects: MyEffects = RootEffectComponents.global.get()
+ *     val myEffects: MyEffects = RootEffectScopes.global.get()
  * ) : ViewModel()
  *
  * // 6. Use lazyEffect delegate in a object with shorter lifecycle:
  * class MyActivity : AppCompatActivity() {
  *
- *     private val myEffectsImpl by lazyEffect(RootEffectComponents.global) {
+ *     private val myEffectsImpl by lazyEffect(RootEffectScopes.global) {
  *         MyEffectsImpl(activity = this)
  *     }
  *
@@ -78,7 +78,7 @@ import kotlin.reflect.KClass
  * Calling `close()` cancels all pending calls that hasn't been finished or
  * delivered yet from a proxy to an effect implementation.
  */
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS)
 public annotation class EffectClass(
 

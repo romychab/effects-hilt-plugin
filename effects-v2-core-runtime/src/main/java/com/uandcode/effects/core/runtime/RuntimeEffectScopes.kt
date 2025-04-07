@@ -1,13 +1,13 @@
 package com.uandcode.effects.core.runtime
 
-import com.uandcode.effects.core.EffectComponent
+import com.uandcode.effects.core.EffectScope
 import com.uandcode.effects.core.EffectInterfaces
-import com.uandcode.effects.core.RootEffectComponents
+import com.uandcode.effects.core.RootEffectScopes
 
-public object RuntimeEffectComponents {
+public object RuntimeEffectScopes {
 
     /**
-     * Create a new [EffectComponent] which can create proxy implementations
+     * Create a new [EffectScope] which can create proxy implementations
      * for all effect [interfaces] at runtime.
      *
      * It may be useful either in integration tests or if you don't want to
@@ -16,27 +16,27 @@ public object RuntimeEffectComponents {
      * Usage example:
      *
      * ```
-     * // replace a root effect component with a runtime one
-     * RootEffectComponents.setGlobal(RuntimeEffectComponents.create())
+     * // replace a root effect scope with a runtime one
+     * RootEffectScopes.setGlobal(RuntimeEffectScopes.create())
      * ```
      */
     public fun create(
         interfaces: EffectInterfaces = EffectInterfaces.Everything
-    ): EffectComponent {
-        return RootEffectComponents.empty.createChild(
+    ): EffectScope {
+        return RootEffectScopes.empty.createChild(
             interfaces = interfaces,
             proxyEffectFactory = RuntimeProxyEffectFactory()
         )
     }
 
     /**
-     * Create a child [EffectComponent] which can create proxy implementations
+     * Create a child [EffectScope] which can create proxy implementations
      * for all [interfaces] at runtime.
      */
     public fun createChild(
-        parent: EffectComponent,
+        parent: EffectScope,
         interfaces: EffectInterfaces = EffectInterfaces.Everything
-    ): EffectComponent {
+    ): EffectScope {
         return parent.createChild(
             interfaces = interfaces,
             proxyEffectFactory = RuntimeProxyEffectFactory()

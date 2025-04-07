@@ -1,4 +1,4 @@
-package com.uandcode.effects.core.internal.components
+package com.uandcode.effects.core.internal.scopes
 
 import com.uandcode.effects.core.EffectInterfaces
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
@@ -12,14 +12,14 @@ import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 
-class DefaultEffectComponentTest {
+class DefaultEffectScopeTest {
 
-    private lateinit var effectComponent: DefaultEffectComponent
+    private lateinit var effectScope: DefaultEffectScope
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        effectComponent = DefaultEffectComponent(
+        effectScope = DefaultEffectScope(
             interfaces = EffectInterfaces.ListOf(Effect1::class),
             proxyEffectFactory = RuntimeProxyEffectFactory(),
             parent = null,
@@ -29,29 +29,29 @@ class DefaultEffectComponentTest {
     @Test
     fun `get() with unknown effect throws EffectNotFoundException`() {
         assertThrows(EffectNotFoundException::class.java) {
-            effectComponent.getProxy(Effect2::class)
+            effectScope.getProxy(Effect2::class)
         }
     }
 
     @Test
     fun `getController() with unknown effect throws EffectNotFoundException`() {
         assertThrows(EffectNotFoundException::class.java) {
-            effectComponent.getController(Effect2::class)
+            effectScope.getController(Effect2::class)
         }
     }
 
     @Test
     fun `get() returns proxy implementation`() {
-        val effect: Effect1 = effectComponent.getProxy(Effect1::class)
+        val effect: Effect1 = effectScope.getProxy(Effect1::class)
         assertNotNull(effect)
     }
 
     @Test
     fun `test getController()`() {
-        val effect = effectComponent.getProxy(Effect1::class)
+        val effect = effectScope.getProxy(Effect1::class)
         val effectImpl = mockk<Effect1>(relaxUnitFun = true)
 
-        val controller = effectComponent.getController(Effect1::class)
+        val controller = effectScope.getController(Effect1::class)
         effect.run()
         controller.start(effectImpl)
 
@@ -59,30 +59,30 @@ class DefaultEffectComponentTest {
     }
 
     @Test
-    fun `get() in child component can return 2 implementations`() {
-        val childEffectComponent = effectComponent.createChild(
+    fun `get() in child scope can return 2 implementations`() {
+        val childEffectScope = effectScope.createChild(
             EffectInterfaces.ListOf(Effect2::class),
         )
 
-        val effect1 = childEffectComponent.getProxy(Effect1::class)
-        val effect2 = childEffectComponent.getProxy(Effect2::class)
+        val effect1 = childEffectScope.getProxy(Effect1::class)
+        val effect2 = childEffectScope.getProxy(Effect2::class)
 
         assertNotNull(effect1)
         assertNotNull(effect2)
     }
 
     @Test
-    fun `getController() in child component can return controllers for 2 implementations`() {
+    fun `getController() in child scope can return controllers for 2 implementations`() {
         val effect1Impl = mockk<Effect1>(relaxUnitFun = true)
         val effect2Impl = mockk<Effect2>(relaxUnitFun = true)
-        val childEffectComponent = effectComponent.createChild(
+        val childEffectScope = effectScope.createChild(
             EffectInterfaces.ListOf(Effect2::class)
         )
 
-        val effect1 = childEffectComponent.getProxy(Effect1::class)
-        val effect2 = childEffectComponent.getProxy(Effect2::class)
-        val controller1 = childEffectComponent.getController(Effect1::class)
-        val controller2 = childEffectComponent.getController(Effect2::class)
+        val effect1 = childEffectScope.getProxy(Effect1::class)
+        val effect2 = childEffectScope.getProxy(Effect2::class)
+        val controller1 = childEffectScope.getController(Effect1::class)
+        val controller2 = childEffectScope.getController(Effect2::class)
 
         effect1.run()
         controller1.start(effect1Impl)

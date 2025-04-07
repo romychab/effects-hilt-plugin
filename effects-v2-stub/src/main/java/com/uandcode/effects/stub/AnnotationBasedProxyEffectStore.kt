@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  *
  * @see ProxyEffectStore
  */
-public object GeneratedProxyEffectStore : ProxyEffectStore {
+public object AnnotationBasedProxyEffectStore : ProxyEffectStore {
 
     override val proxyConfiguration: ProxyConfiguration = ProxyConfiguration.Default()
 

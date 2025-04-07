@@ -1,5 +1,6 @@
 package com.uandcode.effects.core
 
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

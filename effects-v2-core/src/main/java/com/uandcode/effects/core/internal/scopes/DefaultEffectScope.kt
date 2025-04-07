@@ -1,19 +1,19 @@
-package com.uandcode.effects.core.internal.components
+package com.uandcode.effects.core.internal.scopes
 
-import com.uandcode.effects.core.EffectComponent
+import com.uandcode.effects.core.EffectScope
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ProxyEffectFactory
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.internal.EffectClassManager
 import com.uandcode.effects.core.EffectInterfaces
 import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
-internal class DefaultEffectComponent(
+internal class DefaultEffectScope(
     private val interfaces: EffectInterfaces,
     private val proxyEffectFactory: ProxyEffectFactory,
-    private val parent: EffectComponent?,
-) : EffectComponent {
+    private val parent: EffectScope?,
+) : EffectScope {
 
     private val effectClassManagers = mutableMapOf<KClass<*>, EffectClassManager<out Any>>()
 
@@ -34,8 +34,8 @@ internal class DefaultEffectComponent(
     override fun createChild(
         interfaces: EffectInterfaces,
         proxyEffectFactory: ProxyEffectFactory?
-    ): EffectComponent {
-        return DefaultEffectComponent(
+    ): EffectScope {
+        return DefaultEffectScope(
             interfaces = interfaces,
             proxyEffectFactory = proxyEffectFactory ?: this.proxyEffectFactory,
             parent = this,

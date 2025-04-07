@@ -1,7 +1,7 @@
 package com.uandcode.effects.core.runtime
 
-import com.uandcode.effects.core.EffectComponent
-import com.uandcode.effects.core.RootEffectComponents
+import com.uandcode.effects.core.EffectScope
+import com.uandcode.effects.core.RootEffectScopes
 import com.uandcode.effects.core.getController
 import com.uandcode.effects.core.getProxy
 import com.uandcode.effects.core.mocks.Effect
@@ -33,18 +33,18 @@ import org.junit.Test
 
 class CoreRuntimeIntegrationTest {
 
-    private lateinit var component: EffectComponent
+    private lateinit var component: EffectScope
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        RootEffectComponents.setGlobal(RuntimeEffectComponents.create())
-        component = RootEffectComponents.global
+        RootEffectScopes.setGlobal(RuntimeEffectScopes.create())
+        component = RootEffectScopes.global
     }
 
     @After
     fun tearDown() {
-        RootEffectComponents.resetGlobalComponent()
+        RootEffectScopes.resetGlobalScope()
     }
 
     @Test

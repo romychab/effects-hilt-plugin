@@ -1,7 +1,7 @@
 package com.uandcode.effects.core.internal
 
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ProxyEffectFactory
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import kotlin.reflect.KClass
 
 internal class EffectClassManager<Effect : Any>(

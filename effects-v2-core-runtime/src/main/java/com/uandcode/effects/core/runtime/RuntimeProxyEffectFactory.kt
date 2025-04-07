@@ -1,7 +1,7 @@
 package com.uandcode.effects.core.runtime
 
 import com.uandcode.effects.core.CommandExecutor
-import com.uandcode.effects.core.ProxyEffectFactory
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.runtime.proxy.ProxyMethodInterceptor
 import com.uandcode.effects.stub.api.ProxyConfiguration
@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * A [ProxyEffectFactory] implementation that uses ByteBuddy to generate
  * and load proxy implementations at runtime.
  *
- * Usually you don't need to use this class directly. See [RuntimeEffectComponents] instead.
+ * Usually you don't need to use this class directly. See [RuntimeEffectScopes] instead.
  */
 public class RuntimeProxyEffectFactory : ProxyEffectFactory {
 

@@ -1,14 +1,13 @@
 package com.uandcode.effects.core.lifecycle
 
 import androidx.lifecycle.LifecycleOwner
-import com.uandcode.effects.core.EffectComponent
-import com.uandcode.effects.core.RootEffectComponents
+import com.uandcode.effects.core.EffectScope
+import com.uandcode.effects.core.RootEffectScopes
 import com.uandcode.effects.core.annotations.EffectClass
 import com.uandcode.effects.core.bind
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.getController
 import com.uandcode.effects.stub.api.InvalidEffectSetupException
-import com.uandcode.effects.core.lifecycle.internal.EffectLifecycleDelegateImpl
 
 /**
  * Attach an effect implementation of a type [T] created by a [effectProvider] to the
@@ -40,9 +39,9 @@ import com.uandcode.effects.core.lifecycle.internal.EffectLifecycleDelegateImpl
  * }
  * ```
  *
- * @param component The [EffectComponent] that is used to retrieve an instance
+ * @param scope The [EffectScope] that is used to retrieve an instance
  *                  of the effect interface to which the effect implementation
- *                  will be attached. By default, [RootEffectComponents.global] is used.
+ *                  will be attached. By default, [RootEffectScopes.global] is used.
  * @param effectProvider The function that creates an instance of the effect implementation.
  *                       This function is called lazily and only once.
  * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
@@ -50,14 +49,12 @@ import com.uandcode.effects.core.lifecycle.internal.EffectLifecycleDelegateImpl
  * @throws InvalidEffectSetupException if the library is not setup correctly
  */
 public inline fun <reified T : Any> LifecycleOwner.lazyEffect(
-    component: EffectComponent = RootEffectComponents.global,
+    scope: EffectScope = RootEffectScopes.global,
     noinline effectProvider: () -> T,
 ): EffectLifecycleDelegate<T> {
-    return EffectLifecycleDelegate.lazy {
-        val controller = component.getController<T>().bind(effectProvider)
-        EffectLifecycleDelegateImpl(
-            lifecycleOwner = this,
-            controller = controller,
-        )
-    }
+    val controller = scope.getController<T>().bind(effectProvider)
+    return EffectLifecycleDelegateImpl(
+        lifecycleOwner = this,
+        controller = controller,
+    )
 }

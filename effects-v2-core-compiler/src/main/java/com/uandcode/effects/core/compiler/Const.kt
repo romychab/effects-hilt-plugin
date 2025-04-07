@@ -24,7 +24,7 @@ internal object Const {
 
     val ProxyEffectStoreInterfaceClassName = ProxyEffectStore::class.asClassName()
     val InternalProxyEffectStoreImplementationClassName = InternalProxyEffectStoreImpl::class.asClassName()
-    val GeneratedProxyEffectStoreClassName = ClassName("com.uandcode.effects.stub", "GeneratedProxyEffectStore")
+    val GeneratedProxyEffectStoreClassName = ClassName("com.uandcode.effects.stub", "AnnotationBasedProxyEffectStore")
     val ProxyConfigurationClassName = ProxyConfiguration::class.asClassName()
 
     fun commandExecutorName(

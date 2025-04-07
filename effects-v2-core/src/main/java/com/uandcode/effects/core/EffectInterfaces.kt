@@ -1,10 +1,11 @@
 package com.uandcode.effects.core
 
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.internal.EffectClassManager
 import kotlin.reflect.KClass
 
 /**
- * The list of effect interfaces managed by an [EffectComponent].
+ * The list of effect interfaces managed by an [EffectScope].
  *
  * @see EffectInterfaces.Everything
  * @see EffectInterfaces.ListOf
@@ -31,7 +32,7 @@ public sealed class EffectInterfaces {
     }
 
     /**
-     * Only effects listed in [interfaces] argument are managed by the component.
+     * Only effects listed in [interfaces] argument are managed by the scope.
      */
     public class ListOf(
         private vararg val interfaces: KClass<*>

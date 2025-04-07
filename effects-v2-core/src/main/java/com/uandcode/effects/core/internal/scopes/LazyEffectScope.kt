@@ -1,14 +1,14 @@
-package com.uandcode.effects.core.internal.components
+package com.uandcode.effects.core.internal.scopes
 
-import com.uandcode.effects.core.EffectComponent
+import com.uandcode.effects.core.EffectScope
 import com.uandcode.effects.core.EffectController
-import com.uandcode.effects.core.ProxyEffectFactory
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.EffectInterfaces
 import kotlin.reflect.KClass
 
-internal class LazyEffectComponent(
-    private val provider: () -> EffectComponent,
-) : EffectComponent {
+internal class LazyEffectScope(
+    private val provider: () -> EffectScope,
+) : EffectScope {
 
     private val origin by lazy { provider() }
 
@@ -23,7 +23,7 @@ internal class LazyEffectComponent(
     override fun createChild(
         interfaces: EffectInterfaces,
         proxyEffectFactory: ProxyEffectFactory?
-    ): EffectComponent {
+    ): EffectScope {
         return origin.createChild(
             interfaces = interfaces,
             proxyEffectFactory = proxyEffectFactory,

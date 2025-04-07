@@ -1,9 +1,8 @@
-package com.uandcode.effects.core.lifecycle.internal
+package com.uandcode.effects.core.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.uandcode.effects.core.BoundEffectController
-import com.uandcode.effects.core.lifecycle.EffectLifecycleDelegate
 import kotlin.reflect.KProperty
 
 @PublishedApi

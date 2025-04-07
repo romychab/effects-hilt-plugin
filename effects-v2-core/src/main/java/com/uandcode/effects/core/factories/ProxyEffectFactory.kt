@@ -1,5 +1,6 @@
-package com.uandcode.effects.core
+package com.uandcode.effects.core.factories
 
+import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.stub.api.ProxyConfiguration
 import kotlin.reflect.KClass
 

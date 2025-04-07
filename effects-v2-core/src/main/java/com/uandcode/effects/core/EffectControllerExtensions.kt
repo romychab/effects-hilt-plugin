@@ -9,7 +9,7 @@ import com.uandcode.effects.core.internal.BoundEffectControllerImpl
  * BoundEffectController is a controller that is bound to a specific instance of the effect
  * provided by a [provider] function. This function is executed lazily and only once when
  * you call [BoundEffectController.start] method or when you try to get an effect instance
- * through [BoundEffectController.effectImplementation].
+ * through [BoundEffectController.effectImplementation] property.
  *
  * @throws ControllerAlreadyStartedException
  */
