@@ -14,7 +14,7 @@ dependencies {
     api(projects.effectsV2CoreAnnotations)
     testImplementation(projects.effectsV2CoreTestmocks)
 
-    api(libs.androidx.lifecycle.jvm)
+    api(libs.lifecycle.jvm)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

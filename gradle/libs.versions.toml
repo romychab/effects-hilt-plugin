@@ -12,47 +12,54 @@ javaFaker = "1.0.2"
 coil = "2.7.0"
 junit = "4.13.2"
 mockk = "1.13.16"
+robolectric = "4.14"
 flowtest = "1.0.0"
 kotlinPoet = "2.1.0"
 kotlinKspTesting = "1.6.0"
 javaxInject = "1"
 lifecycle = "2.8.7"
+lifecycleCompose = "2.8.4"
 androidxActivity = "1.10.1"
 immutableCollections = "0.3.8"
-byteBuddy = "1.14.17"
+koin = "4.0.3"
 
 [libraries]
-kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesCore" }
+# example apps:
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
-compose-activity = { module = "androidx.activity:activity-compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-compose-runtime = { module = "androidx.compose.runtime:runtime" }
+compose-activity = { module = "androidx.activity:activity-compose" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
-java-faker = { module = "com.github.javafaker:javafaker", version.ref = "javaFaker" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+java-faker = { module = "com.github.javafaker:javafaker", version.ref = "javaFaker" }
 container = { module = "com.elveum:container", version.ref = "container" }
+kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
 leak-canary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary" }
-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}
-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose"}
+# core library:
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesCore" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesCore" }
 junit = { module = "junit:junit", version.ref = "junit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesCore" }
 flowtest = { module = "com.uandcode:flowtest", version.ref = "flowtest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+lifecycle-jvm = { module = "androidx.lifecycle:lifecycle-common-jvm", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleCompose" }
+immutable-collections = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
 kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKsp" }
 ksp-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing-ksp", version.ref = "kotlinKspTesting" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
-androidx-lifecycle-jvm = { module = "androidx.lifecycle:lifecycle-common-jvm", version.ref = "lifecycle" }
-androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+# hilt extension (todo)
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose"}
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
-kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "immutableCollections" }
-byte-buddy = { module = "net.bytebuddy:byte-buddy", version.ref = "byteBuddy" }
+# koin extension (todo)
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp" }
