@@ -10,10 +10,14 @@ publishConfig {
 }
 
 dependencies {
-    api(libs.androidx.lifecycle.jvm)
     api(projects.effectsV2Core)
     api(projects.effectsV2CoreAnnotations)
+    testImplementation(projects.effectsV2CoreTestmocks)
+
+    api(libs.androidx.lifecycle.jvm)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.flowtest)
 }
