@@ -4,18 +4,16 @@ import com.elveum.effects.processor.data.EffectMetadata
 import com.elveum.effects.processor.generators.base.KspClassWriter
 import com.elveum.effects.processor.generators.base.TemplateBasedClassContent
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ksp.toClassName
 
 class EffectViewModelMediatorGenerator(
     private val writer: KspClassWriter,
 ) {
 
     fun generate(
+        interfaceClassName: ClassName,
         effectMetadata: EffectMetadata,
         result: EffectMediatorGenerator.Result,
     ): Result {
-        val interfaceDeclaration = effectMetadata.targetInterfaceDeclaration
-        val interfaceClassName = interfaceDeclaration.toClassName()
         val viewModelMediatorName = "__${interfaceClassName.simpleName}ViewModelMediator"
         val classContent = TemplateBasedClassContent(
             templatePath = "EffectViewModelMediatorTemplate.kt",

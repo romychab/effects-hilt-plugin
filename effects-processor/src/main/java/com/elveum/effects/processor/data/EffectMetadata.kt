@@ -7,7 +7,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
 class EffectMetadata(
-    val targetInterfaceDeclaration: KSClassDeclarationWrapper,
+    val targetInterfaceList: List<KSClassDeclarationWrapper>,
     val effectClassDeclaration: KSClassDeclarationWrapper,
     val hiltComponent: ClassName,
     val hiltScope: ClassName,
@@ -17,9 +17,6 @@ class EffectMetadata(
 ) {
 
     val effectClassName: ClassName = effectClassDeclaration.toClassName()
-    val targetInterfaceClassName: ClassName by lazy { targetInterfaceDeclaration.toClassName() }
-    val targetInterfaceName: String get() = targetInterfaceClassName.simpleName
-    val pkg: String = targetInterfaceDeclaration.packageName.asString()
     val dependencies: Dependencies by lazy { buildDependencies() }
 
     private val hiltComponentToConstNameMap = mapOf(
@@ -31,7 +28,7 @@ class EffectMetadata(
         effectInfo: EffectInfo,
         hiltAppClassDeclaration: KSClassDeclaration,
     ) : this(
-        targetInterfaceDeclaration = effectInfo.targetInterface,
+        targetInterfaceList = effectInfo.targetInterfaceList,
         effectClassDeclaration = effectInfo.effectClassDeclaration,
         hiltComponent = effectInfo.hiltComponent,
         hiltScope = effectInfo.hiltScope,
@@ -49,15 +46,15 @@ class EffectMetadata(
     }
 
     private fun buildDependencies(): Dependencies {
-        val files = listOfNotNull(
-            targetInterfaceDeclaration.containingFile,
+        val interfaceFiles = targetInterfaceList.mapNotNull { it.containingFile }
+        val files = interfaceFiles + listOfNotNull(
             effectClassDeclaration.containingFile,
             metadataDeclaration?.containingFile,
             hiltAppClassDeclaration.containingFile,
         ).toTypedArray()
         return Dependencies(
             aggregating = false,
-            *files,
+            *files.toTypedArray(),
         )
     }
 

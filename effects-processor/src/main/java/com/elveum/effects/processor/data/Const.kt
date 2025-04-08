@@ -6,6 +6,7 @@ import com.elveum.effects.annotations.HiltEffect
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asClassName
 
 object Const {
@@ -22,15 +23,23 @@ object Const {
     val JavaxScopeAnnotationName = ClassName("javax.inject", "Scope")
     val JakartaScopeAnnotationName = ClassName("jakarta.inject", "Scope")
     val JavaxInjectAnnotationName = ClassName("javax.inject", "Inject")
+    val ModuleAnnotationName: ClassName = ClassName("dagger", "Module")
+    val InstallInAnnotationName: ClassName = ClassName("dagger.hilt", "InstallIn")
+    val ProvidesAnnotationName: ClassName = ClassName("dagger", "Provides")
+    val IntoSetAnnotationName: ClassName = ClassName("dagger.multibindings", "IntoSet")
+    val EffectControllerImplName: ClassName = ClassName("$CorePackage.impl.", "EffectControllerImpl")
+    val EffectRecordName: ClassName = ClassName(CorePackage, "EffectRecord")
 
     const val TargetArgument: String = "target"
+    const val TargetArrayArgument: String = "targets"
+
     const val InstallInArgument: String = "installIn"
     const val CleanUpMethodNameArgument: String = "cleanUpMethodName"
     const val CleanUpMethodNameArgumentDefaultValue: String = "cleanUp"
 
     const val MetadataPackage: String = "hilt_effects_plugin"
     const val TargetInterfaceMetadataAnnotation: String = "TargetInterfaceMetadata"
-    const val MetadataInterfaceClassname: String = "interfaceClassName"
+    const val MetadataInterfaceClassnames: String = "interfaceClassNames"
     const val MetadataImplClassname: String = "implementationClassName"
     const val MetadataHiltComponent: String = "hiltComponentClassName"
     const val MetadataHiltScope: String = "hiltScopeClassName"
@@ -47,4 +56,26 @@ object Const {
         val rawType = ClassName(CorePackage, "CommandExecutor")
         return rawType.parameterizedBy(className)
     }
+
+    fun effectControllerName(
+        className: ClassName,
+    ): ParameterizedTypeName {
+        val rawType = ClassName(CorePackage, "EffectController")
+        return rawType.parameterizedBy(className)
+    }
+
+    fun observableResourceStoreName(
+        className: ClassName,
+    ): ParameterizedTypeName {
+        val rawType = ClassName(CorePackage, "ObservableResourceStore")
+        return rawType.parameterizedBy(className)
+    }
+
+    fun providerName(
+        className: TypeName,
+    ): ParameterizedTypeName {
+        val rawType = ClassName("javax.inject", "Provider")
+        return rawType.parameterizedBy(className)
+    }
+
 }

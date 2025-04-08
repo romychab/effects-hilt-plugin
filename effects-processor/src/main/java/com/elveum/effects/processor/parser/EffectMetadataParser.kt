@@ -44,9 +44,7 @@ private fun buildEffectMetadata(
     annotation: KSAnnotationWrapper,
     resolver: Resolver,
 ): EffectMetadata? {
-    val interfaceDeclaration = resolver.getClassDeclarationByName(
-        annotation.getString(Const.MetadataInterfaceClassname)
-    )
+    val interfaceDeclarations = annotation.getClassDeclarationList(Const.MetadataInterfaceClassnames)
     val implDeclaration = resolver.getClassDeclarationByName(
         annotation.getString(Const.MetadataImplClassname)
     )
@@ -54,9 +52,9 @@ private fun buildEffectMetadata(
     val hiltScope = ClassName.bestGuess(annotation.getString(Const.MetadataHiltScope))
     val originCleanUpMethodName = annotation.getString(Const.MetadataCleanUpMethodName)
 
-    return if (interfaceDeclaration != null && implDeclaration != null) {
+    return if (interfaceDeclarations.isNotEmpty() && implDeclaration != null) {
         EffectMetadata(
-            targetInterfaceDeclaration = KSClassDeclarationWrapper(interfaceDeclaration),
+            targetInterfaceList = interfaceDeclarations,
             effectClassDeclaration = KSClassDeclarationWrapper(implDeclaration),
             hiltComponent = hiltComponent,
             hiltScope = hiltScope,

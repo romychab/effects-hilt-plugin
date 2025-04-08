@@ -14,7 +14,8 @@ data class KSAnnotationWrapper(
     private val annotation: KSAnnotation,
 ) : KSAnnotation by annotation {
 
-    private val classDeclarationMap = mutableMapOf<String, KSClassDeclaration>()
+    private val classDeclarationMap = mutableMapOf<String, KSClassDeclarationWrapper>()
+    private val classListDeclarationMap = mutableMapOf<String, List<KSClassDeclarationWrapper>>()
 
     val resolvedAnnotationType: KSType by lazy {
         annotationType.resolve()
@@ -22,13 +23,18 @@ data class KSAnnotationWrapper(
 
     val className: ClassName get() = resolvedAnnotationType.toClassName()
     val simpleName: String get() = annotation.shortName.asString()
-    val canonicalName: String get() = className.canonicalName
 
     val printableName: String get() = "@$simpleName"
 
-    fun getClassDeclaration(argumentName: String): KSClassDeclaration {
+    fun getClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
         return classDeclarationMap.computeIfAbsent(argumentName) {
             findClassDeclaration(argumentName)
+        }
+    }
+
+    fun getClassDeclarationList(argumentName: String): List<KSClassDeclarationWrapper> {
+        return classListDeclarationMap.computeIfAbsent(argumentName) {
+            findClassDeclarations(argumentName)
         }
     }
 
@@ -45,14 +51,24 @@ data class KSAnnotationWrapper(
         return resolvedAnnotationType.toTypeName() == typeName
     }
 
-    private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclaration {
+    private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
         val argument = arguments.first { it.name?.asString() == argumentName }
         val argumentValue = argument.value as? KSType
             ?: throw InvalidTargetArgumentException(this)
-        return argumentValue.declaration as? KSClassDeclaration
+        return (argumentValue.declaration as? KSClassDeclaration)
+            ?.let { KSClassDeclarationWrapper(it) }
             ?: throw InvalidTargetArgumentException(this)
     }
 
+    private fun KSAnnotationWrapper.findClassDeclarations(argumentName: String): List<KSClassDeclarationWrapper> {
+        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argumentValue = argument.value as? List<KSType>
+            ?: throw InvalidTargetArgumentException(this)
+        return argumentValue
+            .map { it.declaration }
+            .filterIsInstance<KSClassDeclaration>()
+            .map(::KSClassDeclarationWrapper)
+    }
 }
 
 inline fun <reified T> Sequence<KSAnnotationWrapper>.firstInstanceOf(): KSAnnotationWrapper {

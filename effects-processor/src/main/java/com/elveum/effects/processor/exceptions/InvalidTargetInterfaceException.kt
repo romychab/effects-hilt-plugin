@@ -10,7 +10,7 @@ class InvalidTargetInterfaceException(
     effectAnnotation: KSAnnotationWrapper,
     node: KSNode,
 ) : AbstractEffectKspException(
-    message = "@${effectAnnotation.simpleName}(target = ...) parameter can be set only to these values: " +
+    message = "@${effectAnnotation.simpleName}(targets = ...) parameter can be set only to these values: " +
             allowedInterfaces.joinToString(", ") { "${it.toClassName().simpleName}::class" } ,
     node,
 )

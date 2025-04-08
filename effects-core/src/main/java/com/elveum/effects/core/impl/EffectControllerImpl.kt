@@ -4,7 +4,7 @@ import com.elveum.effects.core.EffectController
 import com.elveum.effects.core.ObservableResourceStore
 
 public class EffectControllerImpl<EffectImplementation>(
-    private val observableResourceStore: ObservableResourceStore<in EffectImplementation>
+    private val observableResourceStores: List<ObservableResourceStore<in EffectImplementation>>,
 ) : EffectController<EffectImplementation> {
 
     override var effectImplementation: EffectImplementation? = null
@@ -13,11 +13,15 @@ public class EffectControllerImpl<EffectImplementation>(
         if (this.effectImplementation != null) return
 
         this.effectImplementation = effectImplementation
-        observableResourceStore.attachResource(effectImplementation)
+        observableResourceStores.forEach {
+            it.attachResource(effectImplementation)
+        }
     }
 
     override fun stop() {
-        effectImplementation?.let(observableResourceStore::detachResource)
+        effectImplementation?.let { effectImplementation ->
+            observableResourceStores.forEach { it.detachResource(effectImplementation) }
+        }
         effectImplementation = null
     }
 

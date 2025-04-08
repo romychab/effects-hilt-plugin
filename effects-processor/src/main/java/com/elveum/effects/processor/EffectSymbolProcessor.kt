@@ -38,8 +38,8 @@ class EffectSymbolProcessor(
             if (hiltAppClassDeclaration != null) {
                 val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
                         effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
-                val uniqueEffectMetadataList = validateAndFilterEffectMetadata(effectMetadataSequence)
-                effectMediatorGenerators.generateEffectMediators(uniqueEffectMetadataList)
+                val interfaceToImplementationMap = validateAndFilterEffectMetadata(effectMetadataSequence)
+                effectMediatorGenerators.generateEffectMediators(interfaceToImplementationMap)
             }
         } catch (e: AbstractEffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)

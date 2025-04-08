@@ -18,12 +18,19 @@ class EffectMetadataGenerator(
             dependencies = effectInfo.dependencies,
         ).apply {
             setVariable("EFFECT_IMPL_CLASSNAME", effectInfo.effectClassName.canonicalName)
-            setVariable("TARGET_INTERFACE_CLASSNAME", effectInfo.targetInterfaceClassName.canonicalName)
+            setVariable("TARGET_INTERFACE_CLASSNAMES", effectInfo.targetInterfaceNames())
             setVariable("HILT_COMPONENT_CLASSNAME", effectInfo.hiltComponent.canonicalName)
             setVariable("HILT_SCOPE_CLASSNAME", effectInfo.hiltScope.canonicalName)
             setVariable("CLEAN_UP_METHOD_NAME", effectInfo.cleanUpMethodName.originCleanUpMethodName)
         }
         writer.write(classContent)
+    }
+
+    private fun EffectInfo.targetInterfaceNames(): String {
+        return targetInterfaceList
+            .mapNotNull { it.qualifiedName?.asString() }
+            .joinToString(", ") { "\"${it}\"" }
+            .let { "[$it]" }
     }
 
 }

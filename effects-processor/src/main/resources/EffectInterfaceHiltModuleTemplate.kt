@@ -48,7 +48,7 @@ object %CLASSNAME% {
     fun provideControllerOfEffectInterface(
         observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>
     ): EffectController<%TARGET_INTERFACE_NAME%> {
-        return EffectControllerImpl(observableResourceStore)
+        return EffectControllerImpl(listOf(observableResourceStore))
     }
 
 }

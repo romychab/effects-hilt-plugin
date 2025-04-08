@@ -6,7 +6,7 @@ import com.elveum.effects.processor.extensions.HiltComponentClassDeclaration
 import com.elveum.effects.processor.extensions.KSAnnotationWrapper
 import com.elveum.effects.processor.extensions.KSClassDeclarationWrapper
 import com.elveum.effects.processor.extensions.firstInstanceOf
-import com.elveum.effects.processor.parser.findTargetInterfaceClassDeclaration
+import com.elveum.effects.processor.parser.findTargetInterfaceClassDeclarations
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ANY
@@ -24,9 +24,10 @@ class EffectInfo(
 
     val pkg: String get() = effectClassDeclaration.packageName.asString()
     val effectAnnotation: KSAnnotationWrapper by lazy { findCustomAnnotation() }
-    val targetInterface: KSClassDeclarationWrapper by lazy { findTargetInterfaceClassDeclaration() }
-    val targetInterfaceClassName: ClassName by lazy { targetInterface.toClassName() }
-    val targetInterfaceName: String get() = targetInterfaceClassName.simpleName
+    val targetInterfaceList: List<KSClassDeclarationWrapper> by lazy {
+        findTargetInterfaceClassDeclarations()
+    }
+
     val dependencies: Dependencies by lazy { createDependencies() }
     private val hiltComponentDeclaration: HiltComponentClassDeclaration by lazy {
         findHiltComponentClassDeclaration()
@@ -58,10 +59,8 @@ class EffectInfo(
     }
 
     private fun createDependencies(): Dependencies {
-        val files = listOfNotNull(
-            effectClassDeclaration.containingFile,
-            targetInterface.containingFile,
-        )
+        val interfaceFiles = targetInterfaceList.mapNotNull { it.containingFile }
+        val files = interfaceFiles + listOfNotNull(effectClassDeclaration.containingFile)
 
         return Dependencies(
             aggregating = false,

@@ -10,7 +10,7 @@ package com.elveum.effects.annotations
 @Target(AnnotationTarget.CLASS)
 public annotation class TargetInterfaceMetadata(
     val implementationClassName: String,
-    val interfaceClassName: String,
+    val interfaceClassNames: Array<String>,
     val hiltComponentClassName: String,
     val hiltScopeClassName: String,
     val cleanUpMethodName: String,
