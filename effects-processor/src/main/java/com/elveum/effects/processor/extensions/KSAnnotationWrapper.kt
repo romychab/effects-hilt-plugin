@@ -4,6 +4,7 @@ import com.elveum.effects.processor.exceptions.InvalidTargetArgumentException
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueArgument
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
@@ -39,8 +40,14 @@ data class KSAnnotationWrapper(
     }
 
     fun getString(argumentName: String): String {
-        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argument = getArgumentByName(argumentName)
         return argument.value.toString()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getStringList(argumentName: String): List<String> {
+        val argument = getArgumentByName(argumentName)
+        return argument.value as List<String>
     }
 
     inline fun <reified T> isInstanceOf(): Boolean {
@@ -52,7 +59,7 @@ data class KSAnnotationWrapper(
     }
 
     private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
-        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argument = getArgumentByName(argumentName)
         val argumentValue = argument.value as? KSType
             ?: throw InvalidTargetArgumentException(this)
         return (argumentValue.declaration as? KSClassDeclaration)
@@ -61,7 +68,7 @@ data class KSAnnotationWrapper(
     }
 
     private fun KSAnnotationWrapper.findClassDeclarations(argumentName: String): List<KSClassDeclarationWrapper> {
-        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argument = getArgumentByName(argumentName)
         val argumentValue = argument.value as? List<KSType>
             ?: throw InvalidTargetArgumentException(this)
         return argumentValue
@@ -69,6 +76,11 @@ data class KSAnnotationWrapper(
             .filterIsInstance<KSClassDeclaration>()
             .map(::KSClassDeclarationWrapper)
     }
+
+    private fun getArgumentByName(argumentName: String): KSValueArgument {
+        return arguments.first { it.name?.asString() == argumentName }
+    }
+
 }
 
 inline fun <reified T> Sequence<KSAnnotationWrapper>.firstInstanceOf(): KSAnnotationWrapper {

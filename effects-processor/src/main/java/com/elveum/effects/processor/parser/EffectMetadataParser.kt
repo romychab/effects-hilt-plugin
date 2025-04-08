@@ -44,7 +44,10 @@ private fun buildEffectMetadata(
     annotation: KSAnnotationWrapper,
     resolver: Resolver,
 ): EffectMetadata? {
-    val interfaceDeclarations = annotation.getClassDeclarationList(Const.MetadataInterfaceClassnames)
+    val interfaceDeclarationNames = annotation.getStringList(Const.MetadataInterfaceClassnames)
+    val interfaceDeclarations = interfaceDeclarationNames.mapNotNull { name ->
+        resolver.getClassDeclarationByName(name)
+    }.map(::KSClassDeclarationWrapper)
     val implDeclaration = resolver.getClassDeclarationByName(
         annotation.getString(Const.MetadataImplClassname)
     )
