@@ -16,12 +16,12 @@ interface LocalProperties {
 private class LocalPropertiesImpl(
     properties: Properties,
 ) : LocalProperties {
-    override val sonatypeStagingProfileId: String by properties
-    override val ossrhTokenUsername: String by properties
-    override val ossrhTokenPassword: String by properties
-    override val signingKeyId: String by properties
-    override val signingKey: String by properties
-    override val signingPassword: String by properties
+    override val sonatypeStagingProfileId: String = properties.getProperty("sonatypeStagingProfileId", "")
+    override val ossrhTokenUsername: String = properties.getProperty("ossrhTokenUsername", "")
+    override val ossrhTokenPassword: String = properties.getProperty("ossrhTokenPassword", "")
+    override val signingKeyId: String = properties.getProperty("signingKeyId", "")
+    override val signingKey: String = properties.getProperty("signingKey", "")
+    override val signingPassword: String = properties.getProperty("signingPassword", "")
 }
 
 fun loadLocalProperties(project: Project): LocalProperties {
