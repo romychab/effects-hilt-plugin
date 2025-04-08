@@ -37,6 +37,9 @@ class EffectImplementationHiltModuleGenerator(
         addFunction(
             FunSpec.builder("provideControllerOfEffectImpl")
                 .addAnnotation(Const.ProvidesAnnotationName)
+                .addAnnotation(AnnotationSpec.builder(Const.SuppressAnnotationName)
+                    .addMember("\"UNCHECKED_CAST\"")
+                    .build())
                 .apply {
                     val params = interfaces.mapIndexed { index, interfaceDeclaration ->
                         val interfaceClassName = interfaceDeclaration.toClassName()

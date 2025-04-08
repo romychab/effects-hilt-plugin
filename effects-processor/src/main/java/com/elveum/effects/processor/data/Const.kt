@@ -16,6 +16,7 @@ object Const {
     val HiltAppAnnotationName: ClassName = ClassName("dagger.hilt.android", "HiltAndroidApp")
     val FlowClassName = ClassName("kotlinx.coroutines.flow", "Flow")
     val DefineComponentName = ClassName("dagger.hilt", "DefineComponent")
+    val SuppressAnnotationName: ClassName = Suppress::class.asClassName()
 
     val ActivityRetainedComponentName = ClassName("dagger.hilt.android.components", "ActivityRetainedComponent")
     val SingletonComponentName = ClassName("dagger.hilt.components", "SingletonComponent")
