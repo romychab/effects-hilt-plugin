@@ -14,6 +14,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
 class EffectInfo(
+    private val applicationClassDeclaration: KSClassDeclaration?,
     originEffectClassDeclaration: KSClassDeclaration
 ) {
 
@@ -63,7 +64,7 @@ class EffectInfo(
         val files = interfaceFiles + listOfNotNull(effectClassDeclaration.containingFile)
 
         return Dependencies(
-            aggregating = false,
+            aggregating = applicationClassDeclaration == null,
             *files.toTypedArray(),
         )
     }

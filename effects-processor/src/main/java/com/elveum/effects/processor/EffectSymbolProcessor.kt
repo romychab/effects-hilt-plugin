@@ -29,12 +29,13 @@ class EffectSymbolProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
-            val effects = parseEffects(resolver)
+            val hiltAppClassDeclaration = getHiltApp(resolver)
+
+            val effects = parseEffects(resolver, hiltAppClassDeclaration)
             validateEffects(effects)
 
             generateEffectImplementationModules(effects)
 
-            val hiltAppClassDeclaration = getHiltApp(resolver)
             if (hiltAppClassDeclaration != null) {
                 val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
                         effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
