@@ -3,41 +3,46 @@ package com.elveum.effects.processor.validators
 import com.elveum.effects.processor.data.EffectMetadata
 import com.elveum.effects.processor.exceptions.InconsistentCleanUpMethodNameException
 import com.elveum.effects.processor.exceptions.InconsistentHiltComponentsException
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ksp.toClassName
 
-fun validateAndFilterEffectMetadata(effectMetadata: Sequence<EffectMetadata>): List<EffectMetadata> {
-    val effectMetadataMap = effectMetadata
-        .groupBy { it.targetInterfaceClassName }
-        .mapValues { (_, list) ->
-            list.distinctBy { it.effectClassName }
+fun validateAndFilterEffectMetadata(effectMetadata: List<EffectMetadata>): Map<ClassName, List<EffectMetadata>> {
+    val interfaceToImplementationsMap = mutableMapOf<ClassName, MutableList<EffectMetadata>>()
+    effectMetadata.forEach { metadata ->
+        metadata.targetInterfaceList.forEach { interfaceDeclaration ->
+            val interfaceClassName = interfaceDeclaration.toClassName()
+            val list = interfaceToImplementationsMap.computeIfAbsent(interfaceClassName) { mutableListOf() }
+            list.add(metadata)
         }
+    }
+    interfaceToImplementationsMap.mapValues { entry ->
+        entry.value.distinctBy { it.effectClassName }
+    }
 
-    effectMetadataMap.forEach {  (_, effectMetadataList) ->
-        val firstEffect = effectMetadataList.first()
-        effectMetadataList.forEach {
-            if (it.hiltScope != firstEffect.hiltScope ||
-                it.hiltComponent != firstEffect.hiltComponent) {
+    interfaceToImplementationsMap.forEach {  (interfaceName, effectMetadataList) ->
+        val firstMetadata = effectMetadataList.first()
+        effectMetadataList.forEach { metadata ->
+            if (metadata.hiltScope != firstMetadata.hiltScope ||
+                metadata.hiltComponent != firstMetadata.hiltComponent) {
                 throw InconsistentHiltComponentsException(
-                    firstEffect.targetInterfaceDeclaration,
-                    firstEffect.effectClassName,
-                    firstEffect.hiltComponent,
-                    it.effectClassName,
-                    it.hiltComponent,
+                    firstMetadata.targetInterfaceList.first { it.toClassName() == interfaceName },
+                    firstMetadata.effectClassName,
+                    firstMetadata.hiltComponent,
+                    metadata.effectClassName,
+                    metadata.hiltComponent,
                 )
             }
-            if (it.cleanUpMethodName.simpleText != firstEffect.cleanUpMethodName.simpleText) {
+            if (metadata.cleanUpMethodName.simpleText != firstMetadata.cleanUpMethodName.simpleText) {
                 throw InconsistentCleanUpMethodNameException(
-                    firstEffect.targetInterfaceDeclaration,
-                    firstEffect.effectClassName,
-                    firstEffect.cleanUpMethodName.simpleText,
-                    it.effectClassName,
-                    it.cleanUpMethodName.simpleText,
+                    firstMetadata.targetInterfaceList.first { it.toClassName() == interfaceName },
+                    firstMetadata.effectClassName,
+                    firstMetadata.cleanUpMethodName.simpleText,
+                    metadata.effectClassName,
+                    metadata.cleanUpMethodName.simpleText,
                 )
             }
         }
     }
 
-    return effectMetadataMap.map {
-        it.value.first()
-    }
-
+    return interfaceToImplementationsMap
 }

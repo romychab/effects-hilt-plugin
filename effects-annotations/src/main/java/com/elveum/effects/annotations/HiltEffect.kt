@@ -42,14 +42,21 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.CLASS)
 public annotation class HiltEffect(
 
-    /**
-     * If your class implements only 1 single interface, then
-     * this interface is used by default as a target interface.
-     *
-     * You need to set this parameter only if your class implements
-     * 2 or more interfaces.
-     */
+    @Deprecated(
+        message = "Use 'targets' param, which allows specifying an array of target interfaces.",
+        replaceWith = ReplaceWith("targets")
+    )
     public val target: KClass<*> = Any::class,
+
+    /**
+     * Set target interfaces which proxy implementations
+     * should be generated for. By default, proxies are generated for
+     * all interfaces implemented by the class.
+     *
+     * You need to set this parameter only if you want to generate
+     * proxies only for specific interfaces.
+     */
+    public val targets: Array<KClass<*>> = [],
 
     /**
      * Set a Hilt Component, where the target interface will
@@ -100,4 +107,4 @@ public annotation class HiltEffect(
      */
     public val cleanUpMethodName: String = "",
 
-)
+    )

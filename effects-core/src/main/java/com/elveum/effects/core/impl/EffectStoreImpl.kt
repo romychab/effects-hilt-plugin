@@ -12,7 +12,7 @@ internal class EffectStoreImpl @Inject constructor(
 
     override fun <T : Any> getEffectController(clazz: KClass<T>): EffectController<T> {
         val effectRecord = effectRecords.firstOrNull {
-            it.effectInterfaceClass == clazz || it.effectImplementationClass == clazz
+            it.effectInterfaceClasses.contains(clazz) || it.effectImplementationClass == clazz
         } ?: throw IllegalArgumentException("Can't find an effect '${clazz.simpleName}'")
         return effectRecord.effectController as EffectController<T>
     }

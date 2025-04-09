@@ -19,7 +19,7 @@ import %HILT_SCOPE%
 
 @Module
 @InstallIn(%HILT_COMPONENT_NAME%::class)
-object %CLASSNAME% {
+internal object %CLASSNAME% {
 
     @Provides
     @%HILT_SCOPE_NAME%
@@ -48,7 +48,7 @@ object %CLASSNAME% {
     fun provideControllerOfEffectInterface(
         observableResourceStore: ObservableResourceStore<%TARGET_INTERFACE_NAME%>
     ): EffectController<%TARGET_INTERFACE_NAME%> {
-        return EffectControllerImpl(observableResourceStore)
+        return EffectControllerImpl(listOf(observableResourceStore))
     }
 
 }

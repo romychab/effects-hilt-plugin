@@ -36,6 +36,12 @@ if (!isAndroidLib) {
 
 afterEvaluate {
     publishing {
+        repositories {
+            maven {
+                name = "build"
+                url = uri(rootProject.layout.buildDirectory.dir("maven"))
+            }
+        }
         publications {
             create<MavenPublication>("release") {
                 groupId = customMavenPublishExtension.groupId.get()

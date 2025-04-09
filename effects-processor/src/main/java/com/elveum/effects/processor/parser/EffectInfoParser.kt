@@ -5,7 +5,9 @@ import com.elveum.effects.processor.data.EffectInfo
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 
-fun parseEffects(resolver: Resolver): Sequence<EffectInfo> {
+fun parseEffects(
+    resolver: Resolver,
+): Sequence<EffectInfo> {
     val annotatedClasses = resolver.getSymbolsWithAnnotation(
         Const.HiltEffectAnnotationName.canonicalName
     )

@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  */
 public class EffectRecord(
     public val effectImplementationClass: KClass<*>,
-    public val effectInterfaceClass: KClass<*>,
+    public val effectInterfaceClasses: List<KClass<*>>,
     private val controllerProvider: () -> EffectController<*>,
 ) {
 
