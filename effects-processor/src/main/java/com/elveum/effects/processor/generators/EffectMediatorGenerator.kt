@@ -38,6 +38,7 @@ class EffectMediatorGenerator(
         val mediatorClassName = ClassName(interfaceClassName.packageName, mediatorName)
 
         val typeSpecBuilder = TypeSpec.classBuilder(mediatorClassName)
+            .addModifiers(KModifier.PUBLIC)
             .addConstructor(interfaceClassName)
             .implementInterface(interfaceDeclaration, ::implementMethod)
             .apply {
@@ -83,6 +84,7 @@ class EffectMediatorGenerator(
     private fun TypeSpec.Builder.addInternalCleanUpMethod(): TypeSpec.Builder {
         return addFunction(
             FunSpec.builder(INTERNAL_CLEAN_UP_METHOD)
+                .addModifiers(KModifier.PUBLIC)
                 .addCode("$COMMAND_EXECUTOR_PROPERTY.cleanUp()")
                 .build()
         )

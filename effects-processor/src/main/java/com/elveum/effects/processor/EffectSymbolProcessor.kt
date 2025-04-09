@@ -8,7 +8,7 @@ import com.elveum.effects.processor.generators.EffectMediatorGenerators
 import com.elveum.effects.processor.generators.EffectMetadataGenerator
 import com.elveum.effects.processor.generators.base.KspClassWriter
 import com.elveum.effects.processor.parser.parseEffects
-import com.elveum.effects.processor.parser.parseMetadata
+import com.elveum.effects.processor.parser.parseMetadataFromOtherModules
 import com.elveum.effects.processor.validators.validateAndFilterEffectMetadata
 import com.elveum.effects.processor.validators.validateEffects
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -26,6 +26,8 @@ class EffectSymbolProcessor(
     private val writer = KspClassWriter(codeGenerator)
     private val effectMediatorGenerators = EffectMediatorGenerators(writer)
 
+    private var metadataFromOtherModulesProcessed = false
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
             val effects = parseEffects(resolver)
@@ -36,10 +38,18 @@ class EffectSymbolProcessor(
                     generateEffectMetadata(effects)
                 }
                 ProcessingMode.AggregateMetadata -> {
-                    val effectMetadataSequence = parseMetadata(resolver) + effects.map(::EffectMetadata)
-                    val interfaceToImplementationMap =
-                        validateAndFilterEffectMetadata(effectMetadataSequence)
+                    val metadataFromOtherModules = parseMetadataFromOtherModules(resolver)
+                    val metadataFromThisModule = effects.map(::EffectMetadata).toList()
+                    val combinedMetadata = metadataFromThisModule + if (metadataFromOtherModulesProcessed) {
+                        emptyList()
+                    } else {
+                        metadataFromOtherModules
+                    }
+                    val interfaceToImplementationMap = validateAndFilterEffectMetadata(combinedMetadata)
                     effectMediatorGenerators.generateEffectMediators(interfaceToImplementationMap)
+                    if (metadataFromOtherModules.isNotEmpty()) {
+                        metadataFromOtherModulesProcessed = true
+                    }
                 }
             }
         } catch (e: AbstractEffectKspException) {

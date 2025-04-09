@@ -14,7 +14,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
 
-fun parseMetadata(resolver: Resolver): Sequence<EffectMetadata> {
+fun parseMetadataFromOtherModules(resolver: Resolver): List<EffectMetadata> {
     val metadata = resolver.getDeclarationsFromPackage(Const.MetadataPackage)
     return metadata
         .filterIsInstance<KSClassDeclaration>()
@@ -27,6 +27,7 @@ fun parseMetadata(resolver: Resolver): Sequence<EffectMetadata> {
                     )
                 }
         }
+        .toList()
 }
 
 private fun Sequence<KSAnnotation>.findTargetInterfaceMetadataAnnotation(): KSAnnotationWrapper? {

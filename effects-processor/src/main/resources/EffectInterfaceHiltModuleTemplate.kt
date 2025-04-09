@@ -19,7 +19,7 @@ import %HILT_SCOPE%
 
 @Module
 @InstallIn(%HILT_COMPONENT_NAME%::class)
-object %CLASSNAME% {
+internal object %CLASSNAME% {
 
     @Provides
     @%HILT_SCOPE_NAME%

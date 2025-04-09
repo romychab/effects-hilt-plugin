@@ -6,7 +6,7 @@ import com.elveum.effects.processor.exceptions.InconsistentHiltComponentsExcepti
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
-fun validateAndFilterEffectMetadata(effectMetadata: Sequence<EffectMetadata>): Map<ClassName, List<EffectMetadata>> {
+fun validateAndFilterEffectMetadata(effectMetadata: List<EffectMetadata>): Map<ClassName, List<EffectMetadata>> {
     val interfaceToImplementationsMap = mutableMapOf<ClassName, MutableList<EffectMetadata>>()
     effectMetadata.forEach { metadata ->
         metadata.targetInterfaceList.forEach { interfaceDeclaration ->
