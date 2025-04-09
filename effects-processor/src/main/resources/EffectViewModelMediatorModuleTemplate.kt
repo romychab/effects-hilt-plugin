@@ -10,7 +10,7 @@ import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(ViewModelComponent::class)
-object %CLASSNAME% {
+internal object %CLASSNAME% {
 
     @Provides
     @IntoSet

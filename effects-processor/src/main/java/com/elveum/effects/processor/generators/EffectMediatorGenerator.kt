@@ -6,6 +6,7 @@ import com.elveum.effects.processor.exceptions.CleanUpFunctionIsAbstractExceptio
 import com.elveum.effects.processor.exceptions.NonDefaultCleanUpMethodIsNotSpecifiedException
 import com.elveum.effects.processor.exceptions.NonUnitCleanUpFunctionException
 import com.elveum.effects.processor.exceptions.UnitCommandWithReturnTypeException
+import com.elveum.effects.processor.extensions.KSClassDeclarationWrapper
 import com.elveum.effects.processor.extensions.KSFunctionDeclarationWrapper
 import com.elveum.effects.processor.extensions.implementInterface
 import com.elveum.effects.processor.extensions.implementInterfaceMethod
@@ -30,18 +31,18 @@ class EffectMediatorGenerator(
     private val writer: KspClassWriter,
 ) {
 
-    fun generate(effectMetadata: EffectMetadata): Result {
-        val interfaceDeclaration = effectMetadata.targetInterfaceDeclaration
+    fun generate(interfaceDeclaration: KSClassDeclarationWrapper, effectMetadata: EffectMetadata): Result {
         val interfaceClassName = interfaceDeclaration.toClassName()
         val interfaceName = interfaceClassName.simpleName
         val mediatorName = "__${interfaceName}Mediator"
         val mediatorClassName = ClassName(interfaceClassName.packageName, mediatorName)
 
         val typeSpecBuilder = TypeSpec.classBuilder(mediatorClassName)
+            .addModifiers(KModifier.PUBLIC)
             .addConstructor(interfaceClassName)
             .implementInterface(interfaceDeclaration, ::implementMethod)
             .apply {
-                val cleanUpMethodDeclaration = findCleanUpMethod(effectMetadata)
+                val cleanUpMethodDeclaration = findCleanUpMethod(interfaceDeclaration, effectMetadata)
                 if (cleanUpMethodDeclaration != null) {
                     implementCleanUpMethod(cleanUpMethodDeclaration)
                 }
@@ -83,6 +84,7 @@ class EffectMediatorGenerator(
     private fun TypeSpec.Builder.addInternalCleanUpMethod(): TypeSpec.Builder {
         return addFunction(
             FunSpec.builder(INTERNAL_CLEAN_UP_METHOD)
+                .addModifiers(KModifier.PUBLIC)
                 .addCode("$COMMAND_EXECUTOR_PROPERTY.cleanUp()")
                 .build()
         )
@@ -150,16 +152,20 @@ class EffectMediatorGenerator(
         return toTypeName(typeParameterResolver) == UNIT
     }
 
-    private fun findCleanUpMethod(metadata: EffectMetadata): KSFunctionDeclaration? {
+    private fun findCleanUpMethod(
+        interfaceDeclaration: KSClassDeclarationWrapper,
+        metadata: EffectMetadata,
+    ): KSFunctionDeclaration? {
         val cleanUpMethodName = metadata.cleanUpMethodName
-        return metadata.targetInterfaceDeclaration.getAllFunctions()
+        return interfaceDeclaration.getAllFunctions()
             .firstOrNull { functionDeclaration ->
                 functionDeclaration.simpleName.asString() == cleanUpMethodName.simpleText
             }
-            .let { assertCleanUpFunctionDeclaration(metadata, it) }
+            .let { assertCleanUpFunctionDeclaration(interfaceDeclaration.simpleNameText, metadata, it) }
     }
 
     private fun assertCleanUpFunctionDeclaration(
+        interfaceName: String,
         metadata: EffectMetadata,
         cleanUpFunctionDeclaration: KSFunctionDeclaration?,
     ): KSFunctionDeclaration? {
@@ -167,7 +173,7 @@ class EffectMediatorGenerator(
             if (metadata.cleanUpMethodName.isDefaultCleanUpMethodName) {
                 return null
             } else {
-                throw NonDefaultCleanUpMethodIsNotSpecifiedException(metadata)
+                throw NonDefaultCleanUpMethodIsNotSpecifiedException(metadata, interfaceName)
             }
         }
         val typeParameterResolver = cleanUpFunctionDeclaration.typeParameters.toTypeParameterResolver()

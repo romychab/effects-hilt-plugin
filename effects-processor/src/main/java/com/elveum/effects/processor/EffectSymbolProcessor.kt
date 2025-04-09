@@ -1,6 +1,5 @@
 package com.elveum.effects.processor
 
-import com.elveum.effects.processor.data.Const
 import com.elveum.effects.processor.data.EffectInfo
 import com.elveum.effects.processor.data.EffectMetadata
 import com.elveum.effects.processor.exceptions.AbstractEffectKspException
@@ -9,7 +8,7 @@ import com.elveum.effects.processor.generators.EffectMediatorGenerators
 import com.elveum.effects.processor.generators.EffectMetadataGenerator
 import com.elveum.effects.processor.generators.base.KspClassWriter
 import com.elveum.effects.processor.parser.parseEffects
-import com.elveum.effects.processor.parser.parseMetadata
+import com.elveum.effects.processor.parser.parseMetadataFromOtherModules
 import com.elveum.effects.processor.validators.validateAndFilterEffectMetadata
 import com.elveum.effects.processor.validators.validateEffects
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -17,29 +16,41 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
 
 class EffectSymbolProcessor(
     private val logger: KSPLogger,
+    private val processingMode: ProcessingMode,
     codeGenerator: CodeGenerator,
 ) : SymbolProcessor {
 
     private val writer = KspClassWriter(codeGenerator)
     private val effectMediatorGenerators = EffectMediatorGenerators(writer)
 
+    private var metadataFromOtherModulesProcessed = false
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
             val effects = parseEffects(resolver)
             validateEffects(effects)
-
             generateEffectImplementationModules(effects)
-
-            val hiltAppClassDeclaration = getHiltApp(resolver)
-            if (hiltAppClassDeclaration != null) {
-                val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
-                        effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
-                val uniqueEffectMetadataList = validateAndFilterEffectMetadata(effectMetadataSequence)
-                effectMediatorGenerators.generateEffectMediators(uniqueEffectMetadataList)
+            when (processingMode) {
+                ProcessingMode.GenerateMetadata -> {
+                    generateEffectMetadata(effects)
+                }
+                ProcessingMode.AggregateMetadata -> {
+                    val metadataFromOtherModules = parseMetadataFromOtherModules(resolver)
+                    val metadataFromThisModule = effects.map(::EffectMetadata).toList()
+                    val combinedMetadata = metadataFromThisModule + if (metadataFromOtherModulesProcessed) {
+                        emptyList()
+                    } else {
+                        metadataFromOtherModules
+                    }
+                    val interfaceToImplementationMap = validateAndFilterEffectMetadata(combinedMetadata)
+                    effectMediatorGenerators.generateEffectMediators(interfaceToImplementationMap)
+                    if (metadataFromOtherModules.isNotEmpty()) {
+                        metadataFromOtherModulesProcessed = true
+                    }
+                }
             }
         } catch (e: AbstractEffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)
@@ -48,19 +59,17 @@ class EffectSymbolProcessor(
     }
 
     private fun generateEffectImplementationModules(effects: Sequence<EffectInfo>) {
-        val metadataGenerator = EffectMetadataGenerator(writer)
         val implHiltModuleGenerator = EffectImplementationHiltModuleGenerator(writer)
         effects.forEach { effectInfo ->
-            metadataGenerator.generate(effectInfo)
             implHiltModuleGenerator.generate(effectInfo)
         }
     }
 
-    private fun getHiltApp(resolver: Resolver): KSClassDeclaration? {
-        val annotatedSymbols = resolver.getSymbolsWithAnnotation(
-            Const.HiltAppAnnotationName.canonicalName
-        )
-        return annotatedSymbols.firstOrNull() as? KSClassDeclaration
+    private fun generateEffectMetadata(effects: Sequence<EffectInfo>) {
+        val metadataGenerator = EffectMetadataGenerator(writer)
+        effects.forEach { effectInfo ->
+            metadataGenerator.generate(effectInfo)
+        }
     }
 
 }

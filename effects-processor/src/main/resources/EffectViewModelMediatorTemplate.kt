@@ -2,7 +2,7 @@
 
 import dagger.hilt.android.ViewModelLifecycle
 
-class %CLASSNAME%(
+public class %CLASSNAME%(
     private val mediator: %ORIGIN_MEDIATOR%,
     viewModelLifecycle: ViewModelLifecycle,
 ) : %TARGET_INTERFACE_NAME% by mediator {

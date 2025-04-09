@@ -20,6 +20,7 @@ components with a shorter lifecycle without memory leaks.
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Installation for multi-module projects](#installation-for-multi-module-projects)
 - [Primitive Example](#primitive-example)
 - [Default Lifecycle](#default-lifecycle)
 - [Detailed Explanation](#detailed-explanation)
@@ -46,15 +47,38 @@ Check out [this page](docs/ksp-and-hilt-installation.md) for more details about 
 
 ```kotlin
 // annotation processor (required):
-ksp("com.elveum:effects-processor:1.0.2")
+ksp("com.elveum:effects-processor:1.0.3")
 
 // for projects with Jetpack Compose:
-implementation("com.elveum:effects-compose:1.0.2")
+implementation("com.elveum:effects-compose:1.0.3")
 
 // for projects without Jetpack Compose:
-implementation("com.elveum:effects-core:1.0.2")
+implementation("com.elveum:effects-core:1.0.3")
 ```
 
+## Installation for multi-module projects
+
+- Dependencies for your application module remain the same:
+  
+  ```kotlin
+  ksp("com.elveum:effects-processor:1.0.3")
+  implementation("com.elveum:effects-compose:1.0.3") // with Jetpack Compose
+  implementation("com.elveum:effects-core:1.0.3") // or without Jetpack Compose
+  ```
+
+- Additional configuration is required for your android library modules, if you
+  plan to use `@HiltEffect` annotation not only in the application module but also in the library modules:
+
+  1. Make sure KSP and Hilt are added and configured in the library module.
+  2. Add the following additional KSP option:
+
+  ```kotlin
+  // my-android-lib/build.gradle.kts:
+  ksp {
+      arg("effects.processor.metadata", "generate")
+  }
+  ```
+  
 ## Primitive example
 
 The main idea of this plugin is to simplify one-off events by moving them to a separate

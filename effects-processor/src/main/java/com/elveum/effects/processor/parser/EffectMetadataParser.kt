@@ -14,10 +14,7 @@ import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
 
-fun parseMetadata(
-    resolver: Resolver,
-    hiltAppClassDeclaration: KSClassDeclaration,
-): Sequence<EffectMetadata> {
+fun parseMetadataFromOtherModules(resolver: Resolver): List<EffectMetadata> {
     val metadata = resolver.getDeclarationsFromPackage(Const.MetadataPackage)
     return metadata
         .filterIsInstance<KSClassDeclaration>()
@@ -26,10 +23,11 @@ fun parseMetadata(
                 .findTargetInterfaceMetadataAnnotation()
                 ?.let { annotation ->
                     buildEffectMetadata(
-                        metadataDeclaration, hiltAppClassDeclaration, annotation, resolver
+                        metadataDeclaration, annotation, resolver
                     )
                 }
         }
+        .toList()
 }
 
 private fun Sequence<KSAnnotation>.findTargetInterfaceMetadataAnnotation(): KSAnnotationWrapper? {
@@ -40,13 +38,13 @@ private fun Sequence<KSAnnotation>.findTargetInterfaceMetadataAnnotation(): KSAn
 
 private fun buildEffectMetadata(
     metadataDeclaration: KSClassDeclaration,
-    hiltAppClassDeclaration: KSClassDeclaration,
     annotation: KSAnnotationWrapper,
     resolver: Resolver,
 ): EffectMetadata? {
-    val interfaceDeclaration = resolver.getClassDeclarationByName(
-        annotation.getString(Const.MetadataInterfaceClassname)
-    )
+    val interfaceDeclarationNames = annotation.getStringList(Const.MetadataInterfaceClassnames)
+    val interfaceDeclarations = interfaceDeclarationNames.mapNotNull { name ->
+        resolver.getClassDeclarationByName(name)
+    }.map(::KSClassDeclarationWrapper)
     val implDeclaration = resolver.getClassDeclarationByName(
         annotation.getString(Const.MetadataImplClassname)
     )
@@ -54,14 +52,13 @@ private fun buildEffectMetadata(
     val hiltScope = ClassName.bestGuess(annotation.getString(Const.MetadataHiltScope))
     val originCleanUpMethodName = annotation.getString(Const.MetadataCleanUpMethodName)
 
-    return if (interfaceDeclaration != null && implDeclaration != null) {
+    return if (interfaceDeclarations.isNotEmpty() && implDeclaration != null) {
         EffectMetadata(
-            targetInterfaceDeclaration = KSClassDeclarationWrapper(interfaceDeclaration),
+            targetInterfaceList = interfaceDeclarations,
             effectClassDeclaration = KSClassDeclarationWrapper(implDeclaration),
             hiltComponent = hiltComponent,
             hiltScope = hiltScope,
             metadataDeclaration = metadataDeclaration,
-            hiltAppClassDeclaration = hiltAppClassDeclaration,
             cleanUpMethodName = EffectCleanUpMethodName(originCleanUpMethodName)
         )
     } else {
