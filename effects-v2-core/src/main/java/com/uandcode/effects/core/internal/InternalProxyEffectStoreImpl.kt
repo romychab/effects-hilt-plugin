@@ -19,14 +19,18 @@ public class InternalProxyEffectStoreImpl(
 ) : ProxyEffectStore {
 
     private val providerMap = mutableMapOf<KClass<*>, (CommandExecutor<*>) -> Any>()
-    private val targetInterfaceClassesMap = mutableMapOf<KClass<*>, KClass<*>>()
+    private val targetInterfaceClassesMap = mutableMapOf<KClass<*>, MutableSet<KClass<*>>>()
 
     override val allTargetInterfaces: Set<KClass<*>> by lazy {
-        targetInterfaceClassesMap.values.toSet()
+        targetInterfaceClassesMap.values.flatten().toSet()
     }
 
-    override fun findTargetInterface(clazz: KClass<*>): KClass<*> {
-        return targetInterfaceClassesMap[clazz] ?: throw EffectNotFoundException(clazz, proxyConfiguration)
+    override fun findTargetInterfaces(clazz: KClass<*>): Set<KClass<*>> {
+        val interfaces = targetInterfaceClassesMap[clazz]
+        if (interfaces.isNullOrEmpty()) {
+            throw EffectNotFoundException(clazz, proxyConfiguration)
+        }
+        return interfaces
     }
 
     override fun <T : Any> createProxy(
@@ -49,8 +53,13 @@ public class InternalProxyEffectStoreImpl(
         implClass: KClass<*>,
         targetClass: KClass<*>,
     ) {
-        targetInterfaceClassesMap[implClass] = targetClass
-        targetInterfaceClassesMap[targetClass] = targetClass
+        getOrCreateClassSet(implClass).add(targetClass)
+        getOrCreateClassSet(targetClass).add(targetClass)
     }
 
+    private fun getOrCreateClassSet(key: KClass<*>): MutableSet<KClass<*>> {
+        return targetInterfaceClassesMap[key] ?: mutableSetOf<KClass<*>>().also {
+            targetInterfaceClassesMap[key] = it
+        }
+    }
 }

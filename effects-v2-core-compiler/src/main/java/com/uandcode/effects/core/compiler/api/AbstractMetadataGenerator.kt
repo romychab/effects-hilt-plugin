@@ -39,12 +39,19 @@ public abstract class AbstractMetadataGenerator(
             dependencies = effect.dependencies,
         ).apply {
             setVariable("EFFECT_IMPL_CLASSNAME", effect.className.canonicalName)
-            setVariable("EFFECT_INTERFACE_CLASSNAME", effect.targetInterfaceClassName.canonicalName)
+            setVariable("EFFECT_INTERFACE_CLASSNAMES", effect.targetInterfaceNames())
             setupVariables(effect)
         }
         writer.write(classContent)
     }
 
     public open fun TemplateBasedClassContent.setupVariables(parsedEffect: ParsedEffect): Unit = Unit
+
+    private fun ParsedEffect.targetInterfaceNames(): String {
+        return targetInterfaces
+            .mapNotNull { it.qualifiedName?.asString() }
+            .joinToString(", ") { "\"${it}\"" }
+            .let { "[$it]" }
+    }
 
 }

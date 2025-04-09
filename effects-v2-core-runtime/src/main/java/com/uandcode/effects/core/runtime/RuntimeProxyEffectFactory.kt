@@ -18,11 +18,14 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
 
     override val proxyConfiguration: ProxyConfiguration = RuntimeProxyConfiguration
 
-    override fun findTargetInterface(clazz: KClass<*>): KClass<*> {
-        if (clazz.java.isInterface) return clazz
-        return getTargetInterfaceFromAnnotation(clazz)
-            ?: takeFirstSuperinterface(clazz)
-            ?: throw EffectNotFoundException(clazz, proxyConfiguration)
+    override fun findTargetInterfaces(clazz: KClass<*>): Set<KClass<*>> {
+        if (clazz.java.isInterface) return setOf(clazz)
+        val interfaces = getTargetInterfacesFromAnnotation(clazz)
+            ?: takeAllSuperinterfaces(clazz)
+        if (interfaces.isEmpty()) {
+            throw EffectNotFoundException(clazz, proxyConfiguration)
+        }
+        return interfaces
     }
 
     override fun <T : Any> createProxy(
@@ -38,25 +41,25 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         return proxy as T
     }
 
-    private fun getTargetInterfaceFromAnnotation(clazz: KClass<*>): KClass<*>? {
+    @Suppress("UNCHECKED_CAST")
+    private fun getTargetInterfacesFromAnnotation(clazz: KClass<*>): Set<KClass<*>>? {
         clazz.java.annotations.forEach { annotation ->
             try {
                 val targetMethod = annotation.javaClass.getDeclaredMethod(TARGET_ANNOTATION_ARG)
-                val targetClass = targetMethod.invoke(annotation) as Class<*>
-                if (targetClass != Any::class.java) {
-                    return targetClass.kotlin
-                }
+                val targetClasses = targetMethod.invoke(annotation) as Array<Class<*>>
+                if (targetClasses.isEmpty()) return null
+                return targetClasses.map { it.kotlin }.toSet()
             } catch (ignored: NoSuchMethodException) { }
         }
         return null
     }
 
-    private fun takeFirstSuperinterface(clazz: KClass<*>): KClass<*>? {
-        return clazz.java.interfaces.firstOrNull()?.kotlin
+    private fun takeAllSuperinterfaces(clazz: KClass<*>): Set<KClass<*>> {
+        return clazz.java.interfaces.map { it.kotlin }.toSet()
     }
 
     private companion object {
-        const val TARGET_ANNOTATION_ARG = "target"
+        const val TARGET_ANNOTATION_ARG = "targets"
     }
 
 }

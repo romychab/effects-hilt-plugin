@@ -24,8 +24,8 @@ public interface ProxyEffectStore {
     public fun <T : Any> createProxy(clazz: KClass<T>, proxyDependency: ProxyDependency): T
 
     /**
-     * Find a target interface KClass instance by KClass instance of a child class.
+     * Find all target interfaces by KClass instance of a child class.
      */
-    public fun findTargetInterface(clazz: KClass<*>): KClass<*>?
+    public fun findTargetInterfaces(clazz: KClass<*>): Set<KClass<*>>
 
 }

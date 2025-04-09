@@ -32,9 +32,9 @@ public object AnnotationBasedProxyEffectStore : ProxyEffectStore {
     }
 
     /**
-     * @see ProxyEffectStore.findTargetInterface
+     * @see ProxyEffectStore.findTargetInterfaces
      */
-    override fun findTargetInterface(clazz: KClass<*>): KClass<*>? {
+    override fun findTargetInterfaces(clazz: KClass<*>): Set<KClass<*>> {
         throw InvalidEffectSetupException()
     }
 

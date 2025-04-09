@@ -3,7 +3,7 @@ package com.uandcode.effects.core.internal
 import com.uandcode.effects.core.EffectController
 
 internal class EffectControllerImpl<EffectImplementation>(
-    private val observableResourceStore: ObservableResourceStore<in EffectImplementation>
+    private val stores: List<ObservableResourceStore<in EffectImplementation>>
 ) : EffectController<EffectImplementation> {
 
     override var effectImplementation: EffectImplementation? = null
@@ -12,11 +12,13 @@ internal class EffectControllerImpl<EffectImplementation>(
         if (this.effectImplementation != null) return
 
         this.effectImplementation = effectImplementation
-        observableResourceStore.attachResource(effectImplementation)
+        stores.forEach { it.attachResource(effectImplementation) }
     }
 
     override fun stop() {
-        effectImplementation?.let(observableResourceStore::detachResource)
+        effectImplementation?.let {
+            stores.forEach { store -> store.detachResource(it) }
+        }
         effectImplementation = null
     }
 

@@ -12,11 +12,11 @@ import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
 import com.uandcode.effects.core.compiler.api.extensions.KSAnnotationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapper
+import com.uandcode.effects.core.compiler.exceptions.InterfaceNotFoundException
 
 internal fun parseMetadata(
     resolver: Resolver,
     extension: EffectExtension,
-    applicationClassDeclaration: KSClassDeclaration,
 ): List<ParsedMetadata> {
     val metadata = resolver.getDeclarationsFromPackage(Const.MetadataPackage)
     return metadata
@@ -26,7 +26,7 @@ internal fun parseMetadata(
                 .findMetadataAnnotation(extension)
                 ?.let { annotation ->
                     buildParsedMetadata(
-                        metadataDeclaration, applicationClassDeclaration, annotation, resolver, extension,
+                        metadataDeclaration, annotation, resolver, extension,
                     )
                 }
         }
@@ -43,22 +43,22 @@ private fun Sequence<KSAnnotation>.findMetadataAnnotation(
 
 private fun buildParsedMetadata(
     metadataDeclaration: KSClassDeclaration,
-    applicationClassDeclaration: KSClassDeclaration,
     annotation: KSAnnotationWrapper,
     resolver: Resolver,
     extension: EffectExtension,
 ): ParsedMetadata? {
-    val interfaceDeclaration = resolver.getClassDeclarationByName(
-        annotation.getString(Const.MetadataInterfaceClassName)
-    )
+    val interfaceDeclarationNames = annotation.getStringList(Const.MetadataInterfaceClassNames)
+    val interfaceDeclarations = interfaceDeclarationNames.map { name ->
+        resolver.getClassDeclarationByName(name)
+            ?: throw InterfaceNotFoundException(name, extension.effectAnnotation.simpleName, metadataDeclaration)
+    }.map(::KSClassDeclarationWrapper)
     val implDeclaration = resolver.getClassDeclarationByName(
         annotation.getString(Const.MetadataImplementationClassName)
     )
 
-    return if (interfaceDeclaration != null && implDeclaration != null) {
+    return if (interfaceDeclarations.isNotEmpty() && implDeclaration != null) {
         extension.buildMetadataFromAnnotation(
-            applicationClassDeclaration = applicationClassDeclaration,
-            interfaceDeclaration = KSClassDeclarationWrapper(interfaceDeclaration),
+            interfaceDeclarations = interfaceDeclarations,
             implementationClassDeclaration = KSClassDeclarationWrapper(implDeclaration),
             metadataAnnotation = annotation,
             metadataDeclaration = metadataDeclaration,

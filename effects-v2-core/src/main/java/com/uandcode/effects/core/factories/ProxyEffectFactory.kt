@@ -17,7 +17,7 @@ public interface ProxyEffectFactory {
      * argument may be the target interface definition itself, or a
      * definition of annotated subclass.
      */
-    public fun findTargetInterface(clazz: KClass<*>): KClass<*>
+    public fun findTargetInterfaces(clazz: KClass<*>): Set<KClass<*>>
 
     /**
      * Create a proxy implementation of the target interface specified

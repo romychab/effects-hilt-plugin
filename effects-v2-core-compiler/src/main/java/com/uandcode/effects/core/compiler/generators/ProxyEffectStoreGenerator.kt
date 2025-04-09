@@ -1,18 +1,18 @@
 package com.uandcode.effects.core.compiler.generators
 
 import com.google.devtools.ksp.processing.CodeGenerator
-import com.google.devtools.ksp.processing.Dependencies
-import com.squareup.kotlinpoet.ClassName
+import com.google.devtools.ksp.processing.KSPLogger
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.writeTo
+import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.GeneratedProxy
-import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
-import com.uandcode.effects.core.compiler.Const
+import com.uandcode.effects.core.compiler.api.data.GroupedMetadata
+import com.uandcode.effects.core.compiler.api.data.aggregateDependencies
 
 internal class ProxyEffectStoreGenerator(
     private val codeGenerator: CodeGenerator,
@@ -20,11 +20,11 @@ internal class ProxyEffectStoreGenerator(
 
     fun generate(
         extension: EffectExtension,
+        validationResult: GroupedMetadata,
         generatedProxies: List<GeneratedProxy>,
-        groupedMetadata: Map<ClassName, List<ParsedMetadata>>,
     ) {
         val fileSpec = FileSpec.builder(Const.GeneratedProxyEffectStoreClassName)
-            .addInstanceProperty(extension, generatedProxies, groupedMetadata)
+            .addInstanceProperty(extension, generatedProxies, validationResult)
             .addType(
                 TypeSpec.objectBuilder(Const.GeneratedProxyEffectStoreClassName)
                     .addSuperinterface(
@@ -37,17 +37,14 @@ internal class ProxyEffectStoreGenerator(
 
         fileSpec.writeTo(
             codeGenerator = codeGenerator,
-            dependencies = Dependencies(
-                aggregating = false,
-                sources = generatedProxies.flatMap { it.dependencies }.toTypedArray()
-            )
+            dependencies = generatedProxies.aggregateDependencies(),
         )
     }
 
     private fun FileSpec.Builder.addInstanceProperty(
         extension: EffectExtension,
         generatedProxies: List<GeneratedProxy>,
-        groupedMetadata: Map<ClassName, List<ParsedMetadata>>,
+        validationResult: GroupedMetadata,
     ) = apply {
         addProperty(
             PropertySpec.builder(INSTANCE_PROPERTY, Const.InternalProxyEffectStoreImplementationClassName)
@@ -59,10 +56,8 @@ internal class ProxyEffectStoreGenerator(
                             generatedProxies.forEach { result ->
                                 add("registerProxyProvider(%T::class, ::%T)\n", result.interfaceClassName, result.proxyClassName)
                             }
-                            groupedMetadata.forEach { (_, parsedMetadataList) ->
-                                parsedMetadataList.forEach { parsedMetadata ->
-                                    add("registerTarget(%T::class, %T::class)\n", parsedMetadata.implementationClassName, parsedMetadata.interfaceClassName)
-                                }
+                            validationResult.effectPairs.forEach {
+                                add("registerTarget(%T::class, %T::class)\n", it.implementationClass, it.interfaceClass)
                             }
                         }
                         .endControlFlow()
@@ -75,13 +70,11 @@ internal class ProxyEffectStoreGenerator(
     private fun CodeBlock.Builder.addInitializer(
         extension: EffectExtension,
     ) = apply {
-        val applicationAnnotation = "@${extension.applicationAnnotation.simpleName}"
         val effectAnnotation = "@${extension.effectAnnotation.simpleName}"
         beginControlFlow(
-            controlFlow = "%T(%T.Default(%S, %S)).apply {",
+            controlFlow = "%T(%T.Default(%S)).apply {",
             Const.InternalProxyEffectStoreImplementationClassName,
             Const.ProxyConfigurationClassName,
-            applicationAnnotation,
             effectAnnotation
         )
     }

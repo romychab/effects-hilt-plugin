@@ -19,6 +19,7 @@ import com.uandcode.effects.core.compiler.Const
 import com.uandcode.effects.core.compiler.api.KspClassWriter
 import com.uandcode.effects.core.compiler.api.data.GeneratedProxy
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
+import com.uandcode.effects.core.compiler.api.data.aggregateDependencies
 import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.KSFunctionDeclarationWrapper
 import com.uandcode.effects.core.compiler.api.extensions.implementInterface
@@ -31,10 +32,10 @@ internal class ProxyEffectGenerator(
 ) {
 
     fun generate(
-        metadata: ParsedMetadata,
+        interfaceDeclaration: KSClassDeclarationWrapper,
+        metadata: List<ParsedMetadata>,
         autoCloseableDeclaration: KSClassDeclaration,
     ): GeneratedProxy {
-        val interfaceDeclaration = metadata.interfaceDeclaration
         val interfaceClassName = interfaceDeclaration.toClassName()
         val interfaceName = interfaceClassName.simpleName
         val proxyName = "__${interfaceName}Proxy"
@@ -49,16 +50,17 @@ internal class ProxyEffectGenerator(
             )
             .implementAutoCloseable(interfaceDeclaration, autoCloseableDeclaration)
 
+        val dependencies = metadata.aggregateDependencies()
         writer.write(
             typeSpec = typeSpecBuilder.build(),
             pkg = proxyClassName.packageName,
-            dependencies = metadata.dependencies,
+            dependencies = dependencies,
         )
 
         return GeneratedProxy(
             proxyClassName = proxyClassName,
             interfaceClassName = interfaceClassName,
-            dependencies = metadata.dependencies.originatingFiles,
+            dependencies = dependencies,
         )
     }
 

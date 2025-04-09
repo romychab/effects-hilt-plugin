@@ -12,10 +12,10 @@ import com.uandcode.effects.stub.api.ProxyEffectStore
 
 internal object Const {
 
-    val TargetArgument = "target"
+    val TargetArrayArgument = "targets"
     val AutoCloseableClassName = AutoCloseable::class.asClassName()
 
-    val MetadataInterfaceClassName: String = "interfaceClassName"
+    val MetadataInterfaceClassNames: String = "interfaceClassNames"
     val MetadataImplementationClassName: String = "implementationClassName"
 
     val MetadataPackage: String = "com.uandcode.effects.core.compiler.generated"

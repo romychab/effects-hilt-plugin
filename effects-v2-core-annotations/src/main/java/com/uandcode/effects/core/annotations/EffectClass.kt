@@ -78,17 +78,18 @@ import kotlin.reflect.KClass
  * Calling `close()` cancels all pending calls that hasn't been finished or
  * delivered yet from a proxy to an effect implementation.
  */
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 public annotation class EffectClass(
 
     /**
-     * If your class implements only 1 single interface, then
-     * that interface is used by default as a target interface.
+     * Set target interfaces which proxy implementations
+     * should be generated for. By default, proxies are generated for
+     * all interfaces implemented by the class.
      *
-     * You need to set this parameter only if your class implements
-     * 2 or more interfaces.
+     * You need to set this parameter only if you want to generate
+     * proxies only for specific interfaces.
      */
-    public val target: KClass<*> = Any::class,
+    public val targets: Array<KClass<*>> = [],
 
 )

@@ -39,6 +39,7 @@ public class EffectSymbolProcessor(
         logger = environment.logger,
         codeGenerator = environment.codeGenerator,
         effectExtension = effectExtension,
+        processingMode = ProcessingMode.fromOptions(environment.options)
     )
 
     override fun process(resolver: Resolver): List<KSAnnotated> {

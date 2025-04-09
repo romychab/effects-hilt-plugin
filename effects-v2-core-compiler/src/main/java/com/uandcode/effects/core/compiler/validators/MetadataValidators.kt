@@ -1,31 +1,31 @@
 package com.uandcode.effects.core.compiler.validators
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.uandcode.effects.core.compiler.api.EffectExtension
 import com.uandcode.effects.core.compiler.api.data.ParsedMetadata
+import com.uandcode.effects.core.compiler.api.data.GroupedMetadata
 
 internal fun validateAndFilterEffectMetadata(
     effectExtension: EffectExtension,
     metadataList: List<ParsedMetadata>,
-): MetadataValidationResult {
-    val effectMetadataMap = metadataList
-        .groupBy { it.interfaceClassName }
-        .mapValues { (_, list) ->
-            list.distinctBy { it.implementationClassName }
+): GroupedMetadata {
+    val interfaceToImplementationsMap = mutableMapOf<ClassName, MutableList<ParsedMetadata>>()
+    metadataList.forEach { metadata ->
+        metadata.interfaceDeclarations.forEach { interfaceDeclaration ->
+            val interfaceClassName = interfaceDeclaration.toClassName()
+            val list = interfaceToImplementationsMap.computeIfAbsent(interfaceClassName) { mutableListOf() }
+            list.add(metadata)
         }
-
-    effectExtension.validateMetadata(effectMetadataMap)
-
-    val uniqueMetadata = effectMetadataMap.map {
-        it.value.first()
     }
-    return MetadataValidationResult(
-        uniqueMetadata = uniqueMetadata,
-        groupedMetadata = effectMetadataMap,
+    interfaceToImplementationsMap.mapValues { entry ->
+        entry.value.distinctBy { it.implementationClassName }
+    }
+
+    effectExtension.validateMetadata(interfaceToImplementationsMap)
+
+    return GroupedMetadata(
+        groupedMetadata = interfaceToImplementationsMap,
     )
 }
 
-internal class MetadataValidationResult(
-    val uniqueMetadata: List<ParsedMetadata>,
-    val groupedMetadata: Map<ClassName, List<ParsedMetadata>>,
-)

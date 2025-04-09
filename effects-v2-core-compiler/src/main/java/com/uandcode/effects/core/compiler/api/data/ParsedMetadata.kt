@@ -11,38 +11,45 @@ import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapp
  * Subclasses can be created in plugins that extend this core compiler.
  */
 public open class ParsedMetadata(
-    public val applicationClassDeclaration: KSClassDeclaration,
-    public val interfaceDeclaration: KSClassDeclarationWrapper,
+    public val interfaceDeclarations: List<KSClassDeclarationWrapper>,
     public val implementationClassDeclaration: KSClassDeclarationWrapper,
     public val metadataDeclaration: KSClassDeclaration? = null,
-) {
+) : HasDependencies {
 
     public val implementationClassName: ClassName = implementationClassDeclaration.toClassName()
-    public val interfaceClassName: ClassName by lazy { interfaceDeclaration.toClassName() }
-    public val interfaceName: String get() = interfaceClassName.simpleName
-    public val pkg: String = interfaceDeclaration.packageName.asString()
-    public val dependencies: Dependencies by lazy { buildDependencies() }
+    override val dependencies: Dependencies by lazy { buildDependencies() }
 
     public constructor(
         effect: ParsedEffect,
-        applicationClassDeclaration: KSClassDeclaration,
     ) : this(
-        applicationClassDeclaration = applicationClassDeclaration,
-        interfaceDeclaration = effect.targetInterface,
+        interfaceDeclarations = effect.targetInterfaces,
         implementationClassDeclaration = effect.classDeclaration,
     )
 
     private fun buildDependencies(): Dependencies {
-        val files = listOfNotNull(
-            interfaceDeclaration.containingFile,
-            implementationClassDeclaration.containingFile,
-            metadataDeclaration?.containingFile,
-            applicationClassDeclaration.containingFile,
-        ).distinct().toTypedArray()
-        return Dependencies(
-            aggregating = false,
-            *files,
-        )
+        return if (metadataDeclaration == null) {
+            Dependencies(
+                aggregating = true,
+                checkNotNull(implementationClassDeclaration.containingFile),
+            )
+        } else {
+            Dependencies.ALL_FILES
+        }
     }
 
 }
+
+public fun List<Dependencies>.aggregate(): Dependencies {
+    val isAllFiles = any { it == Dependencies.ALL_FILES }
+    if (isAllFiles) return Dependencies.ALL_FILES
+
+    val isAggregating = any { it.aggregating }
+    val gatheredFiles = map { it.originatingFiles }.flatten()
+
+    return Dependencies(
+        isAggregating, *gatheredFiles.toTypedArray()
+    )
+}
+
+public fun List<HasDependencies>.aggregateDependencies(): Dependencies =
+    map { it.dependencies }.aggregate()

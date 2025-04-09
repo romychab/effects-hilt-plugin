@@ -1,6 +1,6 @@
 package com.uandcode.effects.core.compiler.api.data
 
-import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.processing.Dependencies
 import com.squareup.kotlinpoet.ClassName
 
 /**
@@ -12,5 +12,5 @@ import com.squareup.kotlinpoet.ClassName
 public data class GeneratedProxy(
     val proxyClassName: ClassName,
     val interfaceClassName: ClassName,
-    val dependencies: List<KSFile>,
-)
+    override val dependencies: Dependencies,
+) : HasDependencies

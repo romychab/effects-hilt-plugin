@@ -25,12 +25,14 @@ private fun ParsedEffect.validateEffect() {
 }
 
 private fun ParsedEffect.validateInterfaceDoesNotHaveTypeParameters() {
-    if (targetInterface.typeParameters.isNotEmpty()) {
-        throw InterfaceWithTypeParametersException(
-            effectAnnotation,
-            targetInterfaceName,
-            classDeclaration,
-        )
+    targetInterfaces.forEach { targetInterface ->
+        if (targetInterface.typeParameters.isNotEmpty()) {
+            throw InterfaceWithTypeParametersException(
+                effectAnnotation,
+                targetInterface.simpleNameText,
+                classDeclaration,
+            )
+        }
     }
 }
 
@@ -41,8 +43,10 @@ private fun ParsedEffect.validateClassIsNotNested() {
 }
 
 private fun ParsedEffect.validateInterfaceIsNotNested() {
-    if (targetInterface.parentDeclaration != null) {
-        throw NestedInterfaceException(effectAnnotation, classDeclaration)
+    targetInterfaces.forEach { targetInterface ->
+        if (targetInterface.parentDeclaration != null) {
+            throw NestedInterfaceException(effectAnnotation, classDeclaration)
+        }
     }
 }
 

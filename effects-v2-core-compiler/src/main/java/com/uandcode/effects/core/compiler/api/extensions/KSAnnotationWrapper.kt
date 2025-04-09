@@ -3,6 +3,7 @@ package com.uandcode.effects.core.compiler.api.extensions
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueArgument
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
@@ -18,7 +19,8 @@ public data class KSAnnotationWrapper(
     private val annotation: KSAnnotation,
 ) : KSAnnotation by annotation {
 
-    private val classDeclarationMap = mutableMapOf<String, KSClassDeclaration>()
+    private val classDeclarationMap = mutableMapOf<String, KSClassDeclarationWrapper>()
+    private val classListDeclarationMap = mutableMapOf<String, List<KSClassDeclarationWrapper>>()
 
     val resolvedAnnotationType: KSType by lazy {
         annotationType.resolve()
@@ -30,15 +32,26 @@ public data class KSAnnotationWrapper(
 
     val printableName: String get() = "@$simpleName"
 
-    public fun getClassDeclaration(argumentName: String): KSClassDeclaration {
+    public fun getClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
         return classDeclarationMap.computeIfAbsent(argumentName) {
             findClassDeclaration(argumentName)
         }
     }
 
+    public fun getClassDeclarationList(argumentName: String): List<KSClassDeclarationWrapper> {
+        return classListDeclarationMap.computeIfAbsent(argumentName) {
+            findClassDeclarations(argumentName)
+        }
+    }
+
     public fun getString(argumentName: String): String {
-        val argument = arguments.first { it.name?.asString() == argumentName }
+        val argument = getArgumentByName(argumentName)
         return argument.value.toString()
+    }
+
+    public fun getStringList(argumentName: String): List<String> {
+        val argument = getArgumentByName(argumentName)
+        return argument.value as List<String>
     }
 
     public inline fun <reified T> isInstanceOf(): Boolean {
@@ -49,12 +62,26 @@ public data class KSAnnotationWrapper(
         return resolvedAnnotationType.toTypeName() == typeName
     }
 
-    private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclaration {
-        val argument = arguments.first { it.name?.asString() == argumentName }
+    private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
+        val argument = getArgumentByName(argumentName)
         val argumentValue = argument.value as? KSType
             ?: throw InvalidTargetArgumentException(this)
-        return argumentValue.declaration as? KSClassDeclaration
+        return (argumentValue.declaration as? KSClassDeclaration)
+            ?.let(::KSClassDeclarationWrapper)
             ?: throw InvalidTargetArgumentException(this)
     }
 
+    private fun KSAnnotationWrapper.findClassDeclarations(argumentName: String): List<KSClassDeclarationWrapper> {
+        val argument = getArgumentByName(argumentName)
+        val argumentValue = argument.value as? List<KSType>
+            ?: throw InvalidTargetArgumentException(this)
+        return argumentValue
+            .map { it.declaration }
+            .filterIsInstance<KSClassDeclaration>()
+            .map(::KSClassDeclarationWrapper)
+    }
+
+    private fun getArgumentByName(argumentName: String): KSValueArgument {
+        return arguments.first { it.name?.asString() == argumentName }
+    }
 }

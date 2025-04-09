@@ -60,14 +60,14 @@ public interface EffectScope {
     /**
      * Create a child [EffectScope] instance that inherits all effects
      * from this parent scope and additionally it can provide proxy effects
-     * listed in a [interfaces] argument.
+     * listed in a [managedInterfaces] argument.
      *
-     * @param interfaces the list of target effect interfaces (only interfaces are allowed)
+     * @param managedInterfaces the list of target effect interfaces (only interfaces are allowed)
      * @param proxyEffectFactory optional factory for creating proxy implementations for all
      *                           effects listed in [interfaces] argument
      */
     public fun createChild(
-        interfaces: EffectInterfaces,
+        managedInterfaces: ManagedInterfaces,
         proxyEffectFactory: ProxyEffectFactory? = null,
     ): EffectScope
 
@@ -93,7 +93,7 @@ public fun EffectScope.createChild(
     proxyEffectFactory: ProxyEffectFactory? = null
 ): EffectScope {
     return createChild(
-        EffectInterfaces.ListOf(*interfaces),
+        ManagedInterfaces.ListOf(*interfaces),
         proxyEffectFactory,
     )
 }

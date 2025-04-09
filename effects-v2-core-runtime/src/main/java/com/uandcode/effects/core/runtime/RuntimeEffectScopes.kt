@@ -1,14 +1,14 @@
 package com.uandcode.effects.core.runtime
 
 import com.uandcode.effects.core.EffectScope
-import com.uandcode.effects.core.EffectInterfaces
+import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.core.RootEffectScopes
 
 public object RuntimeEffectScopes {
 
     /**
      * Create a new [EffectScope] which can create proxy implementations
-     * for all effect [interfaces] at runtime.
+     * for all effect [managedInterfaces] at runtime.
      *
      * It may be useful either in integration tests or if you don't want to
      * use compile time annotation processing for some reason.
@@ -21,24 +21,24 @@ public object RuntimeEffectScopes {
      * ```
      */
     public fun create(
-        interfaces: EffectInterfaces = EffectInterfaces.Everything
+        managedInterfaces: ManagedInterfaces = ManagedInterfaces.Everything
     ): EffectScope {
         return RootEffectScopes.empty.createChild(
-            interfaces = interfaces,
+            managedInterfaces = managedInterfaces,
             proxyEffectFactory = RuntimeProxyEffectFactory()
         )
     }
 
     /**
      * Create a child [EffectScope] which can create proxy implementations
-     * for all [interfaces] at runtime.
+     * for all [managedInterfaces] at runtime.
      */
     public fun createChild(
         parent: EffectScope,
-        interfaces: EffectInterfaces = EffectInterfaces.Everything
+        managedInterfaces: ManagedInterfaces = ManagedInterfaces.Everything
     ): EffectScope {
         return parent.createChild(
-            interfaces = interfaces,
+            managedInterfaces = managedInterfaces,
             proxyEffectFactory = RuntimeProxyEffectFactory()
         )
     }

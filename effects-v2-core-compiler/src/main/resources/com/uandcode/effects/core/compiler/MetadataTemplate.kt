@@ -3,7 +3,7 @@
 import com.uandcode.effects.core.annotations.EffectMetadata
 
 @EffectMetadata(
-    interfaceClassName = "%EFFECT_INTERFACE_CLASSNAME%",
+    interfaceClassNames = %EFFECT_INTERFACE_CLASSNAMES%,
     implementationClassName = "%EFFECT_IMPL_CLASSNAME%",
 )
 public class %CLASSNAME%

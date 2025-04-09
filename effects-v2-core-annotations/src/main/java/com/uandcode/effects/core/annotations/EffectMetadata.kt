@@ -9,6 +9,6 @@ package com.uandcode.effects.core.annotations
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS)
 public annotation class EffectMetadata(
-    val interfaceClassName: String,
+    val interfaceClassNames: Array<String>,
     val implementationClassName: String,
 )

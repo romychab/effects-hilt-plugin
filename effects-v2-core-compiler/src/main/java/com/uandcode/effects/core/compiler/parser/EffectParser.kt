@@ -8,13 +8,12 @@ import com.uandcode.effects.core.compiler.api.extensions.KSClassDeclarationWrapp
 
 internal fun parseEffects(
     resolver: Resolver,
-    appClassDeclaration: KSClassDeclaration?,
     effectExtension: EffectExtension,
 ): Sequence<ParsedEffect> {
     val annotatedClasses = resolver.getSymbolsWithAnnotation(effectExtension.effectAnnotation.canonicalName)
     return annotatedClasses
         .filterIsInstance<KSClassDeclaration>()
         .map {
-            effectExtension.parseEffect(KSClassDeclarationWrapper(it), appClassDeclaration)
+            effectExtension.parseEffect(KSClassDeclarationWrapper(it))
         }
 }
