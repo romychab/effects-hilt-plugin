@@ -20,10 +20,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Effects library
-    implementation(projects.effectsCompose)
-    ksp(projects.effectsProcessor)
-    //implementation("com.elveum.effects:effects-core:1.0.3-beta02")
-    //implementation("com.elveum.effects:effects-processor:1.0.3-beta02")
+    implementation("com.elveum:effects-core:1.0.3")
+    implementation("com.elveum:effects-processor:1.0.3")
 
     // Other dependencies
     implementation(platform(libs.compose.bom))
