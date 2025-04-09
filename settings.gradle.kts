@@ -26,8 +26,12 @@ dependencyResolutionManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Effects"
-include(":app")
+
+// effects plugin
 include(":effects-annotations")
 include(":effects-processor")
 include(":effects-core")
 include(":effects-compose")
+
+// example app (single-module)
+include(":app-examples:app-1-singlemodule")
