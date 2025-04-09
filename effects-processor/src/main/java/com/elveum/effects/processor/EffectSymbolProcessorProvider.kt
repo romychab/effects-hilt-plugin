@@ -8,8 +8,9 @@ class EffectSymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         return EffectSymbolProcessor(
-            environment.logger,
-            environment.codeGenerator,
+            logger = environment.logger,
+            processingMode = ProcessingMode.fromOptions(environment.options),
+            codeGenerator = environment.codeGenerator,
         )
     }
 

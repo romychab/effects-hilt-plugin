@@ -14,7 +14,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ksp.toClassName
 
 class EffectInfo(
-    private val applicationClassDeclaration: KSClassDeclaration?,
     originEffectClassDeclaration: KSClassDeclaration
 ) {
 
@@ -29,7 +28,6 @@ class EffectInfo(
         findTargetInterfaceClassDeclarations()
     }
 
-    val dependencies: Dependencies by lazy { createDependencies() }
     private val hiltComponentDeclaration: HiltComponentClassDeclaration by lazy {
         findHiltComponentClassDeclaration()
     }
@@ -57,16 +55,6 @@ class EffectInfo(
         return wrappedAnnotations.any {
             it.isInstanceOf(Const.DefineComponentName)
         }
-    }
-
-    private fun createDependencies(): Dependencies {
-        val interfaceFiles = targetInterfaceList.mapNotNull { it.containingFile }
-        val files = interfaceFiles + listOfNotNull(effectClassDeclaration.containingFile)
-
-        return Dependencies(
-            aggregating = applicationClassDeclaration == null,
-            *files.toTypedArray(),
-        )
     }
 
 }

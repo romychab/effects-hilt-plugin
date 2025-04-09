@@ -1,6 +1,5 @@
 package com.elveum.effects.processor
 
-import com.elveum.effects.processor.data.Const
 import com.elveum.effects.processor.data.EffectInfo
 import com.elveum.effects.processor.data.EffectMetadata
 import com.elveum.effects.processor.exceptions.AbstractEffectKspException
@@ -17,10 +16,10 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSClassDeclaration
 
 class EffectSymbolProcessor(
     private val logger: KSPLogger,
+    private val processingMode: ProcessingMode,
     codeGenerator: CodeGenerator,
 ) : SymbolProcessor {
 
@@ -29,18 +28,19 @@ class EffectSymbolProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         try {
-            val hiltAppClassDeclaration = getHiltApp(resolver)
-
-            val effects = parseEffects(resolver, hiltAppClassDeclaration)
+            val effects = parseEffects(resolver)
             validateEffects(effects)
-
             generateEffectImplementationModules(effects)
-
-            if (hiltAppClassDeclaration != null) {
-                val effectMetadataSequence = parseMetadata(resolver, hiltAppClassDeclaration) +
-                        effects.map { EffectMetadata(it, hiltAppClassDeclaration) }
-                val interfaceToImplementationMap = validateAndFilterEffectMetadata(effectMetadataSequence)
-                effectMediatorGenerators.generateEffectMediators(interfaceToImplementationMap)
+            when (processingMode) {
+                ProcessingMode.GenerateMetadata -> {
+                    generateEffectMetadata(effects)
+                }
+                ProcessingMode.AggregateMetadata -> {
+                    val effectMetadataSequence = parseMetadata(resolver) + effects.map(::EffectMetadata)
+                    val interfaceToImplementationMap =
+                        validateAndFilterEffectMetadata(effectMetadataSequence)
+                    effectMediatorGenerators.generateEffectMediators(interfaceToImplementationMap)
+                }
             }
         } catch (e: AbstractEffectKspException) {
             logger.error(e.message ?: "Failed to process effect annotations", e.node)
@@ -49,19 +49,17 @@ class EffectSymbolProcessor(
     }
 
     private fun generateEffectImplementationModules(effects: Sequence<EffectInfo>) {
-        val metadataGenerator = EffectMetadataGenerator(writer)
         val implHiltModuleGenerator = EffectImplementationHiltModuleGenerator(writer)
         effects.forEach { effectInfo ->
-            metadataGenerator.generate(effectInfo)
             implHiltModuleGenerator.generate(effectInfo)
         }
     }
 
-    private fun getHiltApp(resolver: Resolver): KSClassDeclaration? {
-        val annotatedSymbols = resolver.getSymbolsWithAnnotation(
-            Const.HiltAppAnnotationName.canonicalName
-        )
-        return annotatedSymbols.firstOrNull() as? KSClassDeclaration
+    private fun generateEffectMetadata(effects: Sequence<EffectInfo>) {
+        val metadataGenerator = EffectMetadataGenerator(writer)
+        effects.forEach { effectInfo ->
+            metadataGenerator.generate(effectInfo)
+        }
     }
 
 }

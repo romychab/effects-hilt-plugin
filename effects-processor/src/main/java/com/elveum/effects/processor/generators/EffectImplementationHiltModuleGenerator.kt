@@ -3,6 +3,7 @@ package com.elveum.effects.processor.generators
 import com.elveum.effects.processor.data.Const
 import com.elveum.effects.processor.data.EffectInfo
 import com.elveum.effects.processor.generators.base.KspClassWriter
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -27,7 +28,11 @@ class EffectImplementationHiltModuleGenerator(
             .addProvideEffectRecordMethod(effectInfo.effectClassName, effectInfo.targetInterfaceList)
             .build()
 
-        writer.write(typeSpec, effectInfo.dependencies, pkg)
+        val dependencies = Dependencies(
+            aggregating = false,
+            checkNotNull(effectInfo.effectClassDeclaration.containingFile),
+        )
+        writer.write(typeSpec, dependencies, pkg)
     }
 
     private fun TypeSpec.Builder.addProvideControllerMethod(

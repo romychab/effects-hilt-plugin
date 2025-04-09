@@ -11,7 +11,6 @@ class EffectMetadata(
     val effectClassDeclaration: KSClassDeclarationWrapper,
     val hiltComponent: ClassName,
     val hiltScope: ClassName,
-    val hiltAppClassDeclaration: KSClassDeclaration,
     val cleanUpMethodName: EffectCleanUpMethodName,
     val metadataDeclaration: KSClassDeclaration? = null,
 ) {
@@ -26,14 +25,12 @@ class EffectMetadata(
 
     constructor(
         effectInfo: EffectInfo,
-        hiltAppClassDeclaration: KSClassDeclaration,
     ) : this(
         targetInterfaceList = effectInfo.targetInterfaceList,
         effectClassDeclaration = effectInfo.effectClassDeclaration,
         hiltComponent = effectInfo.hiltComponent,
         hiltScope = effectInfo.hiltScope,
         cleanUpMethodName = effectInfo.cleanUpMethodName,
-        hiltAppClassDeclaration = hiltAppClassDeclaration,
     )
 
     fun shouldGenerateViewModelMediator(): Boolean {
@@ -50,10 +47,9 @@ class EffectMetadata(
         val files = interfaceFiles + listOfNotNull(
             effectClassDeclaration.containingFile,
             metadataDeclaration?.containingFile,
-            hiltAppClassDeclaration.containingFile,
         ).toTypedArray()
         return Dependencies(
-            aggregating = false,
+            aggregating = true,
             *files.toTypedArray(),
         )
     }

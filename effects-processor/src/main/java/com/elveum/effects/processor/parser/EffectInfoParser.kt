@@ -7,12 +7,11 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 
 fun parseEffects(
     resolver: Resolver,
-    applicationClassDeclaration: KSClassDeclaration?,
 ): Sequence<EffectInfo> {
     val annotatedClasses = resolver.getSymbolsWithAnnotation(
         Const.HiltEffectAnnotationName.canonicalName
     )
     return annotatedClasses
         .filterIsInstance<KSClassDeclaration>()
-        .map { EffectInfo(applicationClassDeclaration, it) }
+        .map(::EffectInfo)
 }
