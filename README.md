@@ -20,7 +20,7 @@ components with a shorter lifecycle without memory leaks.
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Installation for multi-module projects](#installation-for-multi-module-projects)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
 - [Primitive Example](#primitive-example)
 - [Default Lifecycle](#default-lifecycle)
 - [Detailed Explanation](#detailed-explanation)
@@ -56,7 +56,7 @@ implementation("com.elveum:effects-compose:1.0.3")
 implementation("com.elveum:effects-core:1.0.3")
 ```
 
-## Installation for multi-module projects
+## Installation for Multi-Module Projects
 
 - Dependencies for your application module remain the same:
   
@@ -722,13 +722,26 @@ Right now the plugin can be easily used in multi-module Android projects:
 
 - Target interfaces can be located either in other modules or even in pre-built binaries, because
   `@HiltEffect` annotation is applied not to target interfaces, but to their implementation classes.
-- Each module containing classes annotated with `@HiltEffect` annotation should add the same dependencies
-  as your application module (along with KSP and Hilt):
+- Each library module containing classes annotated with `@HiltEffect` annotation should add the same dependencies
+  as your application module (along with KSP and Hilt) + each library module should specify an additional KSP option:
 
   ```kotlin
-  ksp("com.elveum:effects-processor:$lib_version")
-  implementation("com.elveum:effects-core:$lib_version")
-  // plus Hilt and KSP dependencies/plugins
+  plugins {
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+  }
+  
+  ksp { // only for libraries:
+      arg("effects.processor.metadata", "generate")
+  }
+
+  dependencies {
+      ksp("com.elveum:effects-processor:$lib_version")
+      implementation("com.elveum:effects-core:$lib_version")
+      // plus Hilt dependencies
+      implementation("com.google.dagger:hilt-android:$hilt_version")
+      ksp("com.google.dagger:hilt-android-compiler:$hilt_version")
+  }
   ```  
 
 - The main application module should have an Application class annotated with 
