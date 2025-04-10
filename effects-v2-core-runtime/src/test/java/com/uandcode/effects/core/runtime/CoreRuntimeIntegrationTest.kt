@@ -1,12 +1,18 @@
 package com.uandcode.effects.core.runtime
 
 import com.uandcode.effects.core.EffectScope
+import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.core.RootEffectScopes
+import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.getController
 import com.uandcode.effects.core.getProxy
+import com.uandcode.effects.core.mocks.CombinedEffect
+import com.uandcode.effects.core.mocks.CombinedEffectWithTarget
 import com.uandcode.effects.core.mocks.Effect
 import com.uandcode.effects.core.mocks.Effect.Companion.EMIT_DELAY
 import com.uandcode.effects.core.mocks.Effect.Companion.expectedResult
+import com.uandcode.effects.core.mocks.Effect1
+import com.uandcode.effects.core.mocks.Effect2
 import com.uandcode.effects.core.mocks.EffectImpl
 import com.uandcode.effects.core.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.mocks.EffectWithDefaultTargetImpl
@@ -14,6 +20,9 @@ import com.uandcode.effects.core.mocks.EffectWithNonOverriddenClose
 import com.uandcode.effects.core.mocks.EffectWithNonOverriddenCloseImpl
 import com.uandcode.effects.core.mocks.EffectWithTarget
 import com.uandcode.effects.core.mocks.EffectWithTargetImpl
+import com.uandcode.effects.core.mocks.NonTargetEffect3
+import com.uandcode.effects.core.mocks.TargetEffect1
+import com.uandcode.effects.core.mocks.TargetEffect2
 import com.uandcode.flowtest.CollectStatus
 import com.uandcode.flowtest.JobStatus
 import com.uandcode.flowtest.runFlowTest
@@ -33,13 +42,13 @@ import org.junit.Test
 
 class CoreRuntimeIntegrationTest {
 
-    private lateinit var component: EffectScope
+    private lateinit var scope: EffectScope
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         RootEffectScopes.setGlobal(RuntimeEffectScopes.create())
-        component = RootEffectScopes.global
+        scope = RootEffectScopes.global
     }
 
     @After
@@ -49,9 +58,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `getController() returns controllers for interface and implementation`() {
-        val proxyEffect = component.getProxy<Effect>()
-        val interfaceController = component.getController<Effect>()
-        val implController = component.getController<EffectImpl>()
+        val proxyEffect = scope.getProxy<Effect>()
+        val interfaceController = scope.getController<Effect>()
+        val implController = scope.getController<EffectImpl>()
         val effectForInterface = spyk(EffectImpl())
         val effectForImplementation = spyk(EffectImpl())
 
@@ -78,9 +87,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `getController() with target arg in annotation returns controllers`() {
-        val proxyEffect = component.getProxy<EffectWithTarget>()
-        val interfaceController = component.getController<EffectWithTarget>()
-        val implController = component.getController<EffectWithTargetImpl>()
+        val proxyEffect = scope.getProxy<EffectWithTarget>()
+        val interfaceController = scope.getController<EffectWithTarget>()
+        val implController = scope.getController<EffectWithTargetImpl>()
         val effectForInterface = spyk(EffectWithTargetImpl())
         val effectForImplementation = spyk(EffectWithTargetImpl())
 
@@ -107,9 +116,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `getController() with default effect target arg returns controllers`() {
-        val proxyEffect = component.getProxy<EffectWithDefaultTarget>()
-        val interfaceController = component.getController<EffectWithDefaultTarget>()
-        val implController = component.getController<EffectWithDefaultTargetImpl>()
+        val proxyEffect = scope.getProxy<EffectWithDefaultTarget>()
+        val interfaceController = scope.getController<EffectWithDefaultTarget>()
+        val implController = scope.getController<EffectWithDefaultTargetImpl>()
         val effectForInterface = spyk(EffectWithDefaultTargetImpl())
         val effectForImplementation = spyk(EffectWithDefaultTargetImpl())
 
@@ -136,9 +145,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy with attached implementation delivers call immediately`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
         controller.start(effectImpl)
 
         proxyEffect.unitRun("input")
@@ -150,9 +159,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy with detached implementation delivers call after attaching`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
 
         proxyEffect.unitRun("input")
         verify(exactly = 0) {
@@ -166,11 +175,11 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy delivers call to last attached implementation`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<EffectImpl>()
-        val controller2 = component.getController<EffectImpl>()
+        val controller1 = scope.getController<EffectImpl>()
+        val controller2 = scope.getController<EffectImpl>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -186,10 +195,10 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `controller does not attach effect is it has already attached effect`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
         controller.start(effectImpl1)
         controller.start(effectImpl2)
 
@@ -205,11 +214,11 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy delivers one call to one implementation`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<EffectImpl>()
-        val controller2 = component.getController<EffectImpl>()
+        val controller1 = scope.getController<EffectImpl>()
+        val controller2 = scope.getController<EffectImpl>()
 
         proxyEffect.unitRun("input")
         controller1.start(effectImpl1)
@@ -225,9 +234,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy does not deliver call to detached implementation`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
         controller.start(effectImpl)
         controller.stop()
 
@@ -240,9 +249,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy delivers call after re-attaching implementation`() {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
         controller.start(effectImpl)
         controller.stop()
 
@@ -256,9 +265,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy ignores exception from unit call`() = runTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = mockk<Effect>()
-        val controller = component.getController<Effect>()
+        val controller = scope.getController<Effect>()
         coEvery { effectImpl.unitRun(any()) } throws IllegalStateException()
         controller.start(effectImpl)
 
@@ -271,9 +280,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy returns result from suspend call`() = runTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = scope.getController<EffectImpl>()
         controller.start(effectImpl)
 
         val result = proxyEffect.coroutineRun("input")
@@ -283,9 +292,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy waits for result from suspend call`() = runFlowTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
 
         val result = executeInBackground {
             proxyEffect.coroutineRun("input")
@@ -309,9 +318,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy re-executes suspend call after re-attaching`() = runFlowTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<EffectImpl>()
+        val controller = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
         controller.start(effectImpl)
 
         val result = executeInBackground {
@@ -337,11 +346,11 @@ class CoreRuntimeIntegrationTest {
     @Test
     fun `proxy switches implementation for suspend call after detaching`() = runFlowTest {
         val byFirstEffect = "byFirstEffect"
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl(byFirstEffect))
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<EffectImpl>()
-        val controller2 = component.getController<EffectImpl>()
+        val controller1 = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
+        val controller2 = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -375,9 +384,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy delivers exception from suspend call`() = runTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = scope.getProxy<Effect>()
         val effectImpl = mockk<Effect>()
-        val controller = component.getController<Effect>()
+        val controller = scope.getController<Effect>()
         coEvery { effectImpl.coroutineRun(any()) } throws IllegalStateException()
         controller.start(effectImpl)
 
@@ -392,11 +401,11 @@ class CoreRuntimeIntegrationTest {
     fun `proxy executes flow on all effects`() = runFlowTest {
         val byFirstEffect = "byFirstEffect"
         val bySecondEffect = "byFirstEffect"
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl(byFirstEffect))
         val effectImpl2 = spyk(EffectImpl(bySecondEffect))
-        val controller1 = component.getController<EffectImpl>()
-        val controller2 = component.getController<EffectImpl>()
+        val controller1 = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
+        val controller2 = this@CoreRuntimeIntegrationTest.scope.getController<EffectImpl>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -419,11 +428,11 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy delivers exception from flow call and cancels listening`() = runFlowTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<Effect>()
-        val controller2 = component.getController<Effect>()
+        val controller1 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
+        val controller2 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -436,11 +445,11 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy completes result flow when all flows from all effects complete`() = runFlowTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<Effect>()
-        val controller2 = component.getController<Effect>()
+        val controller1 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
+        val controller2 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -454,11 +463,11 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy does not complete result flow if all effects are detached`() = runFlowTest {
-        val proxyEffect = component.getProxy<Effect>()
+        val proxyEffect = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl1 = spyk(EffectImpl())
         val effectImpl2 = spyk(EffectImpl())
-        val controller1 = component.getController<Effect>()
-        val controller2 = component.getController<Effect>()
+        val controller1 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
+        val controller2 = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
         controller1.start(effectImpl1)
         controller2.start(effectImpl2)
 
@@ -482,10 +491,10 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `two suspend calls should not interfere`() = runFlowTest {
-        val proxyEffect1 = component.getProxy<Effect>()
-        val proxyEffect2 = component.getProxy<Effect>()
+        val proxyEffect1 = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
+        val proxyEffect2 = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<Effect>()
+        val controller = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
         controller.start(effectImpl)
 
         val result1 = executeInBackground {
@@ -505,9 +514,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `proxy implements AutoCloseable which cancels unit commands`() = runFlowTest {
-        val proxy = component.getProxy<Effect>()
+        val proxy = this@CoreRuntimeIntegrationTest.scope.getProxy<Effect>()
         val effectImpl = spyk(EffectImpl())
-        val controller = component.getController<Effect>()
+        val controller = this@CoreRuntimeIntegrationTest.scope.getController<Effect>()
 
         proxy.unitRun("input")
         (proxy as AutoCloseable).close()
@@ -520,9 +529,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `non-overridden close() call is not delivered to effect implementation`() {
-        val proxy = component.getProxy<EffectWithNonOverriddenClose>()
+        val proxy = scope.getProxy<EffectWithNonOverriddenClose>()
         val effectImpl = spyk(EffectWithNonOverriddenCloseImpl())
-        val controller = component.getController<EffectWithNonOverriddenClose>()
+        val controller = scope.getController<EffectWithNonOverriddenClose>()
 
         proxy.run("input")
         proxy.close()
@@ -536,9 +545,9 @@ class CoreRuntimeIntegrationTest {
 
     @Test
     fun `overridden close() call is not delivered to effect implementation`() {
-        val proxy = component.getProxy<EffectWithNonOverriddenClose>()
+        val proxy = scope.getProxy<EffectWithNonOverriddenClose>()
         val effectImpl = spyk(EffectWithNonOverriddenCloseImpl())
-        val controller = component.getController<EffectWithNonOverriddenClose>()
+        val controller = scope.getController<EffectWithNonOverriddenClose>()
 
         proxy.run("input")
         proxy.close()
@@ -547,6 +556,141 @@ class CoreRuntimeIntegrationTest {
         verify(exactly = 0) {
             effectImpl.run(any())
             effectImpl.close()
+        }
+    }
+
+    @Test
+    fun `combined effect can return controller for any interface`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+
+        val controller1 = scope.getController<Effect1>()
+        val controller2 = scope.getController<Effect2>()
+        controller1.start(combinedEffect)
+        controller2.start(combinedEffect)
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+    }
+
+    @Test
+    fun `interface controller of combined effect connects only to own interface`() {
+        val proxy = scope.getProxy<Effect1>()
+        val combinedEffect = spyk(CombinedEffect())
+        val controller1 = scope.getController<Effect1>()
+        val controller2 = scope.getController<Effect2>()
+
+        controller2.start(combinedEffect)
+        proxy.run1("input")
+        verify(exactly = 0) {
+            combinedEffect.run1(any())
+        }
+
+        controller1.start(combinedEffect)
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+        }
+    }
+
+    @Test
+    fun `class controller of combined effect connects to all target interfaces`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+        val controller = scope.getController<CombinedEffect>()
+
+        controller.start(combinedEffect)
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+    }
+
+    @Test
+    fun `class controller of combined effect disconnects from all target interfaces`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+        val controller = scope.getController<CombinedEffect>()
+
+        controller.start(combinedEffect)
+        controller.stop()
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 0) {
+            combinedEffect.run1(any())
+            combinedEffect.run2(any())
+        }
+    }
+
+    @Test
+    fun `class controller of combined effect gathers interfaces from scope hierarchy`() {
+        val childScope = RootEffectScopes.empty
+            .createChild(
+                ManagedInterfaces.ListOf(Effect1::class),
+                proxyEffectFactory = RuntimeProxyEffectFactory()
+            )
+            .createChild(
+                ManagedInterfaces.ListOf(Effect2::class),
+            )
+        val proxy1 = childScope.getProxy(Effect1::class)
+        val proxy2 = childScope.getProxy(Effect2::class)
+        val combinedEffect = spyk(CombinedEffect())
+        val controller = childScope.getController<CombinedEffect>()
+        controller.start(combinedEffect)
+
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+    }
+
+    @Test
+    fun `class controller of combined effect with missing at least 1 interface fails`() {
+        val childScope = RootEffectScopes.empty
+            .createChild(
+                ManagedInterfaces.ListOf(Effect1::class),
+            )
+        childScope.getProxy(Effect1::class)
+
+        val result = runCatching {
+            childScope.getController<CombinedEffect>()
+        }
+
+        assertTrue(result.exceptionOrNull() is EffectNotFoundException)
+    }
+
+    @Test
+    fun `combined effect with target arg excludes non-listed interfaces`() {
+        val proxy1 = scope.getProxy<TargetEffect1>()
+        val proxy2 = scope.getProxy<TargetEffect2>()
+        val proxy3 = scope.getProxy<NonTargetEffect3>()
+        val combinedEffect = spyk(CombinedEffectWithTarget())
+        val controller = scope.getController<CombinedEffectWithTarget>()
+        controller.start(combinedEffect)
+
+        proxy1.run1("input")
+        proxy2.run2("input")
+        proxy3.run3("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+        verify(exactly = 0) {
+            combinedEffect.run3(any())
         }
     }
 

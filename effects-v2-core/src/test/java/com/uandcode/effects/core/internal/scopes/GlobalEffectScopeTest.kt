@@ -34,7 +34,7 @@ class GlobalEffectScopeTest {
         val expectedTargetInterfaces = setOf(Effect::class)
         every { proxyEffectStore.allTargetInterfaces } returns expectedTargetInterfaces
         every { proxyEffectStore.createProxy(Effect::class, any()) } returns ProxyEffectImpl()
-        every { proxyEffectStore.findTargetInterface(Effect::class) } returns Effect::class
+        every { proxyEffectStore.findTargetInterfaces(Effect::class) } returns setOf(Effect::class)
 
         val globalScope = buildGlobalEffectScope()
 

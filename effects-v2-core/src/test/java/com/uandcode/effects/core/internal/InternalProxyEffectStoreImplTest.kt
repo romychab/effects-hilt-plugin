@@ -44,20 +44,20 @@ class InternalProxyEffectStoreImplTest {
     }
 
     @Test
-    fun `test registerTarget and findTargetInterface`() {
+    fun `test registerTarget and findTargetInterfaces`() {
         proxyEffectStore.registerTarget(EffectImpl::class, Effect::class)
 
-        val targetInterface1 = proxyEffectStore.findTargetInterface(EffectImpl::class)
-        val targetInterface2 = proxyEffectStore.findTargetInterface(Effect::class)
+        val targetInterfaces1 = proxyEffectStore.findTargetInterfaces(EffectImpl::class)
+        val targetInterfaces2 = proxyEffectStore.findTargetInterfaces(Effect::class)
 
-        assertEquals(Effect::class, targetInterface1)
-        assertEquals(Effect::class, targetInterface2)
+        assertEquals(setOf(Effect::class), targetInterfaces1)
+        assertEquals(setOf(Effect::class), targetInterfaces2)
     }
 
     @Test
-    fun `test findTargetInterface throws EffectNotFoundException`() {
+    fun `test findTargetInterfaces throws EffectNotFoundException`() {
         assertThrows(EffectNotFoundException::class.java) {
-            proxyEffectStore.findTargetInterface(EffectImpl::class)
+            proxyEffectStore.findTargetInterfaces(EffectImpl::class)
         }
     }
 
@@ -70,10 +70,29 @@ class InternalProxyEffectStoreImplTest {
         assertEquals(setOf(Effect::class), allTargets)
     }
 
+    @Test
+    fun `findTargetInterfaces for combined class returns all interfaces`() {
+        proxyEffectStore.registerTarget(CombinedEffect::class, Effect1::class)
+        proxyEffectStore.registerTarget(CombinedEffect::class, Effect2::class)
+
+        val interfaces = proxyEffectStore.findTargetInterfaces(CombinedEffect::class)
+        assertEquals(setOf(Effect1::class, Effect2::class), interfaces)
+
+        val effect1 = proxyEffectStore.findTargetInterfaces(Effect1::class)
+        assertEquals(setOf(Effect1::class), effect1)
+
+        val effect2 = proxyEffectStore.findTargetInterfaces(Effect2::class)
+        assertEquals(setOf(Effect2::class), effect2)
+    }
+
     private interface Effect
     private class EffectImpl : Effect
     private class ProxyEffectImpl(
         val commandExecutor: CommandExecutor<Effect>,
     ) : Effect
+
+    private interface Effect1
+    private interface Effect2
+    private class CombinedEffect : Effect1, Effect2
 
 }

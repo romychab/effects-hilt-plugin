@@ -1,12 +1,17 @@
 package com.uandcode.effects.core.lifecycle
 
 import com.uandcode.effects.core.EffectScope
-import com.uandcode.effects.core.EffectInterfaces
+import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.core.RootEffectScopes
+import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.getProxy
+import com.uandcode.effects.core.mocks.CombinedEffect
+import com.uandcode.effects.core.mocks.CombinedEffectWithTarget
 import com.uandcode.effects.core.mocks.Effect
 import com.uandcode.effects.core.mocks.Effect.Companion.EMIT_DELAY
 import com.uandcode.effects.core.mocks.Effect.Companion.expectedResult
+import com.uandcode.effects.core.mocks.Effect1
+import com.uandcode.effects.core.mocks.Effect2
 import com.uandcode.effects.core.mocks.EffectImpl
 import com.uandcode.effects.core.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.mocks.EffectWithDefaultTargetImpl
@@ -16,6 +21,9 @@ import com.uandcode.effects.core.mocks.EffectWithOverriddenClose
 import com.uandcode.effects.core.mocks.EffectWithOverriddenCloseImpl
 import com.uandcode.effects.core.mocks.EffectWithTarget
 import com.uandcode.effects.core.mocks.EffectWithTargetImpl
+import com.uandcode.effects.core.mocks.NonTargetEffect3
+import com.uandcode.effects.core.mocks.TargetEffect1
+import com.uandcode.effects.core.mocks.TargetEffect2
 import com.uandcode.flowtest.CollectStatus
 import com.uandcode.flowtest.JobStatus
 import com.uandcode.flowtest.runFlowTest
@@ -27,6 +35,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -38,7 +47,7 @@ class CoreLifecycleIntegrationTest {
     @Before
     fun setUp() {
         scope = RootEffectScopes.empty.createChild(
-            EffectInterfaces.Everything,
+            ManagedInterfaces.Everything,
         )
     }
 
@@ -573,6 +582,149 @@ class CoreLifecycleIntegrationTest {
             effectImpl.run(any())
             effectImpl.close()
         }
+    }
+
+    @Test
+    fun `lazyEffect of combined effect can work with any interface`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+        val lifecycleOwner = TestLifecycleOwner()
+        val effect1 by lifecycleOwner.lazyEffect<Effect1>(scope) { combinedEffect }
+        val effect2 by lifecycleOwner.lazyEffect<Effect2>(scope) { combinedEffect }
+        lifecycleOwner.start()
+
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+        assertSame(combinedEffect, effect1)
+        assertSame(combinedEffect, effect2)
+    }
+
+    @Test
+    fun `lazyEffect of interface of combined effect connects only to own interface`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val combinedEffect = spyk(CombinedEffect())
+        val lifecycleOwner1 = TestLifecycleOwner()
+        val lifecycleOwner2 = TestLifecycleOwner()
+        lifecycleOwner1.lazyEffect<Effect1>(scope) { combinedEffect }
+        lifecycleOwner2.lazyEffect<Effect2>(scope) { combinedEffect }
+
+        lifecycleOwner2.start()
+        proxy1.run1("input")
+        verify(exactly = 0) {
+            combinedEffect.run1(any())
+        }
+
+        lifecycleOwner1.start()
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+        }
+    }
+
+    @Test
+    fun `lazyEffect of combined effect connects to all target interfaces`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+        val lifecycle = TestLifecycleOwner()
+        lifecycle.lazyEffect<CombinedEffect>(scope) { combinedEffect }
+
+        lifecycle.start()
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+    }
+
+    @Test
+    fun `lazyEffect of combined effect disconnects from all target interfaces`() {
+        val proxy1 = scope.getProxy<Effect1>()
+        val proxy2 = scope.getProxy<Effect2>()
+        val combinedEffect = spyk(CombinedEffect())
+        val lifecycleOwner = TestLifecycleOwner()
+        lifecycleOwner.lazyEffect { CombinedEffect() }
+
+        lifecycleOwner.start()
+        lifecycleOwner.stop()
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 0) {
+            combinedEffect.run1(any())
+            combinedEffect.run2(any())
+        }
+    }
+
+    @Test
+    fun `lazyEffect of combined effect gathers interfaces from scope hierarchy`() {
+        val childScope = RootEffectScopes.empty
+            .createChild(
+                ManagedInterfaces.ListOf(Effect1::class),
+            )
+            .createChild(
+                ManagedInterfaces.ListOf(Effect2::class),
+            )
+        val proxy1 = childScope.getProxy(Effect1::class)
+        val proxy2 = childScope.getProxy(Effect2::class)
+        val combinedEffect = spyk(CombinedEffect())
+        val lifecycleOwner = TestLifecycleOwner()
+        lifecycleOwner.lazyEffect(childScope) { combinedEffect }
+        lifecycleOwner.start()
+
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+    }
+
+    @Test
+    fun `lazyEffect of combined effect with missing at least 1 interface fails`() {
+        val childScope = RootEffectScopes.empty
+            .createChild(
+                ManagedInterfaces.ListOf(Effect1::class),
+            )
+        childScope.getProxy(Effect1::class)
+        val lifecycleOwner = TestLifecycleOwner()
+
+        val result = runCatching {
+            lifecycleOwner.lazyEffect(childScope) { CombinedEffect() }
+        }
+
+        assertTrue(result.exceptionOrNull() is EffectNotFoundException)
+    }
+
+    @Test
+    fun `lazyEffect for combined effect with target arg excludes non-listed interfaces`() {
+        val proxy1 = scope.getProxy<TargetEffect1>()
+        val proxy2 = scope.getProxy<TargetEffect2>()
+        val combinedEffect = spyk(CombinedEffectWithTarget())
+        val lifecycleOwner = TestLifecycleOwner()
+        lifecycleOwner.lazyEffect(scope) { combinedEffect }
+        lifecycleOwner.start()
+
+        proxy1.run1("input")
+        proxy2.run2("input")
+
+        verify(exactly = 1) {
+            combinedEffect.run1("input")
+            combinedEffect.run2("input")
+        }
+        verify(exactly = 0) {
+            combinedEffect.run3(any())
+        }
+        val result = runCatching { scope.getProxy<NonTargetEffect3>() }
+        assertTrue(result.exceptionOrNull() is EffectNotFoundException)
     }
 
     private inline fun <reified T : Any> getProxy(): T {

@@ -12,7 +12,10 @@ import org.junit.Test
 class EffectControllerTest {
 
     @RelaxedMockK
-    private lateinit var observableResourceStore: ObservableResourceStore<String>
+    private lateinit var observableResourceStore1: ObservableResourceStore<String>
+
+    @RelaxedMockK
+    private lateinit var observableResourceStore2: ObservableResourceStore<String>
 
     private lateinit var effectController: EffectController<String>
 
@@ -23,7 +26,7 @@ class EffectControllerTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        effectController = EffectControllerImpl(observableResourceStore)
+        effectController = EffectControllerImpl(listOf(observableResourceStore1, observableResourceStore2))
     }
 
     @Test
@@ -33,7 +36,8 @@ class EffectControllerTest {
         assertEquals(effect, effectController.effectImplementation)
 
         verify(exactly = 1) {
-            observableResourceStore.attachResource(effect)
+            observableResourceStore1.attachResource(effect)
+            observableResourceStore2.attachResource(effect)
         }
     }
 
@@ -44,10 +48,12 @@ class EffectControllerTest {
 
         assertEquals(effect1, effectController.effectImplementation)
         verify(exactly = 1) {
-            observableResourceStore.attachResource(effect1)
+            observableResourceStore1.attachResource(effect1)
+            observableResourceStore2.attachResource(effect1)
         }
         verify(exactly = 0) {
-            observableResourceStore.attachResource(effect2)
+            observableResourceStore1.attachResource(effect2)
+            observableResourceStore2.attachResource(effect2)
         }
     }
 
@@ -59,7 +65,8 @@ class EffectControllerTest {
 
         assertNull(effectController.effectImplementation)
         verify(exactly = 1) {
-            observableResourceStore.detachResource(effect)
+            observableResourceStore1.detachResource(effect)
+            observableResourceStore2.detachResource(effect)
         }
     }
 
@@ -69,7 +76,8 @@ class EffectControllerTest {
 
         assertNull(effectController.effectImplementation)
         verify(exactly = 0) {
-            observableResourceStore.detachResource(any())
+            observableResourceStore1.detachResource(any())
+            observableResourceStore2.detachResource(any())
         }
     }
 

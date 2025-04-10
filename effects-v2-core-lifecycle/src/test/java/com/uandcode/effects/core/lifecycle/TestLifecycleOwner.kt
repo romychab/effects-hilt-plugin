@@ -2,6 +2,7 @@ package com.uandcode.effects.core.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -34,7 +35,7 @@ class TestLifecycleOwner : Lifecycle(), LifecycleOwner {
         val indexOfNewState = stateChain.indexOf(newState)
         _previousState = _currentState
         _currentState = newState
-        val notifier: (DefaultLifecycleObserver) -> Unit = {
+        val notifier: (LifecycleObserver) -> Unit = {
             if (indexOfOldState < indexOfNewState) {
                 for (i in indexOfOldState + 1..indexOfNewState) {
                     notifyForward(stateChain[i], it)
@@ -45,26 +46,42 @@ class TestLifecycleOwner : Lifecycle(), LifecycleOwner {
                 }
             }
         }
-        observers
-            .filterIsInstance<DefaultLifecycleObserver>()
-            .forEach(notifier)
+        observers.forEach(notifier)
     }
 
-    private fun notifyForward(state: State, observer: DefaultLifecycleObserver) {
-        when (state) {
-            State.CREATED -> observer.onCreate(this)
-            State.STARTED -> observer.onStart(this)
-            State.RESUMED -> observer.onResume(this)
-            else -> {}
+    private fun notifyForward(state: State, observer: LifecycleObserver) {
+        if (observer is DefaultLifecycleObserver) {
+            when (state) {
+                State.CREATED -> observer.onCreate(this)
+                State.STARTED -> observer.onStart(this)
+                State.RESUMED -> observer.onResume(this)
+                else -> {}
+            }
+        } else if (observer is LifecycleEventObserver) {
+            when (state) {
+                State.CREATED -> observer.onStateChanged(this, Lifecycle.Event.ON_CREATE)
+                State.STARTED -> observer.onStateChanged(this, Lifecycle.Event.ON_START)
+                State.RESUMED -> observer.onStateChanged(this, Lifecycle.Event.ON_RESUME)
+                else -> {}
+            }
         }
     }
 
-    private fun notifyBackward(state: State, observer: DefaultLifecycleObserver) {
-        when (state) {
-            State.STARTED -> observer.onPause(this)
-            State.CREATED -> observer.onStop(this)
-            State.INITIALIZED -> observer.onDestroy(this)
-            else -> {}
+    private fun notifyBackward(state: State, observer: LifecycleObserver) {
+        if (observer is DefaultLifecycleObserver) {
+            when (state) {
+                State.STARTED -> observer.onPause(this)
+                State.CREATED -> observer.onStop(this)
+                State.INITIALIZED -> observer.onDestroy(this)
+                else -> {}
+            }
+        } else if (observer is LifecycleEventObserver) {
+            when (state) {
+                State.STARTED -> observer.onStateChanged(this, Lifecycle.Event.ON_PAUSE)
+                State.CREATED -> observer.onStateChanged(this, Lifecycle.Event.ON_STOP)
+                State.INITIALIZED -> observer.onStateChanged(this, Lifecycle.Event.ON_DESTROY)
+                else -> {}
+            }
         }
     }
 

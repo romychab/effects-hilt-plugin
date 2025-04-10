@@ -7,7 +7,7 @@ public interface EffectWithTarget {
 }
 
 @EffectClass(
-    target = EffectWithTarget::class,
+    targets = [EffectWithTarget::class],
 )
 public class EffectWithTargetImpl : Runnable, EffectWithTarget {
     override fun run(): Unit = Unit
