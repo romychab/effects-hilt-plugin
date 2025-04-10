@@ -29,6 +29,7 @@ components with a shorter lifecycle without memory leaks.
     3. [Flow Call](#three-flow-call)
 - [Manual Clean-up](#manual-clean-up)
 - [Multiple Effect Handlers](#multiple-effect-handlers)
+- [Multiple Target Interfaces](#multiple-target-interfaces)
 - [Multi-Module Projects](#multi-module-projects)
 - [Limitations](#limitations)
 
@@ -79,7 +80,7 @@ implementation("com.elveum:effects-core:1.0.3")
   }
   ```
   
-## Primitive example
+## Primitive Example
 
 The main idea of this plugin is to simplify one-off events by moving them to a separate
 interface. No more `SharedFlow`, `Channel`, additional event properties in state classes representing events, etc.
@@ -225,7 +226,7 @@ Let's imagine you want to:
 
 Check out an example app in this repository for more details ;)
 
-## Default lifecycle
+## Default Lifecycle
 
 By default, all effect interfaces are installed to a Hilt `ActivityRetainedComponent`.
 This allows you injecting effect interfaces directly to a view-model constructor.
@@ -265,7 +266,7 @@ Let's take a brief look at different ways of connecting event handlers:
    effectController.stop()
    ```
 
-## Detailed explanation
+## Detailed Explanation
 
 The generalized mechanism of this plugin works as follows:
 the plugin allows components with a longer lifecycle to interact with
@@ -604,7 +605,7 @@ STOPPED state. They will wait until the Activity goes back to the STARTED state.
 At the same time, from the effect implementation’s perspective, the Flow will be
 automatically cancelled after `onStop()` is called, and then restarted again after `onStart()`.
 
-## Manual Clean-up 
+## Manual Clean-Up 
 
 All Suspend-, and Flow- calls are automatically released when you cancel a `CoroutineScope` which
 has been used for the execution of that calls. In addition, Unit calls are released when a ViewModel 
@@ -640,6 +641,9 @@ However, this behavior does not apply to simple Unit calls if you inject an inte
 into a class other than a ViewModel. That's why sometimes you should manually cancel them to avoid unexpected executions
 after you close a screen. For this purpose, an optional `cleanUp()` method is introduced:
 
+> ⚠️ The API described below is subject to change in future releases: `cleanUp` will be replaced by a build-in `AutoCloseable` interface
+> with `override fun close() = Unit` method):
+
 ```kotlin
 interface MyEffects {
     fun executeAction(action: Action)
@@ -665,21 +669,7 @@ class MyActivity : ComponentActivity() {
 }
 ```
 
-Also, you can set your own name for the cleanUp function if needed:
-
-```kotlin
-interface MyEffects {
-    fun executeAction(message: String)
-    fun destroy() = Unit
-}
-
-@HiltEffect(
-    cleanUpMethodName = "destroy"
-)
-class MyEffectsImpl : MyEffects { ... }
-```
-
-## Multiple effect handlers
+## Multiple Effect Handlers
 
 Up until now, we assumed that interfaces + implementations have a one-to-one relationship.
 That is, we have a ViewModel that calls a method on the interface, and this call is
@@ -716,7 +706,33 @@ implementations:
    rethrow that exception. If all Flows are finite and complete their
    work, the resulting Flow will also complete.
 
-## Multi-module projects
+## Multiple Target Interfaces
+
+Starting from version 1.0.3, you can implement as many target interfaces as you like
+in a single class:
+
+```kotlin
+// Both CatListRouter and CatDetailsRouter can be injected into a ViewModel (proxy implementation will be
+// generated for both of them)
+@HiltEffect
+class CombinedRouter : CatListRouter, CatDetailsRouter {
+    // ...
+}
+```
+
+Additionally, you can explicitly specify the list of target interfaces in the annotation:
+
+```kotlin
+// Since the Runnable interface is not included in the 'targets' argument, it will be ignored:
+@HiltEffect(
+    targets = [CatListRouter::class, CatDetailsRouter::class]
+)
+class CombinedRouter : CatListRouter, CatDetailsRouter, Runnable {
+    // ...
+}
+```
+
+## Multi-Module Projects
 
 Right now the plugin can be easily used in multi-module Android projects:
 
