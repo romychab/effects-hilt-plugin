@@ -57,7 +57,9 @@ implementation("com.elveum:effects-compose:1.0.3")
 implementation("com.elveum:effects-core:1.0.3")
 ```
 
-## Installation for Multi-Module Projects
+Check out [an example of single-module app](app-examples/app-1-singlemodule) for more details.
+
+## Installation for multi-module projects
 
 - Dependencies for your application module remain the same:
   
@@ -68,10 +70,12 @@ implementation("com.elveum:effects-core:1.0.3")
   ```
 
 - Additional configuration is required for your android library modules, if you
-  plan to use `@HiltEffect` annotation not only in the application module but also in the library modules:
+  plan to use `@HiltEffect` annotation not only in the application module but 
+  also in the library modules:
 
-  1. Make sure KSP and Hilt are added and configured in the library module.
-  2. Add the following additional KSP option:
+  - Make sure KSP and Hilt are added and configured in the library module.
+  - Add the following additional KSP option (⚠️ only for library modules, 
+    NOT for the application module):
 
   ```kotlin
   // my-android-lib/build.gradle.kts:
@@ -80,7 +84,9 @@ implementation("com.elveum:effects-core:1.0.3")
   }
   ```
   
-## Primitive Example
+  Check out [an example of multi-module app](app-examples/app-2-multimodule) for more details.
+
+## Primitive example
 
 The main idea of this plugin is to simplify one-off events by moving them to a separate
 interface. No more `SharedFlow`, `Channel`, additional event properties in state classes representing events, etc.

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_cat_title">Delete</string>
+    <string name="delete_cat_message">Are you sure you want to delete the cat?</string>
+    <string name="cat_has_been_deleted">Cat has been deleted</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>
