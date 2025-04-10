@@ -20,7 +20,7 @@ components with a shorter lifecycle without memory leaks.
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Installation for multi-module projects](#installation-for-multi-module-projects)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
 - [Primitive Example](#primitive-example)
 - [Default Lifecycle](#default-lifecycle)
 - [Detailed Explanation](#detailed-explanation)
@@ -29,6 +29,7 @@ components with a shorter lifecycle without memory leaks.
     3. [Flow Call](#three-flow-call)
 - [Manual Clean-up](#manual-clean-up)
 - [Multiple Effect Handlers](#multiple-effect-handlers)
+- [Multiple Target Interfaces](#multiple-target-interfaces)
 - [Multi-Module Projects](#multi-module-projects)
 - [Limitations](#limitations)
 
@@ -69,10 +70,12 @@ Check out [an example of single-module app](app-examples/app-1-singlemodule) for
   ```
 
 - Additional configuration is required for your android library modules, if you
-  plan to use `@HiltEffect` annotation not only in the application module but also in the library modules:
+  plan to use `@HiltEffect` annotation not only in the application module but 
+  also in the library modules:
 
-  1. Make sure KSP and Hilt are added and configured in the library module.
-  2. Add the following additional KSP option:
+  - Make sure KSP and Hilt are added and configured in the library module.
+  - Add the following additional KSP option (:warning: only for library modules, 
+    NOT for the application module):
 
   ```kotlin
   // my-android-lib/build.gradle.kts:
@@ -229,7 +232,7 @@ Let's imagine you want to:
 
 Check out an example app in this repository for more details ;)
 
-## Default lifecycle
+## Default Lifecycle
 
 By default, all effect interfaces are installed to a Hilt `ActivityRetainedComponent`.
 This allows you injecting effect interfaces directly to a view-model constructor.
@@ -269,7 +272,7 @@ Let's take a brief look at different ways of connecting event handlers:
    effectController.stop()
    ```
 
-## Detailed explanation
+## Detailed Explanation
 
 The generalized mechanism of this plugin works as follows:
 the plugin allows components with a longer lifecycle to interact with
@@ -608,7 +611,7 @@ STOPPED state. They will wait until the Activity goes back to the STARTED state.
 At the same time, from the effect implementation’s perspective, the Flow will be
 automatically cancelled after `onStop()` is called, and then restarted again after `onStart()`.
 
-## Manual Clean-up 
+## Manual Clean-Up 
 
 All Suspend-, and Flow- calls are automatically released when you cancel a `CoroutineScope` which
 has been used for the execution of that calls. In addition, Unit calls are released when a ViewModel 
@@ -644,6 +647,9 @@ However, this behavior does not apply to simple Unit calls if you inject an inte
 into a class other than a ViewModel. That's why sometimes you should manually cancel them to avoid unexpected executions
 after you close a screen. For this purpose, an optional `cleanUp()` method is introduced:
 
+> ⚠️ The API described below is subject to change in future releases: `cleanUp` will be replaced by a build-in `AutoCloseable` interface
+> with `override fun close() = Unit` method):
+
 ```kotlin
 interface MyEffects {
     fun executeAction(action: Action)
@@ -669,21 +675,7 @@ class MyActivity : ComponentActivity() {
 }
 ```
 
-Also, you can set your own name for the cleanUp function if needed:
-
-```kotlin
-interface MyEffects {
-    fun executeAction(message: String)
-    fun destroy() = Unit
-}
-
-@HiltEffect(
-    cleanUpMethodName = "destroy"
-)
-class MyEffectsImpl : MyEffects { ... }
-```
-
-## Multiple effect handlers
+## Multiple Effect Handlers
 
 Up until now, we assumed that interfaces + implementations have a one-to-one relationship.
 That is, we have a ViewModel that calls a method on the interface, and this call is
@@ -720,19 +712,58 @@ implementations:
    rethrow that exception. If all Flows are finite and complete their
    work, the resulting Flow will also complete.
 
-## Multi-module projects
+## Multiple Target Interfaces
+
+Starting from version 1.0.3, you can implement as many target interfaces as you like
+in a single class:
+
+```kotlin
+// Both CatListRouter and CatDetailsRouter can be injected into a ViewModel (proxy implementation will be
+// generated for both of them)
+@HiltEffect
+class CombinedRouter : CatListRouter, CatDetailsRouter {
+    // ...
+}
+```
+
+Additionally, you can explicitly specify the list of target interfaces in the annotation:
+
+```kotlin
+// Since the Runnable interface is not included in the 'targets' argument, it will be ignored:
+@HiltEffect(
+    targets = [CatListRouter::class, CatDetailsRouter::class]
+)
+class CombinedRouter : CatListRouter, CatDetailsRouter, Runnable {
+    // ...
+}
+```
+
+## Multi-Module Projects
 
 Right now the plugin can be easily used in multi-module Android projects:
 
 - Target interfaces can be located either in other modules or even in pre-built binaries, because
   `@HiltEffect` annotation is applied not to target interfaces, but to their implementation classes.
-- Each module containing classes annotated with `@HiltEffect` annotation should add the same dependencies
-  as your application module (along with KSP and Hilt):
+- Each library module containing classes annotated with `@HiltEffect` annotation should add the same dependencies
+  as your application module (along with KSP and Hilt) + each library module should specify an additional KSP option:
 
   ```kotlin
-  ksp("com.elveum:effects-processor:$lib_version")
-  implementation("com.elveum:effects-core:$lib_version")
-  // plus Hilt and KSP dependencies/plugins
+  plugins {
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+  }
+  
+  ksp { // only for libraries:
+      arg("effects.processor.metadata", "generate")
+  }
+
+  dependencies {
+      ksp("com.elveum:effects-processor:$lib_version")
+      implementation("com.elveum:effects-core:$lib_version")
+      // plus Hilt dependencies
+      implementation("com.google.dagger:hilt-android:$hilt_version")
+      ksp("com.google.dagger:hilt-android-compiler:$hilt_version")
+  }
   ```  
 
 - The main application module should have an Application class annotated with 
