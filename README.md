@@ -56,6 +56,8 @@ implementation("com.elveum:effects-compose:1.0.3")
 implementation("com.elveum:effects-core:1.0.3")
 ```
 
+Check out [an example of single-module app](app-examples/app-1-singlemodule) for more details.
+
 ## Installation for multi-module projects
 
 - Dependencies for your application module remain the same:
@@ -79,6 +81,8 @@ implementation("com.elveum:effects-core:1.0.3")
   }
   ```
   
+  Check out [an example of multi-module app](app-examples/app-2-multimodule) for more details.
+
 ## Primitive example
 
 The main idea of this plugin is to simplify one-off events by moving them to a separate
