@@ -74,7 +74,7 @@ Check out [an example of single-module app](app-examples/app-1-singlemodule) for
   also in the library modules:
 
   - Make sure KSP and Hilt are added and configured in the library module.
-  - Add the following additional KSP option (:warning: only for library modules, 
+  - Add the following additional KSP option (⚠️ only for library modules, 
     NOT for the application module):
 
   ```kotlin
