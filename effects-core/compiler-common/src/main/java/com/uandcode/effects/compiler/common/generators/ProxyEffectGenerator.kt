@@ -43,6 +43,7 @@ internal class ProxyEffectGenerator(
 
         val typeSpecBuilder = TypeSpec.classBuilder(proxyClassName)
             .addConstructor(interfaceClassName)
+            .addSuperinterface(Const.EffectProxyMarker)
             .implementInterface(
                 interfaceDeclaration = interfaceDeclaration,
                 filter = { function -> !isCloseMethod(function) },

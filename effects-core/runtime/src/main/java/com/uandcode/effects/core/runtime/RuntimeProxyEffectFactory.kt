@@ -1,6 +1,7 @@
 package com.uandcode.effects.core.runtime
 
 import com.uandcode.effects.core.CommandExecutor
+import com.uandcode.effects.core.EffectProxyMarker
 import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
 import com.uandcode.effects.core.runtime.proxy.ProxyMethodInterceptor
@@ -35,7 +36,7 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         val javaInterface = clazz.java
         val proxy = Proxy.newProxyInstance(
             javaInterface.classLoader,
-            arrayOf(javaInterface, AutoCloseable::class.java),
+            arrayOf(javaInterface, AutoCloseable::class.java, EffectProxyMarker::class.java),
             ProxyMethodInterceptor(commandExecutor)
         )
         return proxy as T

@@ -10,6 +10,7 @@ internal object Const {
 
     val TargetArrayArgument = "targets"
     val AutoCloseableClassName = AutoCloseable::class.asClassName()
+    val EffectProxyMarker = ClassName("com.uandcode.effects.core", "EffectProxyMarker")
 
     val MetadataInterfaceClassNames: String = "interfaceClassNames"
     val MetadataImplementationClassName: String = "implementationClassName"
