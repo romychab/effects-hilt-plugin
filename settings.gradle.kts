@@ -32,12 +32,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Effects"
 
-// effects plugin
-include(":effects-annotations")
-include(":effects-processor")
-include(":effects-core")
-include(":effects-compose")
-
 // example app (single-module)
 include(":app-examples:app-1-singlemodule")
 
@@ -51,10 +45,14 @@ include(":app-examples:app-2-multimodule:effect-impl-dialogs-compose")
 include(":app-examples:app-2-multimodule:effect-impl-toasts")
 include(":app-examples:app-2-multimodule:effect-interfaces")
 
-include(":effects-v2-stub-api")
-include(":effects-v2-stub")
-include(":effects-v2-core")
-include(":effects-v2-core-annotations")
-include(":effects-v2-core-lifecycle")
-include(":effects-v2-core-runtime")
-include(":effects-v2-core-testmocks")
+// effects core library
+include(":effects-core:kspcontract")
+include(":effects-core:kspcontract-api")
+include(":effects-core:essentials")
+include(":effects-core:compiler-common")
+include(":effects-core:compiler")
+include(":effects-core:annotations")
+include(":effects-core:lifecycle")
+include(":effects-core:compose")
+include(":effects-core:runtime")
+include(":effects-core:testmocks")
