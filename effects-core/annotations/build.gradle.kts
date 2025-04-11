@@ -4,7 +4,6 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
     artifactId = "effects2-core-annotations"
     description = "Effects Core Library - Annotations."
 }

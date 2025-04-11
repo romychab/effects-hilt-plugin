@@ -15,6 +15,7 @@ interface CustomMavenPublishExtension {
 }
 
 private val customMavenPublishExtension = project.extensions.create<CustomMavenPublishExtension>("publishConfig")
+customMavenPublishExtension.groupId.convention("com.uandcode")
 
 val isAndroidLib = project.plugins.findPlugin("com.android.library") != null
 if (!isAndroidLib) {

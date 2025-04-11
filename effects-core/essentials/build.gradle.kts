@@ -5,8 +5,7 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
-    artifactId = "effects2-core"
+    artifactId = "effects2-core-essentials"
     description = "Effects Core Library - Main engine which makes effects work."
 }
 

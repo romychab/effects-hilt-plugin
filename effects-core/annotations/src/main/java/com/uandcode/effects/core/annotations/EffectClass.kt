@@ -8,15 +8,13 @@ import kotlin.reflect.KClass
  * Usually you don't need to use this annotation directly, check available plugins
  * for your favorite DI framework instead.
  *
- * This annotation generates an alternative proxy class which implements the
- * same target interface. The generated proxy can be injected into objects
- * that have longer lifecycle than your implementation's lifecycle.
+ * This annotation generates proxy classes for all interfaces listed
+ * in the [targets] parameter. If the parameter is not specified, all
+ * interfaces implemented by the class are considered as target interfaces.
  *
  * Requirements for the annotated class:
  * - it should be a top-level class
  * - it should implement at least one interface
- * - if the class implements more than one interface, a [target] argument
- *   must be specified
  *
  * Requirements for the target interface implemented by the annotated class:
  * - all non-suspend methods should not return any type (except Flow)
@@ -42,18 +40,14 @@ import kotlin.reflect.KClass
  *     }
  * }
  *
- * // 3. Do not forget to annotate your main application class with @EffectApplication:
- * @EffectApplication
- * class MyApp : Application
- *
- * // 5. Use RootEffectScopes.global.get() for retrieving a generated instance
+ * // 3. Use RootEffectScopes.global.get() for retrieving a generated instance
  * //    of MyEffects interface in a object with lifecycle longer than the lifecycle
  * //    or your implementation class (for example, in a ViewModel):
  * class MyViewModel(
  *     val myEffects: MyEffects = RootEffectScopes.global.get()
  * ) : ViewModel()
  *
- * // 6. Use lazyEffect delegate in a object with shorter lifecycle:
+ * // 4. Use lazyEffect delegate in a object with shorter lifecycle:
  * class MyActivity : AppCompatActivity() {
  *
  *     private val myEffectsImpl by lazyEffect(RootEffectScopes.global) {

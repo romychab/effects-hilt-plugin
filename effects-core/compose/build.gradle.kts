@@ -5,7 +5,6 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
     artifactId = "effects2-core-compose"
     description = "Effects Core Library - Extensions for Jetpack Compose."
 }

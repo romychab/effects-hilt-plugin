@@ -4,7 +4,6 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
     artifactId = "effects2-core-runtime"
     description = "Effects Core Library - Runtime version and an alternative to compile-time KSP annotation processor."
 }

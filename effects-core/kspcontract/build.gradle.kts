@@ -4,8 +4,7 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
-    artifactId = "effects2-stub"
+    artifactId = "effects2-core-kspcontract"
     description = "Effects Core Library - Internal KSP contract for accessing auto-generated code"
 }
 

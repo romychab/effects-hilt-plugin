@@ -12,7 +12,6 @@ android {
     compileSdk = catalogs.targetSdk
     defaultConfig {
         minSdk = catalogs.minSdk
-        targetSdk = catalogs.targetSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }

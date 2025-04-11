@@ -4,8 +4,7 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
-    artifactId = "effects2-compiler-common"
+    artifactId = "effects2-core-compiler-common"
     description = "Effects Core Library - Reusable common classes for implementing KSP annotation processors."
 }
 

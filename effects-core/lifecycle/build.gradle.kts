@@ -4,7 +4,6 @@ plugins {
 }
 
 publishConfig {
-    groupId = "com.uandcode"
     artifactId = "effects2-core-lifecycle"
     description = "Effects Core Library - Extensions for LifecycleOwner"
 }
