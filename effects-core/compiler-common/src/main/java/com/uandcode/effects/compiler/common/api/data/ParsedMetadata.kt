@@ -44,7 +44,9 @@ public fun List<Dependencies>.aggregate(): Dependencies {
     if (isAllFiles) return Dependencies.ALL_FILES
 
     val isAggregating = any { it.aggregating }
-    val gatheredFiles = map { it.originatingFiles }.flatten()
+    val gatheredFiles = map { it.originatingFiles }
+        .flatten()
+        .distinct()
 
     return Dependencies(
         isAggregating, *gatheredFiles.toTypedArray()

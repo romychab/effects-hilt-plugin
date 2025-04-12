@@ -71,7 +71,7 @@ internal class InternalSymbolProcessor(
         val generatedProxies = generateProxies(validatedMetadata, autoCloseableDeclaration)
         if (!isMetadataFromOtherModulesProcessed || metadataFromThisModule.isNotEmpty()) {
             proxyEffectStoreGenerator.generate(effectExtension, validatedMetadata, generatedProxies)
-            effectExtension.generateExtensions(validatedMetadata, writer)
+            effectExtension.generateExtensions(validatedMetadata, generatedProxies, writer)
         }
         isMetadataFromOtherModulesProcessed = true
     }

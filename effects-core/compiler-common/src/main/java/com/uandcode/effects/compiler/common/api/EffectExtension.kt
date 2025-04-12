@@ -2,6 +2,7 @@ package com.uandcode.effects.compiler.common.api
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.ClassName
+import com.uandcode.effects.compiler.common.api.data.GeneratedProxy
 import com.uandcode.effects.compiler.common.api.data.ParsedEffect
 import com.uandcode.effects.compiler.common.api.data.ParsedMetadata
 import com.uandcode.effects.compiler.common.api.data.GroupedMetadata
@@ -124,6 +125,7 @@ public interface EffectExtension {
      */
     public fun generateExtensions(
         groupedMetadata: GroupedMetadata,
+        generatedProxies: List<GeneratedProxy>,
         writer: KspClassWriter,
     )
 

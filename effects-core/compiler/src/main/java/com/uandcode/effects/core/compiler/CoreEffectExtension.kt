@@ -6,6 +6,7 @@ import com.squareup.kotlinpoet.asClassName
 import com.uandcode.effects.compiler.common.api.AbstractMetadataGenerator
 import com.uandcode.effects.compiler.common.api.EffectExtension
 import com.uandcode.effects.compiler.common.api.KspClassWriter
+import com.uandcode.effects.compiler.common.api.data.GeneratedProxy
 import com.uandcode.effects.compiler.common.api.data.GroupedMetadata
 import com.uandcode.effects.compiler.common.api.data.ParsedEffect
 import com.uandcode.effects.compiler.common.api.data.ParsedMetadata
@@ -56,6 +57,7 @@ internal object CoreEffectExtension : EffectExtension {
 
     override fun generateExtensions(
         groupedMetadata: GroupedMetadata,
+        generatedProxies: List<GeneratedProxy>,
         writer: KspClassWriter,
     ) = Unit
 

@@ -9,7 +9,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
-import com.uandcode.effects.compiler.common.exceptions.InvalidTargetArgumentException
+import com.uandcode.effects.compiler.common.exceptions.InvalidAnnotationArgumentException
 
 /**
  * A wrapper for [KSAnnotation] that provides additional functionality,
@@ -66,16 +66,16 @@ public data class KSAnnotationWrapper(
     private fun KSAnnotationWrapper.findClassDeclaration(argumentName: String): KSClassDeclarationWrapper {
         val argument = getArgumentByName(argumentName)
         val argumentValue = argument.value as? KSType
-            ?: throw InvalidTargetArgumentException(this)
+            ?: throw InvalidAnnotationArgumentException(this)
         return (argumentValue.declaration as? KSClassDeclaration)
             ?.let(::KSClassDeclarationWrapper)
-            ?: throw InvalidTargetArgumentException(this)
+            ?: throw InvalidAnnotationArgumentException(this)
     }
 
     private fun KSAnnotationWrapper.findClassDeclarations(argumentName: String): List<KSClassDeclarationWrapper> {
         val argument = getArgumentByName(argumentName)
         val argumentValue = argument.value as? List<KSType>
-            ?: throw InvalidTargetArgumentException(this)
+            ?: throw InvalidAnnotationArgumentException(this)
         return argumentValue
             .map { it.declaration }
             .filterIsInstance<KSClassDeclaration>()

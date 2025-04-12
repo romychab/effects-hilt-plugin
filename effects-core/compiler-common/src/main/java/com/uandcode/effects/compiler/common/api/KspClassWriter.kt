@@ -1,6 +1,7 @@
 package com.uandcode.effects.compiler.common.api
 
 import com.google.devtools.ksp.processing.Dependencies
+import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.uandcode.effects.compiler.common.api.data.TemplateBasedClassContent
 
@@ -19,6 +20,7 @@ public interface KspClassWriter {
         typeSpec: TypeSpec,
         dependencies: Dependencies,
         pkg: String,
+        builder: FileSpec.Builder.() -> Unit = {},
     )
 
     /**

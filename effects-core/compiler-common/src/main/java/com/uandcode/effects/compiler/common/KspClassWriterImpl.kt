@@ -12,10 +12,16 @@ internal class KspClassWriterImpl(
     private val codeGenerator: CodeGenerator,
 ) : KspClassWriter {
 
-    override fun write(typeSpec: TypeSpec, dependencies: Dependencies, pkg: String) {
+    override fun write(
+        typeSpec: TypeSpec,
+        dependencies: Dependencies,
+        pkg: String,
+        builder: FileSpec.Builder.() -> Unit,
+    ) {
         val className = checkNotNull(typeSpec.name)
         val file = FileSpec.builder(pkg, className)
             .addType(typeSpec)
+            .apply(builder)
             .build()
 
         file.writeTo(
