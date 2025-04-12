@@ -56,3 +56,9 @@ include(":effects-core:lifecycle")
 include(":effects-core:compose")
 include(":effects-core:runtime")
 include(":effects-core:testmocks")
+
+// effects Hilt library
+include(":effects-hilt:annotations")
+include(":effects-hilt:essentials")
+include(":effects-hilt:compose")
+include(":effects-hilt:compiler")
