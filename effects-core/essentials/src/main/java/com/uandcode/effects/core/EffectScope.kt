@@ -121,3 +121,19 @@ public inline fun <reified T : Any> EffectScope.getProxy(): T {
 public inline fun <reified T : Any> EffectScope.getController(): EffectController<T> {
     return getController(T::class)
 }
+
+/**
+ * Get a new bound effect controller which can attach an effect implementation
+ * created by the [provider] to a target effect interface.
+ *
+ * @param T Type representing either an effect interface or its annotated child class
+ * @param provider Lambda that creates an effect implementation. It is called lazily and only once.
+ * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
+ *                                 it is not a child class of valid interface
+ * @throws InvalidEffectSetupException if the library is not setup correctly
+ */
+public inline fun <reified T : Any> EffectScope.getBoundController(
+    noinline provider: () -> T
+): BoundEffectController<T> {
+    return getController<T>().bind(provider)
+}
