@@ -32,20 +32,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Effects"
 
-// example app (single-module)
-include(":app-examples:app-1-singlemodule")
-
-// example app (multi-module)
-include(":app-examples:app-2-multimodule:app")
-include(":app-examples:app-2-multimodule:compose-components")
-include(":app-examples:app-2-multimodule:feature-list")
-include(":app-examples:app-2-multimodule:feature-details")
-include(":app-examples:app-2-multimodule:effect-impl-dialogs-android")
-include(":app-examples:app-2-multimodule:effect-impl-dialogs-compose")
-include(":app-examples:app-2-multimodule:effect-impl-toasts")
-include(":app-examples:app-2-multimodule:effect-interfaces")
-
-// effects core library
+// Effects Core Library
 include(":effects-core:kspcontract")
 include(":effects-core:kspcontract-api")
 include(":effects-core:essentials")
@@ -57,8 +44,33 @@ include(":effects-core:compose")
 include(":effects-core:runtime")
 include(":effects-core:testmocks")
 
-// effects Hilt library
+// Effects Hilt Library
 include(":effects-hilt:annotations")
 include(":effects-hilt:essentials")
 include(":effects-hilt:compose")
 include(":effects-hilt:compiler")
+
+// Example App (Single-module, Core)
+include(":app-examples:core:app-singlemodule")
+// Example App (Multi-module, Core)
+include(":app-examples:core:app-multimodule:app")
+include(":app-examples:core:app-multimodule:compose-components")
+include(":app-examples:core:app-multimodule:feature-list")
+include(":app-examples:core:app-multimodule:feature-details")
+include(":app-examples:core:app-multimodule:effect-impl-dialogs-android")
+include(":app-examples:core:app-multimodule:effect-impl-dialogs-compose")
+include(":app-examples:core:app-multimodule:effect-impl-toasts")
+include(":app-examples:core:app-multimodule:effect-interfaces")
+
+// Example App (Single-module, Hilt)
+include(":app-examples:hilt:app-singlemodule")
+// Example App (Multi-module, Hilt)
+include(":app-examples:hilt:app-multimodule:app")
+include(":app-examples:hilt:app-multimodule:compose-components")
+include(":app-examples:hilt:app-multimodule:feature-list")
+include(":app-examples:hilt:app-multimodule:feature-details")
+include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-android")
+include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-compose")
+include(":app-examples:hilt:app-multimodule:effect-impl-toasts")
+include(":app-examples:hilt:app-multimodule:effect-interfaces")
+

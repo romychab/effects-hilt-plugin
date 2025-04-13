@@ -24,20 +24,21 @@ immutableCollections = "0.3.8"
 koin = "4.0.3"
 
 [libraries]
-# example apps:
+# example apps
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-activity = { module = "androidx.activity:activity-compose" }
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 java-faker = { module = "com.github.javafaker:javafaker", version.ref = "javaFaker" }
 container = { module = "com.elveum:container", version.ref = "container" }
 kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
 leak-canary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary" }
-# core library:
+# core library
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesCore" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesCore" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -52,7 +53,7 @@ kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKsp" }
 ksp-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing-ksp", version.ref = "kotlinKspTesting" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
-# hilt extension (todo)
+# hilt extension
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose"}
