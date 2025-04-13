@@ -42,7 +42,7 @@ import com.uandcode.effects.stub.api.InvalidEffectSetupException
  * @param provider The function that creates an instance of the effect implementation.
  *                 This function is called lazily and only once.
  * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
- *                                 it is not a child class annotated with [EffectClass]
+ *                                 it is not a child class annotated with [HiltEffect]
  * @throws InvalidEffectSetupException if the library is not setup correctly
  */
 public inline fun <reified T : Any> ComponentActivity.lazyEffect(
@@ -87,7 +87,7 @@ public inline fun <reified T : Any> ComponentActivity.lazyEffect(
  * @param provider The function that creates an instance of the effect implementation.
  *                 This function is called lazily and only once.
  * @throws EffectNotFoundException if the specified [T] type is not a valid target interface or
- *                                 it is not a child class annotated with [EffectClass]
+ *                                 it is not a child class annotated with [HiltEffect]
  * @throws InvalidEffectSetupException if the library is not setup correctly
  */
 public inline fun <reified T : Any> Fragment.lazyEffect(

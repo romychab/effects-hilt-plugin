@@ -72,7 +72,7 @@ public inline fun <reified T: Any> getEffect(): T {
  * ```
  *
  * @param effects the list of effect implementations managed by this EffectProvider;
- *                please note, only instances of classes annotated with [EffectClass] annotation are allowed
+ *                please note, only instances of classes annotated with [HiltEffect] annotation are allowed
  */
 @Composable
 public fun EffectProvider(
@@ -133,7 +133,7 @@ public fun EffectProvider(
  * ```
  *
  * @param effects the list of effect implementations managed by this EffectProvider;
- *                please note, only instances of classes annotated with [EffectClass] annotation are allowed
+ *                please note, only instances of classes annotated with [HiltEffect] annotation are allowed
  */
 @Composable
 public fun EffectProvider(
