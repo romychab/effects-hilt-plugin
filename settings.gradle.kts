@@ -50,6 +50,13 @@ include(":effects-hilt:essentials")
 include(":effects-hilt:compose")
 include(":effects-hilt:compiler")
 
+// Effects Koin Library
+include(":effects-koin:annotations")
+include(":effects-koin:essentials")
+include(":effects-koin:compose")
+include(":effects-koin:compiler")
+include(":effects-koin:kspcontract")
+
 // Example App (Single-module, Core)
 include(":app-examples:core:app-singlemodule")
 // Example App (Multi-module, Core)
@@ -73,4 +80,3 @@ include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-android")
 include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-compose")
 include(":app-examples:hilt:app-multimodule:effect-impl-toasts")
 include(":app-examples:hilt:app-multimodule:effect-interfaces")
-
