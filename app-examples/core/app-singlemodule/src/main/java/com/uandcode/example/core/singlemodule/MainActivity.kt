@@ -26,7 +26,7 @@ import com.uandcode.example.core.singlemodule.presentation.list.CatsScreen
 class MainActivity : ComponentActivity() {
 
     // 1a. Example for non- Jetpack Compose projects how to connect
-    //     a ToastsImpl implementation to a Toasts interface injected
+    //     AndroidToasts implementation to a Toasts interface injected
     //     to view-models:
     private val toasts by lazyEffect { AndroidToasts(context = this) }
 
