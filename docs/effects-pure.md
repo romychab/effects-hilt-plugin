@@ -4,7 +4,12 @@ This page explains how to install and use the library without relying on DI fram
 
 ## Table of Contents
 
-TODO
+- [Prerequisites](#prerequisites)
+- [Installation (Single-module Projects)](#installation-single-module-projects)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
+- [Usage Example](#usage-example)
+- [Custom Effect Scopes](#custom-effect-scopes)
+- [Example Apps](#example-apps)
 
 ## Prerequisites
 
@@ -60,7 +65,7 @@ Check out [the single-module No-DI example app](/app-examples/core/app-singlemod
 
 - Explore an example Multi-module project without DI frameworks [here](/app-examples/core/app-multimodule).
 
-## Usage example
+## Usage Example
 
 1. Define one or more effect interfaces:
 
@@ -178,5 +183,23 @@ Check out [the single-module No-DI example app](/app-examples/core/app-singlemod
          }
      }
      ```
+
+## Custom Effect Scopes
+
+You can manually create children of existing `EffectScope` instances and manage
+their lifecycle manually. A child scope inherits all effects from a parent scope
+automatically.
+
+```kotlin
+val childEffectScope = RootEffectScope.empty.createChild(
+   managedInterfaces = ManagedInterfaces.ListOf(MyEffect1::class, MyEffect2::class),
+)
+
+val grandChildEffectScope = childEffectScope.createChild(
+   managedInterfaces = ManagedInterfaces.ListOf(MyEffect3::class),
+)
+```
+
+## Example Apps
 
 Check out [example apps](/app-examples/core) for more details ;)

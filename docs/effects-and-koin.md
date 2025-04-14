@@ -4,7 +4,12 @@ This page explains how to install and use the library with the Koin DI Framework
 
 ## Table of Contents
 
-TODO
+- [Prerequisites](#prerequisites)
+- [Installation (Single-module Projects)](#installation-single-module-projects)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
+- [Usage Example](#usage-example)
+- [Koin Scopes and Effects](#koin-scopes-and-effects)
+- [Example Apps](#example-apps)
 
 ## Prerequisites
 
@@ -67,7 +72,7 @@ For more details, check out the [single-module Koin example app](/app-examples/k
 
 - Explore an example Koin Multi-module project [here](/app-examples/koin/app-multimodule).
 
-## Usage example
+## Usage Example
 
 1. Define one or more effect interfaces:
 
@@ -275,3 +280,7 @@ For instance, let's limit `MyEffects` to the Retained Activity Lifecycle:
        }
    }
    ```
+
+## Example Apps
+
+Check out [example apps](/app-examples/koin) for more details ;)

@@ -4,7 +4,14 @@ This document outlines the core ideas behind the library and explains how it wor
 
 ## Table of Contents
 
-TODO
+- [What Is an Effect (in general)?](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#what-is-an-effect-in-general)
+- [What Is an Effect (in this library)?](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#what-is-an-effect-in-this-library)
+- [Glossary](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#glossary)
+- [Advanced Glossary](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#advanced-glossary)
+- [A closer look at the three effect types](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#a-closer-look-at-the-three-effect-types)
+  - [One-off Event](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#one-one-off-event)
+  - [Suspend Call](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#two-suspend-call)
+  - [Flow Call](https://github.com/romychab/effects-hilt-plugin/blob/v2-docs/docs/key-concepts.md#three-flow-call)
 
 ## What Is an Effect (in general)?
 
@@ -32,7 +39,7 @@ and callbacks between layers of your app.
 
 ## Glossary
 
-- __Effect - An action initiated by a component with a longer lifecycle that must be 
+- __Effect__ - An action initiated by a component with a longer lifecycle that must be 
   handled by a component with a shorter lifecycle. There are three main types of effects:
 
   - One-off Event - A simple action where the result of processing is ignored. It follow a "fire-and-forget" principle.
@@ -68,7 +75,7 @@ and callbacks between layers of your app.
     }
     ```
     
-- __Effect Interface__ (also known as __Target Interface__) - An interface that defines 
+- __Effect Interface__ (also known as __Target Interface__, or __Effect Sender__) - An interface that defines 
   a set of effects. It is injected into ViewModels (or other long-lived components), 
   and is used to initiate effects. This approach offers two key advantages:
   - Abstraction from implementation details – for instance, your ViewModels don’t need 
@@ -76,7 +83,7 @@ and callbacks between layers of your app.
   - Avoidance of duplication - The same effect interface can be reused across multiple 
     screens or components (e.g., for showing toast messages in two different screens).
 
-- __Effect Implementation__ - A class that implements the __Effect Interface__. The library's 
+- __Effect Implementation__ (or __Effect Handler__) - A class that implements the __Effect Interface__. The library's 
   core feature is the ability to inject Effect Interfaces into long-lived components, while 
   the Effect Implementations can safely reference Activity or other short-lived components. 
   This is the core magic of the library.

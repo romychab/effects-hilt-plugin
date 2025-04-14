@@ -10,7 +10,9 @@ You can skip KSP if:
 
 ## Table of Contents
 
-TODO
+- [Pros and Cons](#pros-and-cons)
+- [Installation and Usage Example without KSP (Koin)](#installation-and-usage-example-without-ksp-koin)
+- [Installation and Usage without KSP (Core, No DI Frameworks)](#installation-and-usage-without-ksp-core-no-di-frameworks)
 
 ## Pros and Cons
 

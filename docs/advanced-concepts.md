@@ -7,7 +7,13 @@ works under the hood.
 
 ## Table of Contents
 
-TODO
+- [Advanced Glossary](#advanced-glossary)
+- [Multiple Effect Handlers](#multiple-effect-handlers)
+- [Multiple Target Interfaces](#multiple-target-interfaces)
+- [Manual Clean-Up](#manual-clean-up)
+- [Default Lifecycle](#default-lifecycle)
+- [Changing the Default Lifecycle](#changing-the-default-lifecycle)
+- [Limitations](#limitations)
 
 ## Advanced Glossary
 
@@ -121,7 +127,7 @@ interface MyEffects : AutoCloseable {
 By default, all effect interfaces are installed to:
 - Hilt `ActivityRetainedComponent` (if you are using Hilt DI framework)
 - Root scope of Koin Application (if you are using Koin)
-- RootEffectScopes.global (if you are not using DI frameworks)
+- `RootEffectScopes.global` (if you are not using DI frameworks)
 
 This allows you injecting effect interfaces directly to a view-model constructor.
 

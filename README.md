@@ -13,7 +13,7 @@ With this library, there's no need for `SharedFlow`, `Channel`, or extra event-r
 properties in your state classes.
 
 :warning: This page covers the 2.x release, which is currently in alpha. 
-Looking for the stable 1.x version? Click [here](/README.md) to learn more.
+Looking for the stable 1.x version? Click [here](/docs/README_LEGACY_1x.md) to learn more.
 
 Supported DI Frameworks:
 - Hilt
@@ -35,9 +35,12 @@ Supported DI Frameworks:
 - [Detailed Tutorials](#detailed-tutorials)
   - [Effects + Hilt](#effects--hilt)
   - [Effects + Koin](#effects--koin)
-  - [Effects Without a DI Framework](#effects-without-a-di-framework)
+  - [Effects without a DI Framework](#effects-without-a-di-framework)
+- [Advanced Details](#advanced-details)
 
 ## Basic example (One-off event with Hilt)
+
+If you are using Koin, check out [this page](/docs/effects-and-koin.md) for more details.
 
 Let's say you want to:
 - Trigger navigation commands
@@ -330,7 +333,7 @@ Read more about integrating Effects with Koin:
 
 👉 [Effects + Koin guide](/docs/effects-and-koin.md)
 
-### Effects Without a DI Framework
+### Effects without a DI Framework
 
 Using the library without any DI framework? Start here:
 

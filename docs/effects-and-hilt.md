@@ -4,7 +4,13 @@ This page describes how to install and use the library with Hilt DI Framework.
 
 ## Table of Contents
 
-TODO
+- [Prerequisites](#prerequisites)
+- [Installation (Single-module Projects)](#installation-single-module-projects)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
+- [Migration from Version 1.x to 2.x](#migration-from-version-1x-to-2x)
+- [Usage Example](#usage-example)
+- [Hilt Components and Effects](#hilt-components-and-effects)
+- [Example Apps](#example-apps)
 
 ## Prerequisites
 
@@ -98,7 +104,7 @@ and imports. Please make sure to update your project accordingly.
    }
    ```
 
-## Usage example
+## Usage Example
 
 1. Define one or more effect interfaces:
 
@@ -223,8 +229,6 @@ and imports. Please make sure to update your project accordingly.
      }
      ```
 
-Check out [example apps](/app-examples/hilt) for more details ;)
-
 ## Hilt Components and Effects
 
 By default, all effect interfaces are installed into a Hilt `ActivityRetainedComponent`. 
@@ -243,3 +247,7 @@ with the `installIn` parameter:
 )
 class MyEffectsImpl : MyEffects
 ```
+
+## Example Apps
+
+Check out [example apps](/app-examples/hilt) for more details ;)

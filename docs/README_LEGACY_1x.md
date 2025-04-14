@@ -245,7 +245,7 @@ If there is at least one active handler, it can process incoming events sent by 
 So actually, when you use `lazyEffect` or `EffectProvider`, you connect an event handler to an event sender.
 If there is no active event handlers, events are added to a queue.
 
-![Scheme image here](docs/pic1.png)
+![Scheme image here](/docs/pic1.png)
 
 Let's take a brief look at different ways of connecting event handlers:
 
