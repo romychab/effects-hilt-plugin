@@ -80,3 +80,6 @@ include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-android")
 include(":app-examples:hilt:app-multimodule:effect-impl-dialogs-compose")
 include(":app-examples:hilt:app-multimodule:effect-impl-toasts")
 include(":app-examples:hilt:app-multimodule:effect-interfaces")
+
+// Example App (Single-module, Koin)
+include(":app-examples:koin:app-singlemodule")

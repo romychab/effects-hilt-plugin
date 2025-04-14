@@ -37,6 +37,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 java-faker = { module = "com.github.javafaker:javafaker", version.ref = "javaFaker" }
 container = { module = "com.elveum:container", version.ref = "container" }
 kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinSerialization" }
+koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 leak-canary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakCanary" }
 # core library
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesCore" }
@@ -60,9 +61,9 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidxActivity" }
 # koin extension
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-koin-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-viewmodel = { module = "io.insert-koin:koin-core-viewmodel" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp" }
