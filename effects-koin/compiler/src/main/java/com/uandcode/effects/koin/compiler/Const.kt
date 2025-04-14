@@ -4,6 +4,7 @@ import com.squareup.kotlinpoet.ClassName
 
 object Const {
     const val AnnotationValueArg = "value"
+    const val MetadataKoinScopeAnnotationArg = "koinScope"
     const val ClassPrefix = "__class::"
 
     val KoinEffectAnnotationName = ClassName("com.uandcode.effects.koin.annotations", "KoinEffect")

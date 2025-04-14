@@ -37,7 +37,7 @@ class KoinEffectExtension : EffectExtension {
             interfaceDeclarations = interfaceDeclarations,
             implementationClassDeclaration = implementationClassDeclaration,
             metadataDeclaration = metadataDeclaration,
-            koinScope = KoinScope.parseMetadataAnnotation(metadataAnnotation)
+            koinScope = KoinScope.fromMetadataAnnotation(metadataAnnotation)
         )
     }
 
