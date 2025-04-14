@@ -1,7 +1,7 @@
 # Easy-to-go one-off events (a.k.a. Effects) and even more :fire:
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
-[![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](LICENSE)
+[![License: Apache 2](https://img.shields.io/github/license/romychab/effects-hilt-plugin)](/LICENSE)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-Ladybug-brightgreen.svg?style=flat)
@@ -23,7 +23,20 @@ Supported DI Frameworks:
 
 ## Table of Contents
 
-TODO
+- [Basic example (One-off event with Hilt)](#basic-example-one-off-event-with-hilt)
+- [Example projects](#example-projects)
+- [Prerequisites](#prerequisites)
+- [Installation (Single-module Projects)](#installation-single-module-projects) 
+  - [Hilt Integration](#hilt-integration)
+  - [Koin Integration](#koin-integration)
+  - [Without a DI Framework](#without-a-di-framework)
+- [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
+- [Migration from Version 1.x to 2.x](#migration-from-version-1x-to-2x)
+- [Key Concepts (regardless of used DI framework)](#key-concepts-regardless-of-used-di-framework)
+- [Detailed Tutorials](#detailed-tutorials)
+  - [Effects + Hilt](#effects--hilt)
+  - [Effects + Koin](#effects--koin)
+  - [Effects Without a DI Framework](#effects-without-a-di-framework)
 
 ## Basic example (One-off event with Hilt)
 
