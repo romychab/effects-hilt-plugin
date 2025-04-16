@@ -1,4 +1,4 @@
-# Easy-to-go one-off events (a.k.a. Effects) and even more :fire:
+# One-off events (a.k.a. Effects) and even more :fire:
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
