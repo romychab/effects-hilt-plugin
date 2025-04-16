@@ -90,6 +90,7 @@ public fun EffectProvider(
         LocalComposeEffectNode provides newComposeEffectNode,
     ) {
         ComposeLifecycleObserver(
+            key = newComposeEffectNode,
             onStart = newComposeEffectNode::start,
             onStop = newComposeEffectNode::stop,
         )
