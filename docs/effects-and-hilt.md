@@ -79,6 +79,9 @@ and imports. Please make sure to update your project accordingly.
 2. Update relevant import statements and package references:
 
    ```kotlin
+   // @HiltEffect annotation:
+   import com.uandcode.effects.hilt.annotations.HiltEffect
+   
    // lazyEffect delegate:
    import com.uandcode.effects.hilt.lazyEffect
    

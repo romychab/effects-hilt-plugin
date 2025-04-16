@@ -284,6 +284,9 @@ so this guide is relevant only for projects using Hilt.
 2. Update relevant import statements and package references:
 
    ```kotlin
+   // @HiltEffect annotation:
+   import com.uandcode.effects.hilt.annotations.HiltEffect
+   
    // lazyEffect delegate:
    import com.uandcode.effects.hilt.lazyEffect
    
@@ -329,7 +332,7 @@ Read more about integrating Effects with __Hilt__:
 
 ### Effects + Koin
 
-Read more about integrating Effects with Koin:
+Read more about integrating Effects with __Koin__:
 
 👉 [Effects + Koin guide](/docs/effects-and-koin.md)
 
@@ -342,4 +345,5 @@ Using the library without any DI framework? Start here:
 ## Advanced Details
 
 Get ready to learn more? Here is a dedicated page for you:
+
 👉 [Advanced Details](/docs/advanced-concepts.md)
