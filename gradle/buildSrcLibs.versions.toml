@@ -1,6 +1,6 @@
 [versions]
 # version of the project itself
-effectLibraryVersion = "1.0.2"
+effectLibraryVersion = "2.0.0-alpha01"
 # android sdk & jvm versions
 minSdk = "23"
 targetSdk = "35"

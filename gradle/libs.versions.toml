@@ -22,6 +22,7 @@ lifecycleCompose = "2.8.4"
 androidxActivity = "1.10.1"
 immutableCollections = "0.3.8"
 koin = "4.0.3"
+composeRuntime = "1.7.3"
 
 [libraries]
 # example apps
@@ -54,6 +55,7 @@ kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKsp" }
 ksp-testing = { module = "com.github.tschuchortdev:kotlin-compile-testing-ksp", version.ref = "kotlinKspTesting" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeRuntime" }
 # hilt extension
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}

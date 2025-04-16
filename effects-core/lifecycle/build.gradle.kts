@@ -11,7 +11,8 @@ publishConfig {
 dependencies {
     api(projects.effectsCore.essentials)
     api(projects.effectsCore.annotations)
-    testImplementation(projects.effectsCore.testmocks)
+    testImplementation(projects.effectsCore.testing.mocks)
+    testImplementation(projects.effectsCore.testing.lifecycle)
 
     api(libs.lifecycle.jvm)
 

@@ -10,7 +10,7 @@ publishConfig {
 
 dependencies {
     api(projects.effectsCore.essentials)
-    testImplementation(projects.effectsCore.testmocks)
+    testImplementation(projects.effectsCore.testing.mocks)
 
     implementation(libs.coroutines.core)
     implementation(buildSrcLibs.kotlinx.reflection)

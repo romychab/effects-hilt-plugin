@@ -42,7 +42,9 @@ include(":effects-core:annotations")
 include(":effects-core:lifecycle")
 include(":effects-core:compose")
 include(":effects-core:runtime")
-include(":effects-core:testmocks")
+include(":effects-core:testing:mocks")
+include(":effects-core:testing:compose")
+include(":effects-core:testing:lifecycle")
 
 // Effects Hilt Library
 include(":effects-hilt:annotations")
