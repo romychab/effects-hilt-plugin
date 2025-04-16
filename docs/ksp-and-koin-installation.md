@@ -57,6 +57,6 @@ even [without KSP](no-ksp-installation.md), with a bit of additional configurati
    dependencies {
        // KSP annotation processors should be added using the 'ksp' configuration
        // Example: adding Effect's KSP compiler
-       // ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha01")
+       // ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha02")
    }
    ```

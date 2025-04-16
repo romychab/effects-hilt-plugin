@@ -1,6 +1,6 @@
 # Hilt plugin for easier implementation of one-off events (a.k.a. effects) :fire:
 
-:bulb: The major 2.x release is coming soon with many improvements. Check out [page](docs/v2-draft.md) to 
+:bulb: The major 2.x release is coming soon with many improvements. Check out [page](/README.md) to 
 explore the upcoming changes and get detailed migration guidance.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
