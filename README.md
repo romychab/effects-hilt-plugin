@@ -47,13 +47,13 @@ Check out [this page](docs/ksp-and-hilt-installation.md) for more details about 
 
 ```kotlin
 // annotation processor (required):
-ksp("com.elveum:effects-processor:1.0.3")
+ksp("com.elveum:effects-processor:1.0.4")
 
 // for projects with Jetpack Compose:
-implementation("com.elveum:effects-compose:1.0.3")
+implementation("com.elveum:effects-compose:1.0.4")
 
 // for projects without Jetpack Compose:
-implementation("com.elveum:effects-core:1.0.3")
+implementation("com.elveum:effects-core:1.0.4")
 ```
 
 ## Installation for multi-module projects
@@ -61,9 +61,9 @@ implementation("com.elveum:effects-core:1.0.3")
 - Dependencies for your application module remain the same:
   
   ```kotlin
-  ksp("com.elveum:effects-processor:1.0.3")
-  implementation("com.elveum:effects-compose:1.0.3") // with Jetpack Compose
-  implementation("com.elveum:effects-core:1.0.3") // or without Jetpack Compose
+  ksp("com.elveum:effects-processor:1.0.4")
+  implementation("com.elveum:effects-compose:1.0.4") // with Jetpack Compose
+  implementation("com.elveum:effects-core:1.0.4") // or without Jetpack Compose
   ```
 
 - Additional configuration is required for your android library modules, if you
