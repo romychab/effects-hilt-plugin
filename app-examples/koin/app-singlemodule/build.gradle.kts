@@ -19,8 +19,8 @@ dependencies {
     implementation(libs.koin.android.compose)
 
     // Effects library
-    implementation(projects.effectsKoin.compose)
-    ksp(projects.effectsKoin.compiler)
+    implementation(libs.effects.koin.compose)
+    ksp(libs.effects.koin.compiler)
 
     // Other dependencies
     implementation(platform(libs.compose.bom))

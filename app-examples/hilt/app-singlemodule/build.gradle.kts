@@ -20,8 +20,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Effects library
-    implementation(projects.effectsHilt.compose)
-    ksp(projects.effectsHilt.compiler)
+    implementation(libs.effects.hilt.compose)
+    ksp(libs.effects.hilt.compiler)
 
     // Other dependencies
     implementation(platform(libs.compose.bom))

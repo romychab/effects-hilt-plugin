@@ -25,8 +25,8 @@ dependencies {
     implementation(projects.appExamples.hilt.appMultimodule.effectImplDialogsAndroid)
 
     // effects library
-    implementation(projects.effectsHilt.compose)
-    ksp(projects.effectsHilt.compiler)
+    implementation(libs.effects.hilt.compose)
+    ksp(libs.effects.hilt.compiler)
 
     // hilt (required)
     implementation(libs.hilt.android)

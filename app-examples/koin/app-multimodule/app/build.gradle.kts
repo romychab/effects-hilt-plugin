@@ -24,8 +24,8 @@ dependencies {
     implementation(projects.appExamples.koin.appMultimodule.effectImplDialogsAndroid)
 
     // effects library
-    implementation(projects.effectsKoin.compose)
-    ksp(projects.effectsKoin.compiler)
+    implementation(libs.effects.koin.compose)
+    ksp(libs.effects.koin.compiler)
 
     // Koin (required)
     implementation(platform(libs.koin.bom))

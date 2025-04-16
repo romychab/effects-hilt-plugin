@@ -19,8 +19,8 @@ ksp {
 dependencies {
     api(projects.appExamples.hilt.appMultimodule.effectInterfaces)
 
-    implementation(projects.effectsHilt.annotations)
-    ksp(projects.effectsHilt.compiler)
+    implementation(libs.effects.hilt.annotations)
+    ksp(libs.effects.hilt.compiler)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

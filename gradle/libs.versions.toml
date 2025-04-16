@@ -23,6 +23,7 @@ androidxActivity = "1.10.1"
 immutableCollections = "0.3.8"
 koin = "4.0.3"
 composeRuntime = "1.7.3"
+effectsMaven = "2.0.0-alpha02"
 
 [libraries]
 # example apps
@@ -66,6 +67,17 @@ koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-viewmodel = { module = "io.insert-koin:koin-core-viewmodel" }
+# maven artifact of the library
+effects-core-compose = { module = "com.uandcode:effects-core-compose", version.ref = "effectsMaven" }
+effects-core-compiler = { module = "com.uandcode:effects-core-compiler", version.ref = "effectsMaven" }
+effects-core-annotations = { module = "com.uandcode:effects-core-annotations", version.ref = "effectsMaven" }
+effects-core-essentials = { module = "com.uandcode:effects-core-essentials", version.ref = "effectsMaven" }
+effects-hilt-compose = { module = "com.uandcode:effects-hilt-compose", version.ref = "effectsMaven" }
+effects-hilt-compiler = { module = "com.uandcode:effects-hilt-compiler", version.ref = "effectsMaven" }
+effects-hilt-annotations = { module = "com.uandcode:effects-hilt-annotations", version.ref = "effectsMaven" }
+effects-koin-compose = { module = "com.uandcode:effects-koin-compose", version.ref = "effectsMaven" }
+effects-koin-compiler = { module = "com.uandcode:effects-koin-compiler", version.ref = "effectsMaven" }
+effects-koin-annotations = { module = "com.uandcode:effects-koin-annotations", version.ref = "effectsMaven" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp" }

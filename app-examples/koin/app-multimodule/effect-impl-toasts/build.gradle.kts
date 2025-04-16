@@ -14,6 +14,6 @@ ksp {
 dependencies {
     api(projects.appExamples.koin.appMultimodule.effectInterfaces)
 
-    implementation(projects.effectsKoin.annotations)
-    ksp(projects.effectsKoin.compiler)
+    implementation(libs.effects.koin.annotations)
+    ksp(libs.effects.koin.compiler)
 }

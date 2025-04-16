@@ -14,8 +14,8 @@ android {
 
 dependencies {
     // Effects library
-    implementation(projects.effectsCore.compose)
-    ksp(projects.effectsCore.compiler)
+    implementation(libs.effects.core.compose)
+    ksp(libs.effects.core.compiler)
 
     // Other dependencies
     implementation(platform(libs.compose.bom))
