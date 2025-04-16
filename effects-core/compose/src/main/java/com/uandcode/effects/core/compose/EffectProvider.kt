@@ -105,6 +105,7 @@ public fun EffectProvider(
         LocalEffectScope provides scope,
     ) {
         ComposeLifecycleObserver(
+            key = newComposeEffectNode,
             onStart = newComposeEffectNode::start,
             onStop = newComposeEffectNode::stop,
         )

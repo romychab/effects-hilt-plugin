@@ -12,6 +12,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 @Composable
 internal fun ComposeLifecycleObserver(
+    key: Any,
     onStart: () -> Unit,
     onStop: () -> Unit,
     onDestroy: () -> Unit = {},
@@ -20,7 +21,7 @@ internal fun ComposeLifecycleObserver(
     val onStopState by rememberUpdatedState(onStop)
     val onDestroyState by rememberUpdatedState(onDestroy)
     val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
+    LaunchedEffect(key, lifecycleOwner) {
         // Using LaunchedEffect instead of DisposableEffect because
         // LaunchedEffect starts later than DisposableEffect due to usage
         // of coroutines. As a result, effects will be delivered after
