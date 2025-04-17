@@ -42,7 +42,7 @@ and callbacks between layers of your app.
 - __Effect__ - An action initiated by a component with a longer lifecycle that must be 
   handled by a component with a shorter lifecycle. There are three main types of effects:
 
-  - One-off Event - A simple action where the result of processing is ignored. It follow a "fire-and-forget" principle.
+  - One-off Event - A simple action where the result of processing is ignored. It follows a "fire-and-forget" principle.
 
     *Example: showing a toast message*
  

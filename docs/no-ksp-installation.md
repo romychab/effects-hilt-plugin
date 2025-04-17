@@ -93,7 +93,7 @@ You can skip KSP if:
 
    ```kotlin
    class CatsViewModel(
-       val toasts: Toasts = RootEffectScopes.global.getProxy(),
+       val toasts: Toasts,
    ): ViewModel() {
        fun removeCat(cat: Cat) {
            toasts.show("Cat $cat has been removed")
@@ -223,7 +223,7 @@ You can skip KSP if:
 
    ```kotlin
    class CatsViewModel(
-       val toasts: Toasts,
+       val toasts: Toasts = RootEffectScopes.global.getProxy(),
    ): ViewModel() {
        fun removeCat(cat: Cat) {
            toasts.show("Cat $cat has been removed")
