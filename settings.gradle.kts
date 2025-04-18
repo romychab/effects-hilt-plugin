@@ -32,6 +32,15 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Effects"
 
+includeBuild("kotlin-compile-testing") {
+    dependencySubstitution {
+        substitute(module("kotlin-compile-testing:core"))
+            .using(project(":core"))
+        substitute(module("kotlin-compile-testing:ksp"))
+            .using(project(":ksp"))
+    }
+}
+
 // Effects Core Library
 include(":effects-core:kspcontract")
 include(":effects-core:kspcontract-api")
