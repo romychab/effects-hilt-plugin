@@ -21,7 +21,7 @@ This page explains how to install and use the library with the Koin DI Framework
    creating proxies at runtime. This approach has its own pros and cons, but if you're really interested
    in using the library without KSP, check out [this guide](/docs/no-ksp-installation.md) for more details.
 
-4. Make sure [Koin] is properly set up in your project. [How to install Koin?](/docs/ksp-and-koin-installation.md)
+4. Make sure [Koin](https://insert-koin.io/docs/setup/koin) is properly set up in your project. [How to install Koin?](/docs/ksp-and-koin-installation.md)
 
 ## Installation (Single-module Projects)
 

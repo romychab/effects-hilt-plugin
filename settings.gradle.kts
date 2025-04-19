@@ -54,6 +54,7 @@ include(":effects-core:runtime")
 include(":effects-core:testing:mocks")
 include(":effects-core:testing:compose")
 include(":effects-core:testing:lifecycle")
+include(":effects-core:testing:ksp")
 
 // Effects Hilt Library
 include(":effects-hilt:annotations")
