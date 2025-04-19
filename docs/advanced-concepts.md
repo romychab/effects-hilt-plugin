@@ -10,6 +10,7 @@ works under the hood.
 - [Advanced Glossary](#advanced-glossary)
 - [Multiple Effect Handlers](#multiple-effect-handlers)
 - [Multiple Target Interfaces](#multiple-target-interfaces)
+- [Hierarchical Effect Interfaces](#hierarchical-effect-interfaces)
 - [Manual Clean-Up](#manual-clean-up)
 - [Default Lifecycle](#default-lifecycle)
 - [Changing the Default Lifecycle](#changing-the-default-lifecycle)
@@ -102,6 +103,41 @@ Additionally, you can explicitly specify the list of target interfaces in the an
 )
 class CombinedRouter : CatListRouter, CatDetailsRouter, Runnable {
     // ...
+}
+```
+
+## Hierarchical Effect Interfaces
+
+Starting from version `2.0.0-alpha03`, it is possible to make a hierarchy of effect interfaces. For example:
+
+```kotlin
+interface SuperEffect {
+    fun superOneOffEvent(arg: String)
+}
+
+interface Effect : SuperEffect {
+    fun oneOffEvent(arg: Int)
+}
+
+@HiltEffect
+class EffectImpl : Effect {
+    override fun superOneOffEvent(arg: String) { /*...*/ }
+    override fun oneOffEvent(arg: Int) { /* ... */ }
+}
+```
+
+As a result, you will be able to inject `Effect` interface to your ViewModels
+and use methods from both `Effect` and `SuperEffect` interfaces for sending one-off
+events. 
+
+If you need to inject both interface `Effect` and superinterface `SuperEffect`, then
+you can specify both of them directly in the implementation:
+
+```kotlin
+@HiltEffect
+class EffectImpl : Effect, SuperEffect {
+    override fun superOneOffEvent(arg: String) { /*...*/ }
+    override fun oneOffEvent(arg: Int) { /* ... */ }
 }
 ```
 
