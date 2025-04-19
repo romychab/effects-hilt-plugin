@@ -4,12 +4,12 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asClassName
 
 internal object Const {
 
     val TargetArrayArgument = "targets"
-    val AutoCloseableClassName = AutoCloseable::class.asClassName()
+    val AutoCloseableClassName = ClassName("kotlin", "AutoCloseable")
+    val AutoCloseableJavaClassName = ClassName("java.lang", "AutoCloseable")
     val EffectProxyMarker = ClassName("com.uandcode.effects.core", "EffectProxyMarker")
 
     val MetadataInterfaceClassNames: String = "interfaceClassNames"

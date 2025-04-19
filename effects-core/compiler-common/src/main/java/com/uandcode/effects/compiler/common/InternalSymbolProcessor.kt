@@ -66,9 +66,7 @@ internal class InternalSymbolProcessor(
             metadataFromOtherModules
         }
         val validatedMetadata = validateAndFilterEffectMetadata(effectExtension, mergedMetadataList)
-        val autoCloseableDeclaration = resolver.getClassDeclarationByName(Const.AutoCloseableClassName.canonicalName)
-            ?: throw InternalEffectKspException("Can't find AutoCloseable interface in the classpath.")
-        val generatedProxies = generateProxies(validatedMetadata, autoCloseableDeclaration)
+        val generatedProxies = generateProxies(validatedMetadata)
         if (!isMetadataFromOtherModulesProcessed || metadataFromThisModule.isNotEmpty()) {
             proxyEffectStoreGenerator.generate(effectExtension, validatedMetadata, generatedProxies)
             effectExtension.generateExtensions(validatedMetadata, generatedProxies, writer)
@@ -78,11 +76,10 @@ internal class InternalSymbolProcessor(
 
     private fun generateProxies(
         validationResult: GroupedMetadata,
-        autoCloseableDeclaration: KSClassDeclaration,
     ): List<GeneratedProxy> {
         val generatedProxyList = mutableListOf<GeneratedProxy>()
         validationResult.forEach { interfaceDeclaration, parsedMetadata ->
-            val generatedProxy = proxyEffectGenerator.generate(interfaceDeclaration, parsedMetadata, autoCloseableDeclaration)
+            val generatedProxy = proxyEffectGenerator.generate(interfaceDeclaration, parsedMetadata)
             generatedProxyList.add(generatedProxy)
         }
         return generatedProxyList

@@ -1,7 +1,6 @@
 package com.uandcode.effects.compiler.common.generators
 
-import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.Modifier
@@ -23,8 +22,9 @@ import com.uandcode.effects.compiler.common.api.data.aggregateDependencies
 import com.uandcode.effects.compiler.common.api.extensions.KSClassDeclarationWrapper
 import com.uandcode.effects.compiler.common.api.extensions.KSFunctionDeclarationWrapper
 import com.uandcode.effects.compiler.common.api.extensions.implementInterface
-import com.uandcode.effects.compiler.common.api.extensions.implementInterfaceMethod
 import com.uandcode.effects.compiler.common.api.extensions.primaryConstructorWithProperties
+import com.uandcode.effects.compiler.common.exceptions.AutoCloseNotImplementedException
+import com.uandcode.effects.compiler.common.exceptions.CloseMethodWithoutAutoCloseableException
 import com.uandcode.effects.compiler.common.exceptions.UnitCommandWithReturnTypeException
 
 internal class ProxyEffectGenerator(
@@ -34,7 +34,6 @@ internal class ProxyEffectGenerator(
     fun generate(
         interfaceDeclaration: KSClassDeclarationWrapper,
         metadata: List<ParsedMetadata>,
-        autoCloseableDeclaration: KSClassDeclaration,
     ): GeneratedProxy {
         val interfaceClassName = interfaceDeclaration.toClassName()
         val interfaceName = interfaceClassName.simpleName
@@ -49,7 +48,7 @@ internal class ProxyEffectGenerator(
                 filter = { function -> !isCloseMethod(function) },
                 functionBody = ::implementMethod,
             )
-            .implementAutoCloseable(interfaceDeclaration, autoCloseableDeclaration)
+            .implementAutoCloseable(interfaceDeclaration)
 
         val dependencies = metadata.aggregateDependencies()
         writer.write(
@@ -67,18 +66,19 @@ internal class ProxyEffectGenerator(
 
     private fun TypeSpec.Builder.implementAutoCloseable(
         interfaceDeclaration: KSClassDeclarationWrapper,
-        autoCloseableDeclaration: KSClassDeclaration,
     ) = apply {
-        val implementedAutoCloseable = interfaceDeclaration.findAutoCloseable(autoCloseableDeclaration)
-        if (implementedAutoCloseable == null) {
+        if (interfaceDeclaration.hasAutoCloseableInterface()) {
+            val hasImplementedCloseMethod = interfaceDeclaration.getAllFunctions()
+                .any { isCloseMethod(it) && !it.isAbstract && it.modifiers.contains(Modifier.OVERRIDE) }
+            if (!hasImplementedCloseMethod) throw AutoCloseNotImplementedException(interfaceDeclaration)
+        } else {
+            val hasCloseMethod = interfaceDeclaration.getAllFunctions().any { isCloseMethod(it) }
+            if (hasCloseMethod) throw CloseMethodWithoutAutoCloseableException(interfaceDeclaration)
             addSuperinterface(Const.AutoCloseableClassName)
         }
-        val autoCloseMethod = autoCloseableDeclaration.getDeclaredFunctions().first {
-            it.simpleName.asString() == AUTO_CLOSE_METHOD
-        }
-        val funBuilder = implementInterfaceMethod(autoCloseMethod, TypeParameterResolver.EMPTY)
         return addFunction(
-            funBuilder
+            FunSpec.builder("close")
+                .addModifiers(KModifier.PUBLIC, KModifier.OVERRIDE)
                 .addCode("${COMMAND_EXECUTOR_PROPERTY}.cleanUp()")
                 .build()
         )
@@ -154,11 +154,11 @@ internal class ProxyEffectGenerator(
         return toTypeName(typeParameterResolver) == UNIT
     }
 
-    private fun KSClassDeclarationWrapper.findAutoCloseable(
-        autoCloseableDeclaration: KSClassDeclaration,
-    ): KSClassDeclaration? {
-        return interfaces.firstOrNull {
-            it.toClassName() == autoCloseableDeclaration.toClassName()
+    private fun KSClassDeclarationWrapper.hasAutoCloseableInterface(): Boolean {
+        return getAllSuperTypes().any {
+            val typeName = it.toTypeName()
+            typeName == Const.AutoCloseableClassName
+                    || typeName == Const.AutoCloseableJavaClassName
         }
     }
 
