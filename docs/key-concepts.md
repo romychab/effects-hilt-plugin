@@ -196,7 +196,9 @@ Let’s consider an implementation example:
 
 ```kotlin
 @HiltEffect
-class DialogsImpl : Dialogs {
+class DialogsImpl(
+    private val context: Context,
+) : Dialogs {
     override suspend fun ask(@StringRes messageId: Int): Boolean {
        return suspendCancellableCoroutine { continuation ->
           val alertDialog = AlertDialog.Builder(context)
@@ -227,7 +229,7 @@ class MainActivity: AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val dialogs = remember { DialogsImpl() }
+            val dialogs = remember { DialogsImpl(this) }
             EffectProvider(dialogs) {
                 MyApp()
             }
