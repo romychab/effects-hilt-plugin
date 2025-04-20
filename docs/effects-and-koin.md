@@ -9,6 +9,7 @@ This page explains how to install and use the library with the Koin DI Framework
 - [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
 - [Usage Example](#usage-example)
 - [Koin Scopes and Effects](#koin-scopes-and-effects)
+- [Using Effect Controllers](#using-effect-controllers)
 - [Example Apps](#example-apps)
 
 ## Prerequisites
@@ -280,6 +281,66 @@ For instance, let's limit `MyEffects` to the Retained Activity Lifecycle:
        }
    }
    ```
+
+## Using Effect Controllers
+
+__Effect Controllers__ are low-level alternatives to the `lazyEffect` delegate and the `EffectProvider` composable function. They let you manually connect an effect implementation to its corresponding interface, offering more control when dealing with custom components or non-standard lifecycles.
+
+In Koin, you can obtain an `EffectController` from `KoinComponent`, `KoinScope`, `Koin`, or `AndroidScopeComponent` using the following extension functions:
+- `getEffectController()` - instantly creates and returns an `EffectController` instance.
+- `injectEffectController()` - provides a lazy delegate that initializes the controller on first access.
+
+For instance, you might prefer starting effects in `onResume` instead of the default `onStart`:
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity(), KoinComponent {
+
+    private val controller: EffectController<MyEffectsImpl> by injectEffectController()
+
+    override fun onResume() {
+        super.onResume()
+        controller.start(MyEffectsImpl(this))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        controller.stop()
+    }
+}
+```
+
+__Bound Effect Controller__ offers a more convenient approach. It initializes a predefined effect implementation on first access, caches it, and automatically links it to the corresponding interface when you call `BoundEffectController.start()` method. 
+
+You can create a `BoundEffectController` in much the same way as an `EffectController`, using extension functions available on `KoinComponent`, `KoinScope`, `Koin`, or `AndroidScopeComponent`:
+- `getBoundEffectController { ... }` - immediately creates and returns a `BoundEffectController` instance.
+- `injectBoundEffectController { ... }` - returns a lazy delegate that initializes the bound controller upon first access.
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity(), KoinComponent {
+
+    private val boundController by injectBoundEffectController {
+        MyEffectsImpl()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // you can access MyEffectsImpl at any time, e.g. before onResume:
+        val myEffectsImpl = boundController.effectImplementation 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        boundController.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        boundController.stop()
+    }
+}
+```
 
 ## Example Apps
 
