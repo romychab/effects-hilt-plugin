@@ -225,7 +225,7 @@ and imports. Please make sure to update your project accordingly.
 
      ```kotlin
      @AndroidEntryPoint
-     class MainActivity: AppCompatActivity() {
+     class MainActivity : AppCompatActivity() {
          private val myEffects by lazyEffect {
              MyEffectsImpl(this)
          }
@@ -249,6 +249,62 @@ with the `installIn` parameter:
     installIn = ActivityComponent::class,
 )
 class MyEffectsImpl : MyEffects
+```
+
+## Using Effect Controllers
+
+__Effect Controllers__ are low-level alternatives to the `lazyEffect` delegate and the `EffectProvider` composable function. They let you manually connect an effect implementation to its corresponding interface, offering more control when dealing with custom components or non-standard lifecycles.
+
+For instance, you might prefer starting effects in `onResume` instead of the default `onStart`:
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var controller: EffectController<MyEffectsImpl>
+
+    override fun onResume() {
+        super.onResume()
+        controller.start(MyEffectsImpl(this))
+    }
+
+    override fun onPause() {
+        super.onPause()
+        controller.stop()
+    }
+}
+```
+
+__Bound Effect Controller__ offers a more convenient approach. It initializes a predefined effect implementation on first access, caches it, and automatically links it to the corresponding interface when you call `BoundEffectController.start()` method. You can create a `BoundEffectController` from any existing `EffectController` that hasn't yet been started by using `EffectController.bind()` extension function:
+
+```kotlin
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var controller: EffectController<MyEffectsImpl>
+
+    private val boundController: BoundEffectController<MyEffectsImpl> by lazy {
+        controller.bind { MyEffectsImpl(this) }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // you can access MyEffectsImpl at any time, e.g. before onResume:
+        val myEffectsImpl = boundController.effectImplementation 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        boundController.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        boundController.stop()
+    }
+}
 ```
 
 ## Example Apps
