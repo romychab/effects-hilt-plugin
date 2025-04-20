@@ -11,8 +11,14 @@ public abstract class AbstractKspTest {
     protected fun compile(
         source: String
     ): KspResult {
+        return compile(InputFile(source))
+    }
+
+    protected fun compile(
+        vararg sources: InputFile
+    ): KspResult {
         return KspTest(
-            inputContent = source,
+            inputFiles = sources.toList(),
             provider = symbolProcessorProvider,
             options = options,
         ).compile()
