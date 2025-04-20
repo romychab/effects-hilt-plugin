@@ -7,13 +7,8 @@ import kotlin.reflect.KProperty
 
 @PublishedApi
 internal class EffectLifecycleDelegateImpl<T>(
-    lifecycleOwner: LifecycleOwner,
     private val controller: BoundEffectController<T>,
 ) : EffectLifecycleDelegate<T>, DefaultLifecycleObserver {
-
-    init {
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return controller.effectImplementation
