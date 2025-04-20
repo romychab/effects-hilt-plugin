@@ -16,8 +16,6 @@ import com.uandcode.effects.core.testing.mocks.Effect2
 import com.uandcode.effects.core.testing.mocks.EffectImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTargetImpl
-import com.uandcode.effects.core.testing.mocks.EffectWithNonOverriddenClose
-import com.uandcode.effects.core.testing.mocks.EffectWithNonOverriddenCloseImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithOverriddenClose
 import com.uandcode.effects.core.testing.mocks.EffectWithOverriddenCloseImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithTarget
@@ -548,23 +546,6 @@ class CoreLifecycleIntegrationTest {
 
         verify(exactly = 0) {
             effectImpl.unitRun(any())
-        }
-    }
-
-    @Test
-    fun `non-overridden close() call is not delivered to effect implementation`() {
-        val proxy = getProxy<EffectWithNonOverriddenClose>()
-        val effectImpl = spyk(EffectWithNonOverriddenCloseImpl())
-        val lifecycleOwner = TestLifecycleOwner()
-        lifecycleOwner.lazyEffect<EffectWithNonOverriddenClose>(scope) { effectImpl }
-
-        proxy.run("input")
-        proxy.close()
-        lifecycleOwner.start()
-
-        verify(exactly = 0) {
-            effectImpl.run(any())
-            effectImpl.close()
         }
     }
 

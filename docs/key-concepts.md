@@ -88,8 +88,8 @@ and callbacks between layers of your app.
   the Effect Implementations can safely reference Activity or other short-lived components. 
   This is the core magic of the library.
 
-- `lazyEffect` delegate and `EffectProvider` Composable function - High-level connectors that activate 
-  effect processing when the associated Activity becomes active. They ensure that emitted 
+- `lazyEffect` delegate, `initEffect` function, and `EffectProvider` Composable function - High-level connectors 
+  that activate effect processing when the associated Activity becomes active. They ensure that emitted 
   effects are safely delivered to the appropriate implementation.
 
 ## Advanced Glossary
@@ -145,7 +145,21 @@ Usage example:
 ```kotlin
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
+    // option 1 (if you need an access to ToastsImpl instance):
     private val toasts by lazyEffect { ToastsImpl(this) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // option 2 (if you don't need an access to ToastsImpl instance):
+        initEffect { ToastsImpl(this) }
+        // option 3 (for Jetpack Compose)
+        setContent {
+            val toasts = remember { ToastsImpl(this) }
+            EffectProvider(toasts) {
+                MyApp()
+            }
+        }
+    }
 }
 
 @HiltViewModel

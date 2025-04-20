@@ -32,13 +32,19 @@ class MainActivity : ComponentActivity() {
 
     // 1b. Another way for non- Jetpack Compose projects
     //     is to use EffectController, but you need manually
-    //     call start() and stop() methods:
+    //     call start() and stop() methods. Function 'injectBoundEffectController'
+    //     is available as an extension of Koin, KoinComponent, KoinScope and
+    //     AndroidScopeComponent.
     // private val toastsController by injectBoundEffectController {
     //     AndroidToasts(context = this)
     // }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1c. And the third way for non- Jetpack Compose projects:
+        // initEffect { AndroidToasts(this) }
+
         setContent {
             // 2. Example for Jetpack Compose projects how to connect
             //    ComposeDialogs implementation to Dialogs interface

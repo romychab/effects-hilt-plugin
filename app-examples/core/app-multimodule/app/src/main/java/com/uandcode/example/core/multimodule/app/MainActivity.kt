@@ -42,6 +42,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1c. And the third way for non- Jetpack Compose projects:
+        // initEffect { AndroidToasts(this) }
+
         setContent {
             // 2. Example for Jetpack Compose projects how to connect
             //    ComposeDialogs implementation to Dialogs interface

@@ -31,11 +31,11 @@ This page explains how to install and use the library with the Koin DI Framework
 
    ```kotlin
    // annotation processor:
-   ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha03")
+   ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha04")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-koin:2.0.0-alpha03")
+   implementation("com.uandcode:effects2-koin:2.0.0-alpha04")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha03")
+   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha04")
    
    // Koin dependencies
    implementation("io.insert-koin:koin-android:4.0.3")
@@ -50,9 +50,9 @@ For more details, check out the [single-module Koin example app](/app-examples/k
 - Dependencies for your __application module__ remain the same:
 
   ```kotlin
-  ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha03")
-  implementation("com.uandcode:effects2-koin:2.0.0-alpha03") // without Jetpack Compose
-  implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha03") // with Jetpack Compose
+  ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha04")
+  implementation("com.uandcode:effects2-koin:2.0.0-alpha04") // without Jetpack Compose
+  implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha04") // with Jetpack Compose
   ```
 
 - Additional configuration is required for your __Library__ modules, if you
@@ -188,9 +188,17 @@ For more details, check out the [single-module Koin example app](/app-examples/k
 
       ```kotlin
       class MainActivity: AppCompatActivity() {
+      
+          // option 1 (if you need an access to MyEffectsImpl instance):
           private val myEffects by lazyEffect {
               MyEffectsImpl(this)
           }
+      
+          override fun onCreate(savedInstanceState: Bundle?) {
+             super.onCreate(savedInstanceState)
+             // option 2 (if you don't need an access to MyEffectsImpl instance):
+             initEffect { MyEffectsImpl(this) }
+         }
       }
       ```
 
