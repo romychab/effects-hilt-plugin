@@ -10,6 +10,7 @@ This page describes how to install and use the library with Hilt DI Framework.
 - [Migration from Version 1.x to 2.x](#migration-from-version-1x-to-2x)
 - [Usage Example](#usage-example)
 - [Hilt Components and Effects](#hilt-components-and-effects)
+- [Using Effect Controllers](#using-effect-controllers)
 - [Example Apps](#example-apps)
 
 ## Prerequisites
