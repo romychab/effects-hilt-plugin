@@ -203,10 +203,11 @@ internal inline fun <reified T : Any> LifecycleOwner.lazyEffect(
     crossinline scopeProvider: () -> EffectScope,
     noinline effectProvider: () -> T,
 ): HiltEffectDelegate<T> {
-    return HiltEffectDelegateImpl(
-        lifecycle = this.lifecycle,
+    val delegate = HiltEffectDelegateImpl(
         controllerProvider = {
             scopeProvider().getController(T::class).bind(effectProvider)
         }
     )
+    lifecycle.addObserver(delegate)
+    return delegate
 }
