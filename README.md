@@ -1,6 +1,7 @@
 # One-off events (a.k.a. Effects) and even more :fire:
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central)](https://uandcode.com/sh/effects)
+[![Maven Central v1.x](https://img.shields.io/maven-central/v/com.elveum/effects-core.svg?label=Maven%20Central%20v1.x)](https://uandcode.com/sh/effects)
+[![Maven Central v2.x](https://img.shields.io/maven-central/v/com.uandcode/effects2-hilt-compose.svg?label=Maven%20Central%20v2.x)](https://uandcode.com/sh/effects2)
 ![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)
 ![JDK](https://img.shields.io/badge/JDK-17-brightgreen.svg?style=flat)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-Meerkat-brightgreen.svg?style=flat)
@@ -12,8 +13,10 @@ The most common use case is sending one-off events from Android ViewModels to th
 With this library, there's no need for `SharedFlow`, `Channel`, or extra event-related 
 properties in your state classes.
 
-:warning: This page covers the 2.x release, which is currently in alpha. 
+⚠️ This page covers the 2.x release, which is currently in alpha. 
 Looking for the stable 1.x version? Click [here](/docs/README_LEGACY_1x.md) to learn more.
+
+ℹ️ Migration guide from v1.x to v2.x is [here](#migration-from-version-1x-to-2x).
 
 Supported DI Frameworks:
 - Hilt
