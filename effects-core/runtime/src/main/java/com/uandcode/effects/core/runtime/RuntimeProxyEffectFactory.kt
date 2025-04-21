@@ -2,12 +2,14 @@ package com.uandcode.effects.core.runtime
 
 import com.uandcode.effects.core.CommandExecutor
 import com.uandcode.effects.core.EffectProxyMarker
-import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.exceptions.EffectNotFoundException
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 import com.uandcode.effects.core.runtime.proxy.ProxyMethodInterceptor
 import com.uandcode.effects.stub.api.ProxyConfiguration
 import java.lang.reflect.Proxy
 import kotlin.reflect.KClass
+import kotlin.reflect.full.functions
+import kotlin.reflect.jvm.javaMethod
 
 /**
  * A [ProxyEffectFactory] implementation that uses ByteBuddy to generate
@@ -33,11 +35,15 @@ public class RuntimeProxyEffectFactory : ProxyEffectFactory {
         clazz: KClass<T>,
         commandExecutor: CommandExecutor<T>,
     ): T {
+        val name = clazz.qualifiedName.toString()
+        val abstractMethods = clazz.functions
+            .filter { it.isAbstract }
+            .mapNotNull { it.javaMethod }
         val javaInterface = clazz.java
         val proxy = Proxy.newProxyInstance(
             javaInterface.classLoader,
             arrayOf(javaInterface, AutoCloseable::class.java, EffectProxyMarker::class.java),
-            ProxyMethodInterceptor(commandExecutor)
+            ProxyMethodInterceptor(name, commandExecutor, abstractMethods)
         )
         return proxy as T
     }

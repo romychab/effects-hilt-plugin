@@ -14,6 +14,8 @@ import com.uandcode.effects.core.testing.mocks.Effect.Companion.expectedResult
 import com.uandcode.effects.core.testing.mocks.Effect1
 import com.uandcode.effects.core.testing.mocks.Effect2
 import com.uandcode.effects.core.testing.mocks.EffectImpl
+import com.uandcode.effects.core.testing.mocks.EffectWithDefaultMethod
+import com.uandcode.effects.core.testing.mocks.EffectWithDefaultMethodImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTargetImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithTarget
@@ -25,6 +27,7 @@ import com.uandcode.flowtest.CollectStatus
 import com.uandcode.flowtest.JobStatus
 import com.uandcode.flowtest.runFlowTest
 import io.mockk.MockKAnnotations
+import io.mockk.called
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -657,6 +660,47 @@ class CoreRuntimeIntegrationTest {
         }
         verify(exactly = 0) {
             combinedEffect.run3(any())
+        }
+    }
+
+    @Test
+    fun `default method of effect should not be overridden`() {
+        val proxy = scope.getProxy<EffectWithDefaultMethod>()
+        val effect = spyk(EffectWithDefaultMethodImpl())
+        val controller = scope.getController<EffectWithDefaultMethod>()
+
+        proxy.defaultRun("input")
+
+        verify {
+            effect wasNot called
+        }
+        controller.start(effect)
+        verify(exactly = 1) {
+            effect.run("default input")
+        }
+        verify(exactly = 0) {
+            effect.defaultRun(any())
+        }
+    }
+
+    @Test
+    fun `nested default methods of effect should not be overridden`() {
+        val proxy = scope.getProxy<EffectWithDefaultMethod>()
+        val effect = spyk(EffectWithDefaultMethodImpl())
+        val controller = scope.getController<EffectWithDefaultMethod>()
+
+        proxy.combinedDefaultRun("input")
+
+        verify {
+            effect wasNot called
+        }
+        controller.start(effect)
+        verify(exactly = 1) {
+            effect.run("default combined input")
+        }
+        verify(exactly = 0) {
+            effect.defaultRun(any())
+            effect.combinedDefaultRun(any())
         }
     }
 
