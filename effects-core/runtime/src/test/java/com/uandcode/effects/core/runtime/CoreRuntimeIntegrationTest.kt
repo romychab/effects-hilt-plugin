@@ -18,9 +18,13 @@ import com.uandcode.effects.core.testing.mocks.EffectWithDefaultMethod
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultMethodImpl
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTarget
 import com.uandcode.effects.core.testing.mocks.EffectWithDefaultTargetImpl
+import com.uandcode.effects.core.testing.mocks.EffectWithExplicitHierarchy
+import com.uandcode.effects.core.testing.mocks.EffectWithHierarchy
 import com.uandcode.effects.core.testing.mocks.EffectWithTarget
 import com.uandcode.effects.core.testing.mocks.EffectWithTargetImpl
 import com.uandcode.effects.core.testing.mocks.NonTargetEffect3
+import com.uandcode.effects.core.testing.mocks.SubEffect
+import com.uandcode.effects.core.testing.mocks.SuperEffect
 import com.uandcode.effects.core.testing.mocks.TargetEffect1
 import com.uandcode.effects.core.testing.mocks.TargetEffect2
 import com.uandcode.flowtest.CollectStatus
@@ -701,6 +705,65 @@ class CoreRuntimeIntegrationTest {
         verify(exactly = 0) {
             effect.defaultRun(any())
             effect.combinedDefaultRun(any())
+        }
+    }
+
+    @Test
+    fun `proxy created from sub-effect delivers call on super-interface`() {
+        val proxy = scope.getProxy<SubEffect>()
+        val effect = spyk(EffectWithHierarchy())
+        val controller = scope.getController<EffectWithHierarchy>()
+        controller.start(effect)
+
+        proxy.superRun("input")
+
+        verify(exactly = 1) {
+            effect.superRun("input")
+        }
+    }
+
+    @Test
+    fun `proxy created from super-effect does not deliver call on super-interface`() {
+        val proxy = scope.getProxy<SuperEffect>()
+        val effect = spyk(EffectWithHierarchy())
+        val controller = scope.getController<EffectWithHierarchy>()
+        controller.start(effect)
+
+        proxy.superRun("input")
+
+        verify(exactly = 0) {
+            effect.superRun("input")
+        }
+    }
+
+    @Test
+    fun `proxy created from explicit super-effect delivers call on super-interface`() {
+        val proxy = scope.getProxy<SuperEffect>()
+        val effect = spyk(EffectWithExplicitHierarchy())
+        val controller = scope.getController<EffectWithExplicitHierarchy>()
+        controller.start(effect)
+
+        proxy.superRun("input")
+
+        verify(exactly = 1) {
+            effect.superRun("input")
+        }
+    }
+
+    @Test
+    fun `proxy created from sub-effect delivers default call on super-interface`() {
+        val proxy = scope.getProxy<SubEffect>()
+        val effect = spyk(EffectWithHierarchy())
+        val controller = scope.getController<EffectWithHierarchy>()
+        controller.start(effect)
+
+        proxy.defaultRun("input")
+
+        verify(exactly = 0) {
+            effect.defaultRun(any())
+        }
+        verify(exactly = 1) {
+            effect.superRun("combined input")
         }
     }
 
