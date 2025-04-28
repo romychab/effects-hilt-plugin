@@ -61,6 +61,7 @@ include(":effects-hilt:annotations")
 include(":effects-hilt:essentials")
 include(":effects-hilt:compose")
 include(":effects-hilt:compiler")
+include(":effects-hilt:compiler-test")
 
 // Effects Koin Library
 include(":effects-koin:annotations")
