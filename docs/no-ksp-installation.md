@@ -40,11 +40,11 @@ You can skip KSP if:
 
    ```kotlin
    // required:
-   implementation("com.uandcode:effects2-core-runtime:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-core-runtime:2.0.0-alpha05")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-koin:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-koin:2.0.0-alpha05")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha05")
    
    // Koin dependencies:
    implementation("io.insert-koin:koin-core:4.0.3") // core
@@ -174,11 +174,11 @@ You can skip KSP if:
 
    ```kotlin
    // required:
-   implementation("com.uandcode:effects2-core-runtime:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-core-runtime:2.0.0-alpha05")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha05")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-core-compose:2.0.0-alpha04")   
+   implementation("com.uandcode:effects2-core-compose:2.0.0-alpha05")   
    ```
 
 2. Create a custom Application class and call `setupRuntimeEffectsGlobally()`

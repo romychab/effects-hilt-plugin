@@ -188,11 +188,11 @@ Installation steps may vary depending on the DI framework you're using.
 
    ```kotlin
    // annotation processor (required):
-   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha04")
+   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-hilt:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-hilt:2.0.0-alpha05")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05")
    ```
 
 For more details, check out the [single-module Hilt example app](/app-examples/hilt/app-singlemodule).
@@ -205,11 +205,11 @@ For more details, check out the [single-module Hilt example app](/app-examples/h
 
    ```kotlin
    // annotation processor:
-   ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha04")
+   ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha05")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-koin:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-koin:2.0.0-alpha05")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha05")
    ```
 
 Check out [single-module Koin example app](/app-examples/koin/app-singlemodule) for more details.
@@ -225,11 +225,11 @@ Check out [single-module Koin example app](/app-examples/koin/app-singlemodule) 
 
    ```kotlin
    // annotation processor:
-   ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha04")
+   ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha05")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha05")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-core-compose:2.0.0-alpha04")
+   implementation("com.uandcode:effects2-core-compose:2.0.0-alpha05")
    ```
 
 Check out [the single-module No-DI example app](/app-examples/core/app-singlemodule) for a working setup.
@@ -240,19 +240,19 @@ Check out [the single-module No-DI example app](/app-examples/core/app-singlemod
 
   ```kotlin
   // Hilt Integration:
-  ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha04")
-  implementation("com.uandcode:effects2-hilt:2.0.0-alpha04") // without Jetpack Compose
-  implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha04") // with Jetpack Compose
+  ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
+  implementation("com.uandcode:effects2-hilt:2.0.0-alpha05") // without Jetpack Compose
+  implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05") // with Jetpack Compose
   
   // Koin Integration:
-  ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha04")
-  implementation("com.uandcode:effects2-koin:2.0.0-alpha04") // without Jetpack Compose
-  implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha04") // with Jetpack Compose
+  ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha05")
+  implementation("com.uandcode:effects2-koin:2.0.0-alpha05") // without Jetpack Compose
+  implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha05") // with Jetpack Compose
   
   // No DI:
-  ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha04")
-  implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha04") // without Jetpack Compose
-  implementation("com.uandcode:effects2-core-compose:2.0.0-alpha04") // with Jetpack Compose
+  ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha05")
+  implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha05") // without Jetpack Compose
+  implementation("com.uandcode:effects2-core-compose:2.0.0-alpha05") // with Jetpack Compose
   ```
 
 - Additional configuration is required for your __Library__ modules, if you
@@ -287,9 +287,9 @@ so this guide is relevant only for projects using Hilt.
 1. In your `build.gradle` file, update the library dependencies:
 
    ```kotlin
-   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha04")
-   implementation("com.uandcode:effects2-hilt:2.0.0-alpha04") // without Jetpack Compose
-   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha04") // with Jetpack Compose
+   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
+   implementation("com.uandcode:effects2-hilt:2.0.0-alpha05") // without Jetpack Compose
+   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05") // with Jetpack Compose
    ```
 
 2. Update relevant import statements and package references:

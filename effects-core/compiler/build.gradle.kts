@@ -17,11 +17,11 @@ kotlin {
 dependencies {
     implementation(projects.effectsCore.compilerCommon)
     implementation(projects.effectsCore.annotations)
+    testImplementation(projects.effectsCore.essentials)
+    testImplementation(projects.effectsCore.testing.ksp)
 
     implementation(libs.kotlinPoet)
     implementation(libs.kotlinPoet.ksp)
     implementation(libs.ksp.api)
-
-    testImplementation(libs.junit)
-    testImplementation(libs.ksp.testing)
+    implementation(libs.coroutines.core)
 }
