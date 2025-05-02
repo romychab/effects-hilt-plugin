@@ -28,11 +28,11 @@ Add the necessary dependencies:
 
 ```kotlin
 // annotation processor:
-ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha04")
+ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha05")
 // for projects without Jetpack Compose:
-implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha04")
+implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha05")
 // for projects with Jetpack Compose:
-implementation("com.uandcode:effects2-core-compose:2.0.0-alpha04")
+implementation("com.uandcode:effects2-core-compose:2.0.0-alpha05")
 ```
 
 Check out [the single-module No-DI example app](/app-examples/core/app-singlemodule) for a working setup.
@@ -42,9 +42,9 @@ Check out [the single-module No-DI example app](/app-examples/core/app-singlemod
 - Dependencies for your __application module__ remain the same:
 
   ```kotlin
-  ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha04")
-  implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha04") // without Jetpack Compose
-  implementation("com.uandcode:effects2-core-compose:2.0.0-alpha04") // with Jetpack Compose
+  ksp("com.uandcode:effects2-core-compiler:2.0.0-alpha05")
+  implementation("com.uandcode:effects2-core-lifecycle:2.0.0-alpha05") // without Jetpack Compose
+  implementation("com.uandcode:effects2-core-compose:2.0.0-alpha05") // with Jetpack Compose
   ```
 
 - Additional configuration is required for your __Library__ modules, if you
