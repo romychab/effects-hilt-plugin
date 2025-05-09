@@ -1,17 +1,17 @@
 package com.uandcode.effects.core.internal.scopes
 
 import com.uandcode.effects.core.EffectScope
-import com.uandcode.effects.core.factories.DefaultProxyEffectFactory
 import com.uandcode.effects.core.ManagedInterfaces
+import com.uandcode.effects.core.factories.ProxyEffectFactory
 
-internal val EmptyEffectScope: EffectScope = LazyEffectScope {
-    buildEmptyEffectScope()
-}
-
-internal fun buildEmptyEffectScope(): EffectScope {
-    return DefaultEffectScope(
-        managedInterfaces = ManagedInterfaces.ListOf(),
-        proxyEffectFactory = DefaultProxyEffectFactory(),
-        parent = null,
-    )
+internal fun buildEmptyEffectScope(
+    proxyEffectFactory: ProxyEffectFactory
+): EffectScope {
+    return LazyEffectScope {
+        DefaultEffectScope(
+            managedInterfaces = ManagedInterfaces.ListOf(),
+            proxyEffectFactory = proxyEffectFactory,
+            parent = null,
+        )
+    }
 }

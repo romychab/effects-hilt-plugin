@@ -1,6 +1,5 @@
 package com.uandcode.effects.core
 
-import com.uandcode.effects.core.internal.scopes.EmptyEffectScope
 import com.uandcode.effects.core.internal.scopes.buildGlobalEffectScope
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -27,11 +26,6 @@ class RootEffectScopesTest {
     @After
     fun tearDown() {
         clearAllMocks()
-    }
-
-    @Test
-    fun `test default empty scope`() {
-        assertEquals(EmptyEffectScope, RootEffectScopes.empty)
     }
 
     @Test
