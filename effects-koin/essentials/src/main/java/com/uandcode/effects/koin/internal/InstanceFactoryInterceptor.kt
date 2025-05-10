@@ -91,8 +91,9 @@ internal class InstanceFactoryInterceptor<T>(
 
 }
 
-internal fun KoinApplication.overrideInstances() {
-    val constructorArgStack = ConstructorArgStack()
+internal fun KoinApplication.overrideInstances(
+    constructorArgStack: ConstructorArgStack = ConstructorArgStack()
+) {
     val allInstances = koin.instanceRegistry.instances as MutableMap
     allInstances.keys.toList().forEach { key ->
         allInstances[key]?.let { instanceFactory ->

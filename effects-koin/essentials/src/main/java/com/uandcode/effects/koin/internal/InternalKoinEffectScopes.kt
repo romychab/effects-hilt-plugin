@@ -19,12 +19,14 @@ internal data class LocalEffectQualifier(val value: String)
  * For internal usage. Public modifier is added to make this function available
  * from auto-generated code.
  */
-public fun Module.internalSetupRootEffects() {
+public fun Module.internalSetupRootEffects(
+    rootEffectScope: EffectScope = RootEffectScopes.global
+) {
     single<LocalEffectQualifier> {
         LocalEffectQualifier(KOIN_EFFECT_ROOT_QUALIFIER.value)
     }
     single(KOIN_EFFECT_ROOT_QUALIFIER) {
-        RootEffectScopes.global
+        rootEffectScope
     }
     factory<EffectScope> {
         get(KOIN_EFFECT_ROOT_QUALIFIER)
@@ -58,10 +60,12 @@ public fun ScopeDSL.internalSetupScopedEffects(
     }
 }
 
-internal fun KoinApplication.installRootEffects() {
+internal fun KoinApplication.installRootEffects(
+    rootEffectScope: EffectScope = RootEffectScopes.global
+) {
     modules(
         module {
-            internalSetupRootEffects()
+            internalSetupRootEffects(rootEffectScope)
         }
     )
 }
