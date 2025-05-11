@@ -17,8 +17,8 @@ internal class ConstructorArgStack {
         args.clear()
     }
 
-    fun pop() {
-        args.removeLastOrNull()
+    fun pop(): ConstructorArg? {
+        return args.removeLastOrNull()
     }
 
     fun popTo(arg: ConstructorArg): List<ConstructorArg> {

@@ -12,6 +12,7 @@ internal class ConstructorArg : AutoCloseable {
 
     override fun close() {
         closeable?.close()
+        closeable = null
     }
 
 }

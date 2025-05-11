@@ -1,6 +1,8 @@
 package com.uandcode.effects.core
 
-import com.uandcode.effects.core.internal.scopes.EmptyEffectScope
+import com.uandcode.effects.core.factories.DefaultProxyEffectFactory
+import com.uandcode.effects.core.factories.ProxyEffectFactory
+import com.uandcode.effects.core.internal.scopes.buildEmptyEffectScope
 import com.uandcode.effects.core.internal.scopes.buildGlobalEffectScope
 
 /**
@@ -19,12 +21,24 @@ public object RootEffectScopes {
      * This is an empty effect scope that can be used to create your
      * own hierarchy of scopes.
      */
-    public val empty: EffectScope = EmptyEffectScope
+    public val empty: EffectScope by lazy {
+        buildEmptyEffectScope(DefaultProxyEffectFactory())
+    }
 
     /**
      * Global singleton scope containing references to all annotated effects.
      */
     public val global: EffectScope get() = _global
+
+    /**
+     * Create an empty effect scope that can be used to create your
+     * own hierarchy of scopes.
+     */
+    public fun empty(
+        proxyEffectFactory: ProxyEffectFactory = DefaultProxyEffectFactory()
+    ): EffectScope {
+        return buildEmptyEffectScope(proxyEffectFactory)
+    }
 
     /**
      * Set a custom [EffectScope] instance which will be used

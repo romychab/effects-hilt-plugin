@@ -14,8 +14,13 @@ dependencies {
     api(projects.effectsCore.runtime)
     api(projects.effectsKoin.annotations)
     compileOnly(projects.effectsKoin.kspcontract)
+    testImplementation(projects.effectsKoin.kspcontract)
+    testImplementation(projects.effectsCore.testing.lifecycle)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.viewmodel)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
 }

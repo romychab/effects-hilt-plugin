@@ -22,7 +22,7 @@ internal fun Module.validateEffectScopeQualifier(qualifier: Qualifier, id: Int) 
         createdAtStart = true,
         qualifier = named("effectScope-$qualifier-$id")
     ) {
-        get<EffectScopeValidator>().add(qualifier)
+        get<EffectScopeValidator>().apply { add(qualifier) }
     }
 }
 

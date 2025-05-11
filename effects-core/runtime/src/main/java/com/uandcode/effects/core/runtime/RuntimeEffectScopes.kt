@@ -6,6 +6,10 @@ import com.uandcode.effects.core.RootEffectScopes
 
 public object RuntimeEffectScopes {
 
+    public fun createEmpty(): EffectScope {
+        return RootEffectScopes.empty(RuntimeProxyEffectFactory())
+    }
+
     /**
      * Create a new [EffectScope] which can create proxy implementations
      * for all effect [managedInterfaces] at runtime.
@@ -17,30 +21,13 @@ public object RuntimeEffectScopes {
      *
      * ```
      * // replace a root effect scope with a runtime one
-     * RootEffectScopes.setGlobal(RuntimeEffectScopes.create())
+     * RootEffectScopes.setGlobal(RuntimeEffectScopes.createGlobal())
      * ```
      */
-    public fun create(
+    public fun createGlobal(
         managedInterfaces: ManagedInterfaces = ManagedInterfaces.Everything
     ): EffectScope {
-        return RootEffectScopes.empty.createChild(
-            managedInterfaces = managedInterfaces,
-            proxyEffectFactory = RuntimeProxyEffectFactory()
-        )
-    }
-
-    /**
-     * Create a child [EffectScope] which can create proxy implementations
-     * for all [managedInterfaces] at runtime.
-     */
-    public fun createChild(
-        parent: EffectScope,
-        managedInterfaces: ManagedInterfaces = ManagedInterfaces.Everything
-    ): EffectScope {
-        return parent.createChild(
-            managedInterfaces = managedInterfaces,
-            proxyEffectFactory = RuntimeProxyEffectFactory()
-        )
+        return createEmpty().createChild(managedInterfaces)
     }
 
 }

@@ -27,11 +27,11 @@ This page describes how to install and use the library with Hilt DI Framework.
 
    ```kotlin
    // annotation processor (required):
-   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
+   ksp("com.uandcode:effects2-hilt-compiler:2.0.0")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-hilt:2.0.0-alpha05")
+   implementation("com.uandcode:effects2-hilt:2.0.0")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05")
+   implementation("com.uandcode:effects2-hilt-compose:2.0.0")
    ```
 
 For more details, check out the [single-module Hilt example app](/app-examples/hilt/app-singlemodule).
@@ -41,9 +41,9 @@ For more details, check out the [single-module Hilt example app](/app-examples/h
 - Dependencies for your __application module__ remain the same:
 
   ```kotlin
-  ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
-  implementation("com.uandcode:effects2-hilt:2.0.0-alpha05") // without Jetpack Compose
-  implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05") // with Jetpack Compose
+  ksp("com.uandcode:effects2-hilt-compiler:2.0.0")
+  implementation("com.uandcode:effects2-hilt:2.0.0") // without Jetpack Compose
+  implementation("com.uandcode:effects2-hilt-compose:2.0.0") // with Jetpack Compose
   ```
 
 - Additional configuration is required for your __Library__ modules, if you
@@ -72,9 +72,9 @@ and imports. Please make sure to update your project accordingly.
 1. In your `build.gradle` file, update the library dependencies:
 
    ```kotlin
-   ksp("com.uandcode:effects2-hilt-compiler:2.0.0-alpha05")
-   implementation("com.uandcode:effects2-hilt:2.0.0-alpha05") // without Jetpack Compose
-   implementation("com.uandcode:effects2-hilt-compose:2.0.0-alpha05") // with Jetpack Compose
+   ksp("com.uandcode:effects2-hilt-compiler:2.0.0")
+   implementation("com.uandcode:effects2-hilt:2.0.0") // without Jetpack Compose
+   implementation("com.uandcode:effects2-hilt-compose:2.0.0") // with Jetpack Compose
    ```
 
 2. Update relevant import statements and package references:

@@ -52,8 +52,7 @@ class CoreRuntimeIntegrationTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        RootEffectScopes.setGlobal(RuntimeEffectScopes.create())
-        scope = RootEffectScopes.global
+        scope = RuntimeEffectScopes.createGlobal()
     }
 
     @After

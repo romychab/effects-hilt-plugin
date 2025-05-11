@@ -21,9 +21,6 @@ import com.uandcode.effects.core.RootEffectScopes
  * ```
  */
 public fun setupRuntimeEffectsGlobally() {
-    val runtimeGlobalScope = RootEffectScopes.empty.createChild(
-        managedInterfaces = ManagedInterfaces.Everything,
-        proxyEffectFactory = RuntimeProxyEffectFactory()
-    )
+    val runtimeGlobalScope = RuntimeEffectScopes.createGlobal()
     RootEffectScopes.setGlobal(runtimeGlobalScope)
 }

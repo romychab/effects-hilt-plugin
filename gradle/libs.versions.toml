@@ -23,7 +23,7 @@ androidxActivity = "1.10.1"
 immutableCollections = "0.3.8"
 koin = "4.0.3"
 composeRuntime = "1.7.3"
-effectsMaven = "2.0.0-alpha05"
+effectsMaven = "2.0.0"
 
 [libraries]
 # example apps

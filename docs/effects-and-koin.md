@@ -31,11 +31,11 @@ This page explains how to install and use the library with the Koin DI Framework
 
    ```kotlin
    // annotation processor:
-   ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha05")
+   ksp("com.uandcode:effects2-koin-compiler:2.0.0")
    // for projects without Jetpack Compose:
-   implementation("com.uandcode:effects2-koin:2.0.0-alpha05")
+   implementation("com.uandcode:effects2-koin:2.0.0")
    // for projects with Jetpack Compose:
-   implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha05")
+   implementation("com.uandcode:effects2-koin-compose:2.0.0")
    
    // Koin dependencies
    implementation("io.insert-koin:koin-android:4.0.3")
@@ -50,9 +50,9 @@ For more details, check out the [single-module Koin example app](/app-examples/k
 - Dependencies for your __application module__ remain the same:
 
   ```kotlin
-  ksp("com.uandcode:effects2-koin-compiler:2.0.0-alpha05")
-  implementation("com.uandcode:effects2-koin:2.0.0-alpha05") // without Jetpack Compose
-  implementation("com.uandcode:effects2-koin-compose:2.0.0-alpha05") // with Jetpack Compose
+  ksp("com.uandcode:effects2-koin-compiler:2.0.0")
+  implementation("com.uandcode:effects2-koin:2.0.0") // without Jetpack Compose
+  implementation("com.uandcode:effects2-koin-compose:2.0.0") // with Jetpack Compose
   ```
 
 - Additional configuration is required for your __Library__ modules, if you
