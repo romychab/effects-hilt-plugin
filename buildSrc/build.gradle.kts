@@ -8,7 +8,6 @@ dependencies {
     implementation(buildSrcLibs.libplugin.kotlinJvm)
     implementation(buildSrcLibs.libplugin.androidApp)
     implementation(buildSrcLibs.libplugin.androidLibrary)
-    implementation(buildSrcLibs.libplugin.kotlinAndroid)
     implementation(buildSrcLibs.libplugin.kotlinSerialization)
     implementation(buildSrcLibs.libplugin.kotlinCompose)
     implementation(buildSrcLibs.libplugin.hilt)

@@ -20,6 +20,7 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.viewmodel)
+    implementation(libs.lifecycle.jvm)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

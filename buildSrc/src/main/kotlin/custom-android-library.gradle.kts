@@ -2,7 +2,6 @@ import helpers.*
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.dokka")
 }
 
@@ -31,12 +30,12 @@ android {
         sourceCompatibility = catalogs.minJavaVersion
         targetCompatibility = catalogs.minJavaVersion
     }
-    kotlinOptions {
-        jvmTarget = catalogs.minJvmString
-    }
 }
 
 kotlin {
+    compilerOptions {
+        jvmTarget = catalogs.minJvm
+    }
     jvmToolchain(catalogs.toolchainJvm)
     explicitApi()
 }

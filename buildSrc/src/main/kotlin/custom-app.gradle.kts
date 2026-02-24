@@ -2,7 +2,6 @@ import helpers.*
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -33,11 +32,11 @@ android {
         sourceCompatibility = catalogs.minJavaVersion
         targetCompatibility = catalogs.minJavaVersion
     }
-    kotlinOptions {
-        jvmTarget = catalogs.minJvmString
-    }
 }
 
 kotlin {
+    compilerOptions {
+        jvmTarget = catalogs.minJvm
+    }
     jvmToolchain(catalogs.toolchainJvm)
 }
