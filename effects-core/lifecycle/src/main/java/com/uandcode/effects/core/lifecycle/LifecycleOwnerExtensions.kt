@@ -105,5 +105,6 @@ public inline fun <reified T : Any> LifecycleOwner.initEffect(
     scope: EffectScope = RootEffectScopes.global,
     noinline effectProvider: () -> T
 ) {
-    lazyEffect(scope, effectProvider)
+    val effect by lazyEffect(scope, effectProvider)
+    effect // access effect instance immediately to create it
 }

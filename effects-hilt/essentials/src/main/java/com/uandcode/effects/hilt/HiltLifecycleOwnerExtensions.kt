@@ -147,7 +147,8 @@ public inline fun <reified T : Any> Fragment.lazyEffect(
 public inline fun <reified T : Any> ComponentActivity.initEffect(
     noinline effectProvider: () -> T
 ) {
-    lazyEffect(effectProvider)
+    val effect by lazyEffect(effectProvider)
+    effect // access effect instance immediately to create it
 }
 
 /**
@@ -195,7 +196,8 @@ public inline fun <reified T : Any> ComponentActivity.initEffect(
 public inline fun <reified T : Any> Fragment.initEffect(
     noinline effectProvider: () -> T
 ) {
-    lazyEffect(effectProvider)
+    val effect by lazyEffect(effectProvider)
+    effect // access effect instance immediately to create it
 }
 
 @PublishedApi
