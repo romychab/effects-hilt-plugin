@@ -108,5 +108,6 @@ public inline fun <reified T : Any> LifecycleOwner.lazyEffect(
 public inline fun <reified T : Any> LifecycleOwner.initEffect(
     noinline effectProvider: () -> T
 ) {
-    lazyEffect(effectProvider)
+    val effect by lazyEffect(effectProvider)
+    effect // access effect instance immediately to create it
 }
