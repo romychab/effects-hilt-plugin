@@ -40,6 +40,8 @@ class ObjectTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     override val expectedEffectModule: String = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package object_test
 
         import com.uandcode.effects.core.EffectScope
@@ -121,7 +123,7 @@ class ObjectTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of effect object should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile("object_test/__ObjectEffectProxy.kt", expectedProxy)
         assertGeneratedFile("object_test/ObjectEffectModule.kt", expectedEffectModule)
         assertGeneratedFile("object_test/ObjectEffectImplModule.kt", expectedEffectImplModule)

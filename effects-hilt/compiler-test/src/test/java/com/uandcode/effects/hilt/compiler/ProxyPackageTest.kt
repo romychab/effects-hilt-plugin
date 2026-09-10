@@ -47,6 +47,8 @@ class ProxyPackageTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     override val expectedEffectModule: String = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package interface_package
 
         import com.uandcode.effects.core.EffectScope
@@ -128,7 +130,7 @@ class ProxyPackageTest : AbstractHiltKspTest() {
     fun `generated proxy must be placed to the package of target interface`() =
         with(compile(effectInterfaceSource, effectImplementationSource)) {
             assertCompiled()
-            assertGeneratedFileCount(4)
+            assertGeneratedFileCount(12)
             assertGeneratedFile("interface_package/__EffectProxy.kt", expectedProxy)
             assertGeneratedFile("interface_package/EffectModule.kt", expectedEffectModule)
             assertGeneratedFile("impl_package/EffectImplModule.kt", expectedEffectImplModule)

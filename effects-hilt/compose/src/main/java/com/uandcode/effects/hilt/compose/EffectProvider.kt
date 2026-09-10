@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.uandcode.effects.core.compose.EffectProvider
 import com.uandcode.effects.hilt.annotations.HiltEffect
 import com.uandcode.effects.hilt.getEffectEntryPoint
 import kotlinx.collections.immutable.ImmutableList
@@ -15,10 +14,14 @@ import com.uandcode.effects.core.compose.EffectProvider as CoreEffectProvider
 import com.uandcode.effects.core.compose.getEffect as getCoreEffect
 
 /**
- * Get an effect implementation of a type [T] within the
- * existing [EffectProvider] component.
+ * Get an effect implementation of a type [T] within the content block
+ * of the existing [EffectProvider] component.
  *
- * @throws IllegalStateException if this method is called not within [EffectProvider]
+ * Please note, the [EffectProvider] content block is mandatory here. Effects
+ * provided by a leaf `EffectProvider(...)` call without a content block are
+ * attached to their interfaces, but they are not visible for this function.
+ *
+ * @throws IllegalStateException if this method is called outside of the [EffectProvider] content block
  * @throws IllegalArgumentException if the specified effect of type [T] is not
  *                                  managed by the [EffectProvider] component
  */
@@ -71,13 +74,34 @@ public inline fun <reified T: Any> getEffect(): T {
  * }
  * ```
  *
+ * The content is optional. If you don't need to call [getEffect] within nested
+ * composables, you can use EffectProvider as a leaf component:
+ *
+ * ```
+ * @Composable
+ * fun Root() {
+ *     val myEffectImpl1 = remember { MyEffectImpl1() }
+ *     EffectProvider(myEffectImpl1)
+ *     MyApp()
+ * }
+ * ```
+ *
+ * Effects are attached to their interfaces in both cases. The difference is the
+ * visibility of effects for the [getEffect] function: it works only within the
+ * content block. In the example above, a `getEffect()` call inside `MyApp()`
+ * throws [IllegalStateException], because `MyApp()` is a sibling of the
+ * EffectProvider component and not a part of its content.
+ *
  * @param effects the list of effect implementations managed by this EffectProvider;
  *                please note, only instances of classes annotated with [HiltEffect] annotation are allowed
+ * @param content the optional content of this EffectProvider; effects listed in [effects]
+ *                param are attached to their interfaces even if the content is omitted,
+ *                but [getEffect] can be called only within the content block
  */
 @Composable
 public fun EffectProvider(
     effects: ImmutableList<Any>,
-    content: @Composable () -> Unit,
+    content: (@Composable () -> Unit)? = null,
 ) {
     val activity = LocalContext.current.getHostActivity()
     val effectScope = remember { activity.getEffectEntryPoint().getEffectScope() }
@@ -132,13 +156,34 @@ public fun EffectProvider(
  * }
  * ```
  *
+ * The content is optional. If you don't need to call [getEffect] within nested
+ * composables, you can use EffectProvider as a leaf component:
+ *
+ * ```
+ * @Composable
+ * fun Root() {
+ *     val myEffectImpl1 = remember { MyEffectImpl1() }
+ *     EffectProvider(myEffectImpl1)
+ *     MyApp()
+ * }
+ * ```
+ *
+ * Effects are attached to their interfaces in both cases. The difference is the
+ * visibility of effects for the [getEffect] function: it works only within the
+ * content block. In the example above, a `getEffect()` call inside `MyApp()`
+ * throws [IllegalStateException], because `MyApp()` is a sibling of the
+ * EffectProvider component and not a part of its content.
+ *
  * @param effects the list of effect implementations managed by this EffectProvider;
  *                please note, only instances of classes annotated with [HiltEffect] annotation are allowed
+ * @param content the optional content of this EffectProvider; effects listed in [effects]
+ *                param are attached to their interfaces even if the content is omitted,
+ *                but [getEffect] can be called only within the content block
  */
 @Composable
 public fun EffectProvider(
     vararg effects: Any,
-    content: @Composable () -> Unit,
+    content: (@Composable () -> Unit)? = null,
 ): Unit = EffectProvider(effects.toImmutableList(), content)
 
 private fun Context?.getHostActivity(): ComponentActivity {

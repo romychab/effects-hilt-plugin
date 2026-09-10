@@ -14,12 +14,14 @@ The Effects library works only with KSP, so both Hilt and KSP must be installed.
    - [Actual KSP versions](https://mvnrepository.com/artifact/com.google.devtools.ksp/com.google.devtools.ksp.gradle.plugin?repo=central)
    - [Actual Hilt versions](https://mvnrepository.com/artifact/com.google.dagger/hilt-android-gradle-plugin)
 
+   With `effects2-hilt:2.x` or newer, Hilt 2.58+ is required.
+
 4. Add the plugins to your root `build.gradle.kts`:
 
    ```kotlin
    plugins {
-       id("com.google.dagger.hilt.android") version("2.55") apply false
-       id("com.google.devtools.ksp") version ("2.1.10-1.0.31") apply false
+       id("com.google.dagger.hilt.android") version("2.58") apply false
+       id("com.google.devtools.ksp") version ("2.3.5") apply false
    }
    ```
 
@@ -32,8 +34,8 @@ The Effects library works only with KSP, so both Hilt and KSP must be installed.
    }
    
    dependencies {
-       implementation("com.google.dagger:hilt-android:2.55")
-       ksp("com.google.dagger:hilt-android-compiler:2.55")
+       implementation("com.google.dagger:hilt-android:2.58")
+       ksp("com.google.dagger:hilt-android-compiler:2.58")
    }
    ```
    

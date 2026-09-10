@@ -1,3 +1,5 @@
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
 %PACKAGE_STATEMENT%
 
 import com.uandcode.effects.core.EffectScope

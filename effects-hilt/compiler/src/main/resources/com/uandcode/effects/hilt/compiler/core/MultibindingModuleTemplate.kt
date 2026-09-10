@@ -1,4 +1,6 @@
-package com.uandcode.effects.hilt.internal.modules
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
+%PACKAGE_STATEMENT%
 
 import com.uandcode.effects.core.EffectScope
 import com.uandcode.effects.hilt.internal.InternalRegisteredEffect
@@ -12,22 +14,22 @@ import dagger.multibindings.ElementsIntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object MultibindingModule {
+public object %CLASSNAME% {
 
     @Provides
     @ElementsIntoSet
-    fun emptyRegisteredEffectSet(): Set<@JvmSuppressWildcards InternalRegisteredEffect> {
+    public fun emptyRegisteredEffectSet(): Set<@JvmSuppressWildcards InternalRegisteredEffect> {
         return emptySet()
     }
 
     @Provides
     @ElementsIntoSet
-    fun emptyQualifierSet(): Set<@JvmSuppressWildcards AbstractInternalQualifier> {
+    public fun emptyQualifierSet(): Set<@JvmSuppressWildcards AbstractInternalQualifier> {
         return emptySet()
     }
 
     @Provides
-    fun provideEffectScope(
+    public fun provideEffectScope(
         qualifiers: Set<@JvmSuppressWildcards AbstractInternalQualifier>
     ): EffectScope {
         return qualifiers.getEffectScopeWithMaxPriority()

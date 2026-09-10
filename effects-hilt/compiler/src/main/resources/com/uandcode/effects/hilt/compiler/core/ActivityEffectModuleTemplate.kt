@@ -1,32 +1,34 @@
-package com.uandcode.effects.hilt.internal.modules
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
+%PACKAGE_STATEMENT%
 
 import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.hilt.internal.InternalRegisteredEffect
 import com.uandcode.effects.hilt.internal.filterByQualifier
 import com.uandcode.effects.hilt.internal.qualifiers.AbstractInternalQualifier
+import com.uandcode.effects.hilt.internal.qualifiers.ActivityQualifier
 import com.uandcode.effects.hilt.internal.qualifiers.ActivityRetainedQualifier
-import com.uandcode.effects.hilt.internal.qualifiers.SingletonQualifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
-import dagger.hilt.android.scopes.ActivityRetainedScoped
+import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.scopes.ActivityScoped
 import dagger.multibindings.IntoSet
 
 @Module
-@InstallIn(ActivityRetainedComponent::class)
-internal object ActivityRetainedEffectModule {
+@InstallIn(ActivityComponent::class)
+public object %CLASSNAME% {
 
     @Provides
-    @ActivityRetainedScoped
-    fun provideQualifier(
-        parentQualifier: SingletonQualifier,
+    @ActivityScoped
+    public fun provideQualifier(
+        parentQualifier: ActivityRetainedQualifier,
         registeredEffects: Set<@JvmSuppressWildcards InternalRegisteredEffect>
-    ): ActivityRetainedQualifier {
-        return ActivityRetainedQualifier(
+    ): ActivityQualifier {
+        return ActivityQualifier(
             parentQualifier.scope.createChild(
                 ManagedInterfaces.ListOf(
-                    *registeredEffects.filterByQualifier(ActivityRetainedQualifier::class)
+                    *registeredEffects.filterByQualifier(ActivityQualifier::class)
                 )
             )
         )
@@ -34,8 +36,8 @@ internal object ActivityRetainedEffectModule {
 
     @Provides
     @IntoSet
-    fun provideQualifierToSet(
-        qualifier: ActivityRetainedQualifier
+    public fun provideQualifierToSet(
+        qualifier: ActivityQualifier
     ): AbstractInternalQualifier = qualifier
 
 }

@@ -187,6 +187,9 @@ Let's take a brief look at different ways of connecting effect handlers:
    as `lazyEffect` delegate, but also it automatically disconnects the effect implementation
    when `EffectProvider` composition is going to be destroyed. Also `EffectProvider` provides
    you an additional function `getEffect<T>()` which can be used for retrieving handlers.
+   The content block is optional: a leaf `EffectProvider(myEffectImpl)` call without a
+   trailing lambda connects and disconnects the effect implementation in the same way,
+   but `getEffect<T>()` can be used only within the content block.
 3. `EffectController<T>` instances; usually you don't need to use effect controllers
    directly. But in rare cases it may be useful, e.g. in custom UI components. Effect
    controllers are not created by hands; instead they are automatically provided by DI framework.

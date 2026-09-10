@@ -1,8 +1,10 @@
 package com.uandcode.effects.hilt.internal.qualifiers
 
 import com.uandcode.effects.core.EffectScope
+import com.uandcode.effects.hilt.InternalEffectsHiltApi
 
-internal class ActivityQualifier(
+@InternalEffectsHiltApi
+public class ActivityQualifier(
     scope: EffectScope
 ) : AbstractInternalQualifier(scope) {
     override val priority: Int = 2

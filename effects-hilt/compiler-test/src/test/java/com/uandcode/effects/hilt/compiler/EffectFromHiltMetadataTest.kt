@@ -90,6 +90,8 @@ class EffectFromHiltMetadataTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedEffect1Module = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package interface1_package
 
         import com.uandcode.effects.core.EffectScope
@@ -125,6 +127,8 @@ class EffectFromHiltMetadataTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedEffect2Module = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package interface2_package
 
         import com.uandcode.effects.core.EffectScope
@@ -182,7 +186,7 @@ class EffectFromHiltMetadataTest : AbstractHiltKspTest() {
     @Test
     fun `generated metadata should be processed`() = with(compile(inputSource)) {
         assertCompiled()
-        assertGeneratedFileCount(6)
+        assertGeneratedFileCount(14)
         assertGeneratedFile("interface1_package/__CompiledEffect1Proxy.kt", expectedProxyEffect1)
         assertGeneratedFile("interface1_package/CompiledEffect1Module.kt", expectedEffect1Module)
         assertGeneratedFile("interface2_package/__CompiledEffect2Proxy.kt", expectedProxyEffect2)

@@ -23,6 +23,7 @@ import com.uandcode.effects.core.testing.mocks.SimpleEffect2Impl
 import com.uandcode.flowtest.runFlowTest
 import io.mockk.spyk
 import io.mockk.verify
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -30,6 +31,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
@@ -161,6 +163,69 @@ class EffectProviderIntegrationTest {
         verify(exactly = 0) {
             effect.unitRun(any())
         }
+    }
+
+    @Test
+    fun `EffectProvider without content connects effect to proxy after onStart`() = testScope.runFlowTest {
+        val proxy = effectScope.getProxy(Effect::class)
+        val effect = spyk(EffectImpl())
+        val composition = setContent {
+            EffectProvider(effect, scope = effectScope)
+        }
+
+        composition.lifecycleOwner.start()
+        proxy.unitRun("input")
+
+        verify(exactly = 1) {
+            effect.unitRun("input")
+        }
+    }
+
+    @Test
+    fun `EffectProvider without content disconnects effect from proxy after onStop`() = testScope.runFlowTest {
+        val proxy = effectScope.getProxy(Effect::class)
+        val effect = spyk(EffectImpl())
+        val composition = setContent {
+            EffectProvider(effect, scope = effectScope)
+        }
+
+        composition.lifecycleOwner.apply {
+            start()
+            stop()
+        }
+        proxy.unitRun("input")
+
+        verify(exactly = 0) {
+            effect.unitRun(any())
+        }
+    }
+
+    @Test
+    fun `EffectProvider without content connects effects from immutable list after onStart`() = testScope.runFlowTest {
+        val proxy = effectScope.getProxy(Effect::class)
+        val effect = spyk(EffectImpl())
+        val composition = setContent {
+            EffectProvider(persistentListOf<Any>(effect), scope = effectScope)
+        }
+
+        composition.lifecycleOwner.start()
+        proxy.unitRun("input")
+
+        verify(exactly = 1) {
+            effect.unitRun("input")
+        }
+    }
+
+    @Test
+    fun `EffectProvider without content does not expose effects to sibling composables`() = testScope.runFlowTest {
+        var siblingNode: ComposeEffectNode? = null
+        val effect = SimpleEffect1Impl()
+        setContent {
+            EffectProvider(effect, scope = effectScope)
+            siblingNode = LocalComposeEffectNode.current
+        }
+
+        assertNull(siblingNode)
     }
 
     @Test

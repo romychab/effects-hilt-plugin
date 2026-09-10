@@ -39,7 +39,7 @@ class ClassTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of valid simple annotated class with one interface should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

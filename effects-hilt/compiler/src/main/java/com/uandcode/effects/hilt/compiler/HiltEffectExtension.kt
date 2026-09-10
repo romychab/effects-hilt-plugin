@@ -19,6 +19,7 @@ import com.uandcode.effects.hilt.compiler.data.HiltParsedEffect
 import com.uandcode.effects.hilt.compiler.data.HiltParsedMetadata
 import com.uandcode.effects.hilt.compiler.data.SupportedHiltComponent
 import com.uandcode.effects.hilt.compiler.exceptions.InconsistentHiltComponentsException
+import com.uandcode.effects.hilt.compiler.generators.HiltCoreModuleGenerator
 import com.uandcode.effects.hilt.compiler.generators.HiltImplementationModuleGenerator
 import com.uandcode.effects.hilt.compiler.generators.HiltInterfaceModuleGenerator
 import com.uandcode.effects.hilt.compiler.generators.HiltMetadataGenerator
@@ -87,6 +88,8 @@ class HiltEffectExtension : EffectExtension {
         generatedProxies: List<GeneratedProxy>,
         writer: KspClassWriter
     ) {
+        HiltCoreModuleGenerator(writer).generate()
+
         val interfaceModuleGenerator = HiltInterfaceModuleGenerator(writer)
         val implementationModuleGenerator = HiltImplementationModuleGenerator(writer)
 

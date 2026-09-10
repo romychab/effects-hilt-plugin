@@ -178,6 +178,21 @@ class MainViewModel @Inject constructor(
 }
 ```
 
+The content block of `EffectProvider` is optional. If you don't need to call
+`getEffect<T>()` inside, you can use it as a leaf composable:
+
+```kotlin
+setContent {
+    val toasts = remember { ToastsImpl(this) }
+    EffectProvider(toasts)
+    MyApp()
+}
+```
+
+Effects are connected to their interfaces in both cases. The only difference is
+that `getEffect<T>()` works within the content block only, so in the snippet above
+a `getEffect<ToastsImpl>()` call inside `MyApp()` throws an `IllegalStateException`.
+
 Such one-off events are handled immediately if the Activity is at least in
 a STARTED state (after `onStart()` is called and before `onStop()`).
 Otherwise, the event is queued until the Activity becomes STARTED.

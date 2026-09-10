@@ -81,6 +81,8 @@ class TargetParameterTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedEffect1Module = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope
@@ -118,6 +120,8 @@ class TargetParameterTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedEffect2Module = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope
@@ -202,7 +206,7 @@ class TargetParameterTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of effect with 'targets' arg should complete and generate proxies for interfaces listed in 'targets' arg`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(6)
+        assertGeneratedFileCount(14)
         assertGeneratedFile("test/__Effect1Proxy.kt", expectedProxy1)
         assertGeneratedFile("test/__Effect2Proxy.kt", expectedProxy2)
         assertGeneratedFile("test/Effect1Module.kt", expectedEffect1Module)

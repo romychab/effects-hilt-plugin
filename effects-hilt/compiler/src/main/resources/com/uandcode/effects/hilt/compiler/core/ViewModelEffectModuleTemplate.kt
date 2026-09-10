@@ -1,4 +1,6 @@
-package com.uandcode.effects.hilt.internal.modules
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
+%PACKAGE_STATEMENT%
 
 import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.hilt.internal.HiltViewModelEffectScope
@@ -17,11 +19,11 @@ import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(ViewModelComponent::class)
-internal object ViewModelEffectModule {
+public object %CLASSNAME% {
 
     @Provides
     @ViewModelScoped
-    fun provideQualifier(
+    public fun provideQualifier(
         parentQualifier: ActivityRetainedQualifier,
         viewModelLifecycle: ViewModelLifecycle,
         registeredEffects: Set<@JvmSuppressWildcards InternalRegisteredEffect>
@@ -38,7 +40,7 @@ internal object ViewModelEffectModule {
 
     @Provides
     @IntoSet
-    fun provideQualifierToSet(
+    public fun provideQualifierToSet(
         qualifier: ViewModelQualifier
     ): AbstractInternalQualifier = qualifier
 

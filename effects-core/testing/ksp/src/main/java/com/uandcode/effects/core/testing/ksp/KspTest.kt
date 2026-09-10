@@ -30,12 +30,15 @@ public class KspTest(
     public fun compile(): KspResult {
         val compilation = KotlinCompilation().apply {
             sources = inputFiles.map { SourceFile.kotlin(it.name, it.content) }
-            configureKsp(useKsp2 = true) {
+            configureKsp {
                 symbolProcessorProviders += provider
                 processorOptions += options
             }
             messageOutputStream = System.out
             inheritClassPath = true
+            // Must match the project's JVM target (minJvm), otherwise inlining
+            // project bytecode into the compiled test sources fails.
+            jvmTarget = "11"
         }
         val result = compilation.compile()
         return KspResult(result)

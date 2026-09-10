@@ -74,6 +74,8 @@ class MultipleTargetsTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedModule1 = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope
@@ -112,6 +114,8 @@ class MultipleTargetsTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedModule2 = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope
@@ -196,7 +200,7 @@ class MultipleTargetsTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of effect implementing multiple target interfaces should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(6)
+        assertGeneratedFileCount(14)
         assertGeneratedFile("test/__Effect1Proxy.kt", expectedProxy1)
         assertGeneratedFile("test/Effect1Module.kt", expectedModule1)
         assertGeneratedFile("test/__Effect2Proxy.kt", expectedProxy2)
