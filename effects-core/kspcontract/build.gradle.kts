@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.custom.library)
-    alias(libs.plugins.custom.maven.publish)
 }
 
-publishConfig {
-    artifactId = "effects2-core-kspcontract"
-    description = "Effects Core Library - Internal KSP contract for accessing auto-generated code"
-}
+// Not published to Maven Central: this module only provides a compile-time stub of
+// com.uandcode.effects.core.kspcontract.AnnotationBasedProxyEffectStore, which the KSP
+// processor generates directly into the consumer's project. It is consumed as
+// `compileOnly` inside this build only and never appears in any published POM.
 
 dependencies {
     implementation(projects.effectsCore.kspcontractApi)
