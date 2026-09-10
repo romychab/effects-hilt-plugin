@@ -341,7 +341,8 @@ Installation steps may vary depending on the DI framework you're using.
 ### Hilt Integration
 
 1. Add [Hilt and KSP](/docs/ksp-and-hilt-installation.md) to your Android project.
-2. Add the following dependencies:
+2. Minimum supported version of Hilt: 2.58+
+3. Add the following dependencies:
 
    ```kotlin
    // annotation processor (required):

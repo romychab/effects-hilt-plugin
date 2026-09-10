@@ -56,7 +56,7 @@ class SubclassWithInterfaceTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of class implementing target interface and other superclass should complete`() = with(compile(source)){
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

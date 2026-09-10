@@ -70,7 +70,7 @@ class ClassMethodsWithTypeParametersTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of valid three types of effects with type parameters should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

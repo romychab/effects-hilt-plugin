@@ -63,7 +63,7 @@ class SuperTargetInterfaceTest : AbstractHiltKspTest() {
 
     @Test
     fun `compilation of effect implementing hierarchy of 2 interfaces should complete`() = with(compile(source)) {
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

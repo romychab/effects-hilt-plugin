@@ -1,12 +1,19 @@
+import java.util.zip.ZipFile
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+
 plugins {
     alias(libs.plugins.custom.android.library)
     alias(libs.plugins.custom.maven.publish)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.uandcode.effects.hilt"
+}
+
+kotlin {
+    compilerOptions {
+        optIn.add("com.uandcode.effects.hilt.InternalEffectsHiltApi")
+    }
 }
 
 publishConfig {
@@ -19,6 +26,5 @@ dependencies {
     api(projects.effectsHilt.annotations)
     implementation(projects.effectsCore.lifecycle)
 
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    compileOnly(libs.hilt.android)
 }

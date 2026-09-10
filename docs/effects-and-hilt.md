@@ -7,6 +7,7 @@ This page describes how to install and use the library with Hilt DI Framework.
 - [Prerequisites](#prerequisites)
 - [Installation (Single-module Projects)](#installation-single-module-projects)
 - [Installation for Multi-Module Projects](#installation-for-multi-module-projects)
+- [What Changed in 2.2.0](#what-changed-in-220)
 - [Migration from Version 1.x to 2.x](#migration-from-version-1x-to-2x)
 - [Usage Example](#usage-example)
 - [Creating Effect Implementations with Hilt](#creating-effect-implementations-with-hilt)
@@ -19,7 +20,8 @@ This page describes how to install and use the library with Hilt DI Framework.
 1. Use the latest version of Android Studio.
 2. Use __Kotlin v2.0__ or above.
 3. Ensure the [KSP](https://kotlinlang.org/docs/ksp-overview.html) plugin is added to your project. [How to install KSP?](/docs/ksp-installation.md).
-4. Make sure [Hilt] is properly set up in your project. [How to install Hilt?](/docs/ksp-and-hilt-installation.md)
+4. Make sure [Hilt](https://dagger.dev/hilt/) is properly set up in your project. 
+   Minimum supported version of Hilt: 2.58+. [How to install Hilt?](/docs/ksp-and-hilt-installation.md)
 
 ## Installation (Single-module Projects)
 
@@ -64,6 +66,42 @@ For more details, check out the [single-module Hilt example app](/app-examples/h
     ```
 
 - Explore an example Hilt Multi-module project [here](/app-examples/hilt/app-multimodule).
+
+## What Changed in 2.2.0
+
+Previously the library shipped Hilt modules that had been code-generated and compiled,
+against one specific Hilt version. If your project used a different one, the generated code
+in the library and in your project could conflict.
+
+As of 2.2.0 the library ships no Dagger- or Hilt-generated code at all. The Hilt modules it
+needs are generated as source in your application module and compiled by your own Hilt
+version, so a version mismatch of that kind is no longer possible.
+
+You do not need to change anything. `@HiltEffect`, `lazyEffect`, `initEffect` and constructor
+injection all work exactly as before.
+
+**This does raise the minimum supported Hilt version to 2.58.** The library itself is compiled
+with Kotlin 2.3.10, and `hilt-compiler` 2.57 and older bundle a `kotlin-metadata-jvm` that
+cannot parse Kotlin 2.3 metadata. If your project uses an older Hilt, the build fails with:
+
+```
+[Hilt] Provided Metadata instance has version 2.X.X, while maximum supported version is 2.Y.Y.
+To support newer versions, update the kotlin-metadata-jvm library.
+```
+
+If you hit this, upgrade Hilt to 2.58 or newer. This isn't specific to this library, any dependency
+compiled with Kotlin 2.3 would impose the same floor.
+
+One more consequence: the library no longer declares a specific `hilt-android` version as a
+transitive dependency (Hilt is now `compileOnly`). Previously it could silently pull your
+project's `hilt-android` up to a newer version than you had requested; now the version you
+declare in your own project is the one that's used.
+
+One note for advanced users:
+
+- Code that reached into the `com.uandcode.effects.hilt.internal` package now needs
+  `@OptIn(InternalEffectsHiltApi::class)`. Those declarations exist only to serve generated
+  code and were never intended for direct use.
 
 ## Migration from Version 1.x to 2.x
 

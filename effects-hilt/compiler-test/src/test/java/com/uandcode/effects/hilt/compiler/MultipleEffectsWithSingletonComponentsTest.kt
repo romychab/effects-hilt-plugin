@@ -58,6 +58,8 @@ class MultipleEffectsWithSingletonComponentsTest : AbstractHiltKspTest() {
 
     @Language("kotlin")
     private val expectedEffectInterfaceModule = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope
@@ -163,7 +165,7 @@ class MultipleEffectsWithSingletonComponentsTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of 2 effects installed to SingletonComponent should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(5)
+        assertGeneratedFileCount(13)
         assertGeneratedFile("test/__EffectProxy.kt", expectedProxy)
         assertGeneratedFile("test/EffectModule.kt", expectedEffectInterfaceModule)
         assertGeneratedFile("test/EffectImpl1Module.kt", expectedEffectImpl1Module)

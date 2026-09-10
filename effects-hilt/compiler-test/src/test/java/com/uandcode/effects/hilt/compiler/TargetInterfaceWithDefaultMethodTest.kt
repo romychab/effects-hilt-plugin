@@ -52,7 +52,7 @@ class TargetInterfaceWithDefaultMethodTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of effect implementing interface with default method should complete and ignore that default method`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

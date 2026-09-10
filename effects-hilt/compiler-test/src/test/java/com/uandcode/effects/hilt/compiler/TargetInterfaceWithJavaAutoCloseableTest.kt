@@ -52,7 +52,7 @@ class TargetInterfaceWithJavaAutoCloseableTest : AbstractHiltKspTest() {
     @Test
     fun `compilation of effect implementing interface with java AutoCloseable and default close() method should complete`() = with(compile(source)) {
         assertCompiled()
-        assertGeneratedFileCount(4)
+        assertGeneratedFileCount(12)
         assertGeneratedFile(defaultProxyName, expectedProxy)
         assertGeneratedFile(defaultEffectStoreName, expectedEffectStore)
         assertGeneratedFile(defaultEffectModuleName, expectedEffectModule)

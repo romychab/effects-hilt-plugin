@@ -1,8 +1,10 @@
 package com.uandcode.effects.hilt.internal.qualifiers
 
 import com.uandcode.effects.core.EffectScope
+import com.uandcode.effects.hilt.InternalEffectsHiltApi
 import kotlin.reflect.KClass
 
+@InternalEffectsHiltApi
 public sealed class AbstractInternalQualifier(
     public val scope: EffectScope
 ) {
@@ -17,6 +19,7 @@ public sealed class AbstractInternalQualifier(
     }
 }
 
-internal fun Set<AbstractInternalQualifier>.getEffectScopeWithMaxPriority(): EffectScope {
+@InternalEffectsHiltApi
+public fun Set<AbstractInternalQualifier>.getEffectScopeWithMaxPriority(): EffectScope {
     return maxBy { it.priority }.scope
 }

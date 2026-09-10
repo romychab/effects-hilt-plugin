@@ -7,6 +7,9 @@ object Const {
     const val InstallInArgument: String = "installIn"
     const val MetadataHiltComponent: String = "hiltComponentClassName"
 
+    const val GeneratedPackage: String = "com.uandcode.effects.hilt.generated"
+    const val CoreTemplateDir: String = "com/uandcode/effects/hilt/compiler/core"
+
     val HiltEffectAnnotationName = ClassName("com.uandcode.effects.hilt.annotations", "HiltEffect")
     val HiltEffectMetadataAnnotationName = ClassName("com.uandcode.effects.hilt.annotations", "HiltEffectMetadata")
 

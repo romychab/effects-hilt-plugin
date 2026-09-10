@@ -38,6 +38,8 @@ abstract class AbstractHiltKspTest : AbstractKspTest() {
 
     @Language("kotlin")
     open val expectedEffectModule: String = """
+        @file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
         package test
 
         import com.uandcode.effects.core.EffectScope

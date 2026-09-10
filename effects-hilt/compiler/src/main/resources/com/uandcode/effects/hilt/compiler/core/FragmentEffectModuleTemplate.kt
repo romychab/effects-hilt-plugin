@@ -1,4 +1,6 @@
-package com.uandcode.effects.hilt.internal.modules
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
+
+%PACKAGE_STATEMENT%
 
 import com.uandcode.effects.core.ManagedInterfaces
 import com.uandcode.effects.hilt.internal.InternalRegisteredEffect
@@ -15,11 +17,11 @@ import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(FragmentComponent::class)
-internal object FragmentEffectModule {
+public object %CLASSNAME% {
 
     @Provides
     @FragmentScoped
-    fun provideQualifier(
+    public fun provideQualifier(
         parentQualifier: ActivityQualifier,
         registeredEffects: Set<@JvmSuppressWildcards InternalRegisteredEffect>
     ): FragmentQualifier {
@@ -34,7 +36,7 @@ internal object FragmentEffectModule {
 
     @Provides
     @IntoSet
-    fun provideQualifierToSet(
+    public fun provideQualifierToSet(
         qualifier: FragmentQualifier
     ): AbstractInternalQualifier = qualifier
 

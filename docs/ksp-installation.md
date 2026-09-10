@@ -26,6 +26,6 @@
    dependencies {
        // KSP annotation processors should be added using the 'ksp(dependencyNotation)'
        // Example: adding Hilt's KSP compiler
-       // ksp("com.google.dagger:hilt-android-compiler:2.55")
+       // ksp("com.google.dagger:hilt-android-compiler:2.58")
    }
    ```

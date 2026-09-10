@@ -1,7 +1,9 @@
-package com.uandcode.effects.hilt.internal.modules
+@file:OptIn(com.uandcode.effects.hilt.InternalEffectsHiltApi::class)
 
-import com.uandcode.effects.core.RootEffectScopes
+%PACKAGE_STATEMENT%
+
 import com.uandcode.effects.core.ManagedInterfaces
+import com.uandcode.effects.core.RootEffectScopes
 import com.uandcode.effects.hilt.internal.InternalRegisteredEffect
 import com.uandcode.effects.hilt.internal.filterByQualifier
 import com.uandcode.effects.hilt.internal.qualifiers.AbstractInternalQualifier
@@ -15,11 +17,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object SingletonEffectModule {
+public object %CLASSNAME% {
 
     @Provides
     @Singleton
-    fun provideQualifier(
+    public fun provideQualifier(
         registeredEffects: Set<@JvmSuppressWildcards InternalRegisteredEffect>
     ): SingletonQualifier {
         return SingletonQualifier(
@@ -33,7 +35,7 @@ internal object SingletonEffectModule {
 
     @Provides
     @IntoSet
-    fun provideQualifierToSet(
+    public fun provideQualifierToSet(
         qualifier: SingletonQualifier
     ): AbstractInternalQualifier = qualifier
 
